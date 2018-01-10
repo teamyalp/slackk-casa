@@ -1,0 +1,9 @@
+{
+  "name": "slackk-casa",
+  "repository": "https://github.com/slackk-casa/slackk-casa.git",
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    }
+  ]
+}
