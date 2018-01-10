@@ -42,27 +42,24 @@ const onMessage = (ws, wss, data) => {
     case 'POSTMESSAGE':
       db
         .postMessage(message.data.text)
-        .then(dbData =>
-          updateEveryoneElse(
+        .then((dbData) => {
+          ws.send(JSON.stringify({
+            code: 201,
+            message: 'Post success',
+            method: 'POSTMESSAGE',
+            data: dbData.rows[0],
+          }));
+          return updateEveryoneElse(
             ws,
             wss,
             JSON.stringify({
               code: 200,
               message: 'New message',
               method: 'NEWMESSAGE',
-              data: {
-                id: dbData.rows[0].id,
-                text: dbData.rows[0].text,
-                createdAt: dbData.rows[0].createdAt,
-              },
+              data: dbData.rows[0],
             }),
-          ))
-        .then(() =>
-          ws.send(JSON.stringify({
-            code: 201,
-            message: 'Post success',
-            method: 'POSTMESSAGE',
-          })))
+          );
+        })
         .catch(err =>
           ws.send(JSON.stringify({
             code: 400,
