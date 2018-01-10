@@ -33,6 +33,7 @@ if (process.env.INITIALIZEDB) {
 }
 
 module.exports = {
+  client,
   initializeDB,
   postMessage,
   getMessages,

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = require('./routes');
-const http = require('http');
 const WebSocket = require('ws');
 const { onConnect } = require('./webSocket');
 
@@ -13,3 +12,5 @@ const server = express()
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', ws => onConnect(ws, wss));
+
+module.exports = server;
