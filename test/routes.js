@@ -39,6 +39,42 @@ describe('Static Files', () => {
         });
     }).timeout(1000);
   });
+  describe('GET /login', () => {
+    it('should return the content of index.html', (done) => {
+      chai
+        .request(server)
+        .get('/')
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.html;
+          done();
+        });
+    }).timeout(1000);
+  });
+  describe('GET /signup', () => {
+    it('should return the content of index.html', (done) => {
+      chai
+        .request(server)
+        .get('/')
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.html;
+          done();
+        });
+    }).timeout(1000);
+  });
+  describe('GET /messages', () => {
+    it('should return the content of index.html', (done) => {
+      chai
+        .request(server)
+        .get('/')
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.html;
+          done();
+        });
+    }).timeout(1000);
+  });
 });
 
 after(() => process.exit(0));
