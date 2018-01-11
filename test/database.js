@@ -16,9 +16,9 @@ describe('Database', () => {
       });
     }).timeout(1000);
   });
-  describe('initializeDB', () => {
+  describe('initializeMessages', () => {
     it('should create a messages table', (done) => {
-      db.initializeDB().then(db.client.query(
+      db.initializeMessages().then(db.client.query(
         "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
         (err, data) => {
           let tables = [];
@@ -45,6 +45,37 @@ describe('Database', () => {
         expect(data[0].id).to.be.a('number');
         expect(data[0].text).to.be.a('string');
         expect(data[0].createdAt).to.be.a('date');
+        done();
+      });
+    }).timeout(1000);
+  });
+  describe('initializeUsers', () => {
+    it('should create a users table', (done) => {
+      db.initializeUsers().then(db.client.query(
+        "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
+        (err, data) => {
+          let tables = [];
+          data.rows.forEach(table => tables.push(table.table_name));
+          expect(tables).to.include.members(['users']);
+          done();
+        },
+      ));
+    }).timeout(1000);
+  });
+  describe('createUser', () => {
+    it('should create a user with login and password', (done) => {
+      db.createUser(['test', 'test']).then((data) => {
+        expect(data.rows[0].username).to.equal('test');
+        expect(data.rows[0].password).to.equal('test');
+        done();
+      });
+    }).timeout(1000);
+  });
+  describe('login', () => {
+    it('should handle a login', (done) => {
+      db.login(['test', 'test']).then((data) => {
+        expect(data.rows[0].username).to.equal('test');
+        expect(data.rows[0].password).to.equal('test');
         done();
       });
     }).timeout(1000);

@@ -75,6 +75,32 @@ describe('Static Files', () => {
         });
     }).timeout(1000);
   });
+  describe('POST /signup', () => {
+    it('should signup successfully', (done) => {
+      chai
+        .request(server)
+        .post('/signup')
+        .type('application/JSON')
+        .send(JSON.stringify({ username: 'austin52', password: '1234' }))
+        .end((err, res) => {
+          expect(res).to.have.status(200 || 400);
+          done();
+        });
+    }).timeout(1000);
+  });
+  describe('POST /login', () => {
+    it('should login successfully', (done) => {
+      chai
+        .request(server)
+        .post('/login')
+        .type('application/json')
+        .send(JSON.stringify({ username: 'austin52', password: '1234' }))
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          done();
+        });
+    }).timeout(1000);
+  });
 });
 
 after(() => process.exit(0));
