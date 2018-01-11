@@ -31,9 +31,10 @@ describe('Database', () => {
   });
   describe('postMessage', () => {
     it('should post a message to the table', (done) => {
-      db.postMessage('test message').then((data) => {
+      db.postMessage('test message', 'test user').then((data) => {
         expect(data.rows[0].id).to.be.a('number');
         expect(data.rows[0].text).to.equal('test message');
+        expect(data.rows[0].username).to.equal('test user');
         done();
       });
     }).timeout(1000);
@@ -44,6 +45,7 @@ describe('Database', () => {
         expect(data).to.be.an('array');
         expect(data[0].id).to.be.a('number');
         expect(data[0].text).to.be.a('string');
+        expect(data[0].username).to.be.a('string');
         expect(data[0].createdAt).to.be.a('date');
         done();
       });

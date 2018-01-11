@@ -9,7 +9,7 @@ const client = new Client({
 
 client
   .connect()
-  .then(() => console.log('connected to postgres db'))
+  .then()
   .catch(e => console.error('error connecting to postgres db, ', e.stack));
 
 const initializeMessages = () =>
@@ -30,38 +30,41 @@ const initializeUsers = () =>
     );
   }).then(data => client.query(data));
 
-const postMessage = message =>
-  client.query('INSERT INTO messages (text) VALUES ($1) RETURNING *', [message]);
+const postMessage = (message, username) =>
+  client.query('INSERT INTO messages (text, username) VALUES ($1, $2) RETURNING *', [
+    message,
+    username,
+  ]);
 
 const getMessages = () => client.query('SELECT * FROM messages').then(data => data.rows);
 
 // TODO storing username and password as basic text. Change this later to more secure version.
-const createUser = (params) => {
-  return new Promise((resolve, reject) => client.query('INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *', params,
-    (err, data) => {
-      if (err) {
-        if (err.code === '23505') {
-          console.log('Duplicate entry');
-
-          resolve(data, '23505');
+const createUser = params =>
+  new Promise((resolve, reject) =>
+    client.query(
+      'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
+      params,
+      (err, data) => {
+        if (err) {
+          if (err.code === '23505') {
+            resolve(data, '23505');
+          }
+          reject(err);
         }
-        reject(err);
-      }
-      resolve(data);
-    })
-  );
-};
+        resolve(data);
+      },
+    ));
 
-
-const login = params => client.query('SELECT * FROM users WHERE username = ($1) AND password = ($2)', params);
+const login = params =>
+  client.query('SELECT * FROM users WHERE username = ($1) AND password = ($2)', params);
 
 if (process.env.INITIALIZEDB) {
   initializeMessages()
-    .then(console.log)
+    .then()
     .catch(console.log);
 
   initializeUsers()
-    .then(console.log)
+    .then()
     .catch(console.log);
 }
 

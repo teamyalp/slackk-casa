@@ -41,7 +41,7 @@ const onMessage = (ws, wss, data) => {
       break;
     case 'POSTMESSAGE':
       db
-        .postMessage(message.data.text)
+        .postMessage(message.data.text, message.data.username)
         .then((dbData) => {
           ws.send(JSON.stringify({
             code: 201,

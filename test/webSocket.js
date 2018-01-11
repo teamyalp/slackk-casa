@@ -50,6 +50,7 @@ describe('WebSockets', () => {
         method: 'POSTMESSAGE',
         data: {
           text: 'test message',
+          username: 'test user',
         },
       }));
       ws.on('message', (data) => {
@@ -65,6 +66,7 @@ describe('WebSockets', () => {
         method: 'POSTMESSAGE',
         data: {
           text: 'test message',
+          username: 'test user',
         },
       }));
       ws.on('message', (data) => {
@@ -72,6 +74,7 @@ describe('WebSockets', () => {
         expect(parsedData.data).to.be.an('object');
         expect(parsedData.data.id).to.be.a('number');
         expect(parsedData.data.text).to.equal('test message');
+        expect(parsedData.data.username).to.equal('test user');
         done();
       });
     }).timeout(1000);
@@ -92,6 +95,7 @@ describe('WebSockets', () => {
         method: 'POSTMESSAGE',
         data: {
           text: 'test message',
+          username: 'test user',
         },
       }));
       ws2.on('message', (data) => {
@@ -107,12 +111,14 @@ describe('WebSockets', () => {
         method: 'POSTMESSAGE',
         data: {
           text: 'test message',
+          username: 'test user',
         },
       }));
       ws2.on('message', (data) => {
         let parsedData = JSON.parse(data);
         expect(parsedData.data.id).to.be.a('number');
         expect(parsedData.data.text).to.equal('test message');
+        expect(parsedData.data.username).to.equal('test user');
         done();
       });
     }).timeout(1000);
