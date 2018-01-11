@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert, Container, FormGroup, Input, Button } from 'reactstrap';
+import { Alert, FormGroup, Input, Button } from 'reactstrap';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -15,6 +15,9 @@ export default class Login extends React.Component {
 
   logIn() {
     let { username, password } = this.state;
+    if (username === '') {
+      return this.setState({ loginStatus: 'Enter a username' });
+    }
     fetch('/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
@@ -34,7 +37,7 @@ export default class Login extends React.Component {
   }
 
   handleKeyPress(event) {
-    return event.key === 'Enter' ? this.signUp() : undefined;
+    return event.key === 'Enter' ? this.logIn() : undefined;
   }
 
   render() {
@@ -42,7 +45,6 @@ export default class Login extends React.Component {
       body: {
         paddingTop: '40px',
         paddingBottom: '40px',
-        height: '100%',
         maxWidth: '330px',
         padding: '15px',
         margin: '0 auto',
@@ -60,7 +62,7 @@ export default class Login extends React.Component {
             }}
           />
         ) : (
-          <Container>
+          <div>
             <Link style={{ textDecoration: 'none' }} to="/">
               <h1>slackk-casa</h1>
             </Link>
@@ -93,7 +95,13 @@ export default class Login extends React.Component {
             <Button onClick={() => this.logIn()} color="primary" size="lg" block>
               Log in
             </Button>
-          </Container>
+            <br />
+            <Link style={{ textDecoration: 'none' }} to="/signup">
+              <Button color="primary" size="lg" block>
+                Sign Up
+              </Button>
+            </Link>
+          </div>
         )}
       </div>
     );

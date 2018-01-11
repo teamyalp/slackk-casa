@@ -36,6 +36,6 @@
 
 /* bootstrap form control class
    send message */
-.form-control {
-  height: 10vh;
+.message-input-box {
+  height: 50%;
 }

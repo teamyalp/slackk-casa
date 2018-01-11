@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert, Container, FormGroup, Input, Button } from 'reactstrap';
+import { Alert, FormGroup, Input, Button } from 'reactstrap';
 
 export default class Signup extends React.Component {
   constructor(props) {
@@ -14,6 +14,9 @@ export default class Signup extends React.Component {
   }
 
   signUp() {
+    if (username === '') {
+      return this.setState({ signupStatus: 'Enter a username' });
+    }
     let { username, password } = this.state;
     fetch('/signup', {
       method: 'POST',
@@ -42,7 +45,6 @@ export default class Signup extends React.Component {
       body: {
         paddingTop: '40px',
         paddingBottom: '40px',
-        height: '100%',
         maxWidth: '330px',
         padding: '15px',
         margin: '0 auto',
@@ -59,7 +61,7 @@ export default class Signup extends React.Component {
             }}
           />
         ) : (
-          <Container>
+          <div>
             <Link style={{ textDecoration: 'none' }} to="/">
               <h1>slackk-casa</h1>
             </Link>
@@ -92,7 +94,7 @@ export default class Signup extends React.Component {
             <Button onClick={() => this.signUp()} color="primary" size="lg" block>
               Sign up
             </Button>
-          </Container>
+          </div>
         )}
       </div>
     );

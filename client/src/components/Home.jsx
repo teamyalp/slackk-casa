@@ -7,7 +7,6 @@ export default () => {
     body: {
       paddingTop: '40px',
       paddingBottom: '40px',
-      height: '100%',
       maxWidth: '330px',
       padding: '15px',
       margin: '0 auto',

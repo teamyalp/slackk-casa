@@ -57,6 +57,7 @@ export default class App extends React.Component {
           {/* TODO: substitue main for current channel or DM user */}
           <Input
             value={query}
+            className="message-input-box"
             type="textarea"
             name="text"
             placeholder="Message #main"
