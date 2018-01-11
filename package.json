@@ -29,6 +29,8 @@
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "css-loader": "^0.28.8",
     "eslint": "^4.15.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",
@@ -36,8 +38,8 @@
     "eslint-plugin-react": "^7.5.1",
     "mocha": "^4.1.0",
     "nodemon": "^1.14.9",
-    "webpack": "^3.10.0",
-    "chai-http": "^3.0.0"
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -56,6 +58,8 @@
     "ws": "^4.0.0"
   },
   "babel": {
-    "presets": ["es2015"]
+    "presets": [
+      "es2015", "react"
+    ]
   }
 }

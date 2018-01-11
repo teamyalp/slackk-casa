@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default ({ message }) => (
-  <div>
+  <div className="message-entry-container">
     {message.text}
     <br />
     {message.createdAt}

@@ -1,0 +1,22 @@
+/* left side */
+.side-bar-col {
+  margin-bottom: -100%;
+  padding-bottom: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* right side */
+.message-list-col {
+  height: 75vh;
+  overflow: scroll;
+}
+
+.text-area {
+  height: 25vh;
+  margin-left: 17%;
+}
+
+.chat-send-button {
+  margin-left: 17%;
+}
