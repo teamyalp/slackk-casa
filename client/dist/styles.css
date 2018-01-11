@@ -1,4 +1,12 @@
-/* left side */
+.app-container {
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+/* left side  */
 .side-bar-col {
   margin-bottom: -100%;
   padding-bottom: 100%;
@@ -6,17 +14,28 @@
   overflow: hidden;
 }
 
+/* left nav bar */
+.side-bar-col {
+  background-color: #4d394b;
+}
+
 /* right side */
 .message-list-col {
   height: 75vh;
   overflow: scroll;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
-.text-area {
+/* send message div container */
+.input-container {
   height: 25vh;
   margin-left: 17%;
+  margin-top: 10px;
 }
 
-.chat-send-button {
-  margin-left: 17%;
+/* bootstrap form control class
+   send message */
+.form-control {
+  height: 10vh;
 }
