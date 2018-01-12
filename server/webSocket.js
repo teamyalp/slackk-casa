@@ -24,7 +24,7 @@ const onMessage = (ws, wss, data) => {
   switch (message.method) {
     case 'GETMESSAGES':
       db
-        .getMessages()
+        .getMessages(Number(message.data.workspaceId))
         .then(messages =>
           ws.send(JSON.stringify({
             code: 200,
@@ -41,13 +41,13 @@ const onMessage = (ws, wss, data) => {
       break;
     case 'POSTMESSAGE':
       db
-        .postMessage(message.data.text, message.data.username)
+        .postMessage(message.data.text, message.data.username, message.data.workspaceId)
         .then((dbData) => {
           ws.send(JSON.stringify({
             code: 201,
             message: 'Post success',
             method: 'POSTMESSAGE',
-            data: dbData.rows[0],
+            data: { message: dbData.rows[0], workspaceId: message.data.workspaceId },
           }));
           return updateEveryoneElse(
             ws,
@@ -56,7 +56,7 @@ const onMessage = (ws, wss, data) => {
               code: 200,
               message: 'New message',
               method: 'NEWMESSAGE',
-              data: dbData.rows[0],
+              data: { message: dbData.rows[0], workspaceId: message.data.workspaceId },
             }),
           );
         })

@@ -75,13 +75,39 @@ describe('Static Files', () => {
         });
     }).timeout(1000);
   });
+  describe('POST /workspaces', () => {
+    it('should create a workspace', (done) => {
+      chai
+        .request(server)
+        .post('/workspaces')
+        .type('application/JSON')
+        .send(JSON.stringify({ name: 'ws_test' }))
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          done();
+        });
+    }).timeout(1000);
+  });
+  describe('GET /workspaces', () => {
+    it('should return a list of workspaces', (done) => {
+      chai
+        .request(server)
+        .get('/workspaces')
+        .type('application/json')
+        .send()
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          done();
+        });
+    }).timeout(1000);
+  });
   describe('POST /signup', () => {
     it('should signup successfully', (done) => {
       chai
         .request(server)
         .post('/signup')
         .type('application/JSON')
-        .send(JSON.stringify({ username: 'austin52', password: '1234' }))
+        .send(JSON.stringify({ username: 'test1234', password: 'test1234' }))
         .end((err, res) => {
           expect(res).to.have.status(200 || 400);
           done();
@@ -94,7 +120,7 @@ describe('Static Files', () => {
         .request(server)
         .post('/login')
         .type('application/json')
-        .send(JSON.stringify({ username: 'austin52', password: '1234' }))
+        .send(JSON.stringify({ username: 'test1234', password: 'test1234' }))
         .end((err, res) => {
           expect(res).to.have.status(201);
           done();

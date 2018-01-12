@@ -16,44 +16,20 @@ describe('Database', () => {
       });
     }).timeout(1000);
   });
-  describe('initializeMessages', () => {
-    it('should create a messages table', (done) => {
-      db.initializeMessages().then(db.client.query(
+  describe('initializeDB', () => {
+    it('should create a workspaces table', (done) => {
+      db.initializeDB().then(db.client.query(
         "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
         (err, data) => {
           let tables = [];
           data.rows.forEach(table => tables.push(table.table_name));
-          expect(tables).to.include.members(['messages']);
+          expect(tables).to.include.members(['workspaces']);
           done();
         },
       ));
     }).timeout(1000);
-  });
-  describe('postMessage', () => {
-    it('should post a message to the table', (done) => {
-      db.postMessage('test message', 'test user').then((data) => {
-        expect(data.rows[0].id).to.be.a('number');
-        expect(data.rows[0].text).to.equal('test message');
-        expect(data.rows[0].username).to.equal('test user');
-        done();
-      });
-    }).timeout(1000);
-  });
-  describe('getMessages', () => {
-    it('should get messages from the table', (done) => {
-      db.getMessages().then((data) => {
-        expect(data).to.be.an('array');
-        expect(data[0].id).to.be.a('number');
-        expect(data[0].text).to.be.a('string');
-        expect(data[0].username).to.be.a('string');
-        expect(data[0].createdAt).to.be.a('date');
-        done();
-      });
-    }).timeout(1000);
-  });
-  describe('initializeUsers', () => {
     it('should create a users table', (done) => {
-      db.initializeUsers().then(db.client.query(
+      db.initializeDB().then(db.client.query(
         "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
         (err, data) => {
           let tables = [];
@@ -62,6 +38,64 @@ describe('Database', () => {
           done();
         },
       ));
+    }).timeout(1000);
+  });
+  describe('createWorkspace', () => {
+    it('should create a messages table for the workspace', (done) => {
+      db.createWorkspace('testspace1', 'ws_testspace1').then(() =>
+        db.client.query(
+          "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
+          (err, data) => {
+            let tables = [];
+            data.rows.forEach(table => tables.push(table.table_name));
+            expect(tables).to.include.members(['ws_testspace1']);
+            done();
+          },
+        ));
+    }).timeout(1000);
+    it('should add an entry into the workspaces table', (done) => {
+      db
+        .createWorkspace('testspace2', 'ws_testspace2')
+        .then(() => db.client.query('SELECT * FROM workspaces WHERE name = $1', ['testspace2']))
+        .then((data) => {
+          expect(data.rows[0].id).to.be.a('number');
+          expect(data.rows[0].name).to.equal('testspace2');
+          expect(data.rows[0].db_name).to.equal('ws_testspace2');
+          done();
+        });
+    }).timeout(1000);
+  });
+  describe('getWorkspaces', () => {
+    it('should get workspaces from the table', (done) => {
+      db.getWorkspaces().then((data) => {
+        expect(data).to.be.an('array');
+        expect(data[0].id).to.be.a('number');
+        expect(data[0].name).to.be.a('string');
+        expect(data[0].db_name).to.be.a('string');
+        done();
+      });
+    }).timeout(1000);
+  });
+  describe('postMessage', () => {
+    it('should post a message to a workspace', (done) => {
+      db.postMessage('test message', 'test user', 1).then((data) => {
+        expect(data.rows[0].id).to.be.a('number');
+        expect(data.rows[0].text).to.equal('test message');
+        expect(data.rows[0].username).to.equal('test user');
+        done();
+      });
+    }).timeout(1000);
+  });
+  describe('getMessages', () => {
+    it('should get messages from a workspace', (done) => {
+      db.getMessages(1).then((data) => {
+        expect(data).to.be.an('array');
+        expect(data[0].id).to.be.a('number');
+        expect(data[0].text).to.be.a('string');
+        expect(data[0].username).to.be.a('string');
+        expect(data[0].createdAt).to.be.a('date');
+        done();
+      });
     }).timeout(1000);
   });
   describe('createUser', () => {
@@ -73,9 +107,9 @@ describe('Database', () => {
       });
     }).timeout(1000);
   });
-  describe('login', () => {
-    it('should handle a login', (done) => {
-      db.login(['test', 'test']).then((data) => {
+  describe('checkUser', () => {
+    it('should verify a user login', (done) => {
+      db.checkUser(['test', 'test']).then((data) => {
         expect(data.rows[0].username).to.equal('test');
         expect(data.rows[0].password).to.equal('test');
         done();
