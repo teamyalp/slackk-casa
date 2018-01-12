@@ -39,3 +39,7 @@
 .message-input-box {
   height: 50%;
 }
+
+.message-entry-container:hover {
+  background-color: #f9f9f9;
+}
