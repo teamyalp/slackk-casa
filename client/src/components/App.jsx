@@ -10,7 +10,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       messages: [],
-      // users: [],
+      users: [],
       query: '',
     };
 
@@ -39,13 +39,15 @@ export default class App extends React.Component {
     // on key press enter send message and reset text box
     if (event.charCode === 13 && !event.shiftKey) {
       event.preventDefault();
-      sendMessage(this.state.query);
+      sendMessage({ username: this.props.location.state.username, text: this.state.query });
       // resets text box to blank string
       this.setState({
         query: '',
       });
     }
   }
+
+  // TODO: this.props.location.state.username
 
   render() {
     let { messages, query } = this.state;

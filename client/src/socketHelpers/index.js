@@ -15,17 +15,18 @@ const addNewMessage = (message) => {
   app.setState({ messages: [...app.state.messages, message] });
 };
 
-// not handling users yet
-// const setUsers = (app, users) => {
-//   app.setState({ users });
-// }
+// takes in an array of users and sets the current app state
+const setUsers = (users) => {
+  app.setState({ users });
+};
 
 // takes in a parameter and sends that parameter to the socket server
 const sendMessage = (data) => {
   const msg = {
     method: 'POSTMESSAGE',
     data: {
-      text: data,
+      username: data.username,
+      text: data.text,
     },
   };
   ws.send(JSON.stringify(msg));
@@ -54,7 +55,7 @@ const afterConnect = () => {
         addNewMessage(serverResp.data);
         break;
       case 'GETUSERS':
-        app.setState({ users: serverResp.data });
+        setUsers(serverResp.data);
         break;
       case 'POSTMESSAGE':
         addNewMessage(serverResp.data);
