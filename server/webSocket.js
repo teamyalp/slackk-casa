@@ -37,7 +37,7 @@ const onMessage = (ws, wss, data) => {
         .postMessage(message.data.text, message.data.username, message.data.workspaceId)
         .then((dbData) => {
           const postMsgData = { message: dbData.rows[0], workspaceId: message.data.workspaceId };
-          ws.send(response(201, 'Post success', message.method, postMsgData));
+          ws.send(response(201, 'Post success', message.method, dbData.rows[0]));
           return updateEveryoneElse(
             ws,
             wss,

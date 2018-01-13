@@ -76,10 +76,9 @@ describe('WebSockets', () => {
       ws.on('message', (data) => {
         let parsedData = JSON.parse(data);
         expect(parsedData.data).to.be.an('object');
-        expect(parsedData.data.workspaceId).to.be.a('number');
-        expect(parsedData.data.message.id).to.be.a('number');
-        expect(parsedData.data.message.text).to.equal('test message');
-        expect(parsedData.data.message.username).to.equal('test user');
+        expect(parsedData.message.id).to.be.a('number');
+        expect(parsedData.message.text).to.equal('test message');
+        expect(parsedData.message.username).to.equal('test user');
         done();
       });
     }).timeout(1000);
