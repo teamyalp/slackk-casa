@@ -2,6 +2,14 @@ const WebSocket = require('ws');
 
 const db = require('../database');
 
+const response = (code, message, method, data) =>
+  JSON.stringify({
+    code,
+    message,
+    method,
+    data,
+  });
+
 const updateEveryoneElse = (ws, wss, data) => {
   wss.clients.forEach((client) => {
     if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -14,60 +22,31 @@ const onMessage = (ws, wss, data) => {
   let message;
   try {
     message = JSON.parse(data);
-  } catch (e) {
-    return ws.send(JSON.stringify({
-      code: 400,
-      message: e.message,
-    }));
+  } catch (err) {
+    return ws.send(response(400, err.message));
   }
 
   switch (message.method) {
     case 'GETMESSAGES':
-      db
+      return db
         .getMessages(Number(message.data.workspaceId))
-        .then(messages =>
-          ws.send(JSON.stringify({
-            code: 200,
-            message: 'Request success',
-            method: 'GETMESSAGES',
-            data: messages,
-          })))
-        .catch(err =>
-          ws.send(JSON.stringify({
-            code: 400,
-            message: err.message,
-            method: 'GETMESSAGES',
-          })));
-      break;
+        .then(messages => ws.send(response(200, 'Request success', message.method, messages)))
+        .catch(err => ws.send(response(400, err.stack, message.method)));
     case 'POSTMESSAGE':
-      db
+      return db
         .postMessage(message.data.text, message.data.username, message.data.workspaceId)
         .then((dbData) => {
-          ws.send(JSON.stringify({
-            code: 201,
-            message: 'Post success',
-            method: 'POSTMESSAGE',
-            data: { message: dbData.rows[0], workspaceId: message.data.workspaceId },
-          }));
+          const postMsgData = { message: dbData.rows[0], workspaceId: message.data.workspaceId };
+          ws.send(response(201, 'Post success', message.method, postMsgData));
           return updateEveryoneElse(
             ws,
             wss,
-            JSON.stringify({
-              code: 200,
-              message: 'New message',
-              method: 'NEWMESSAGE',
-              data: { message: dbData.rows[0], workspaceId: message.data.workspaceId },
-            }),
+            response(200, 'New message', 'NEWMESSAGE', postMsgData),
           );
         })
-        .catch(err =>
-          ws.send(JSON.stringify({
-            code: 400,
-            message: err.message,
-            method: 'POSTMESSAGE',
-          })));
-      break;
+        .catch(err => ws.send(response(400, err.stack, message.method)));
     default:
+      return ws.send(response(405, 'Unknown method', message.method));
   }
 };
 

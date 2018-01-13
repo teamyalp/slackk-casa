@@ -10,7 +10,7 @@ const client = new Client({
 client
   .connect()
   .then()
-  .catch(e => console.error('error connecting to postgres db, ', e.stack));
+  .catch(err => console.error('error connecting to postgres db, ', err.stack));
 
 const initializeDB = () => {
   const schemas = ['/schema/users.sql', '/schema/workspaces.sql'];
@@ -93,7 +93,7 @@ const getWorkspaces = () => client.query('SELECT * FROM workspaces').then(data =
 if (process.env.INITIALIZEDB) {
   initializeDB()
     .then()
-    .catch(console.log);
+    .catch(err => console.error('error creating database tables, ', err.stack));
 }
 
 module.exports = {

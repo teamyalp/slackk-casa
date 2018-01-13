@@ -1,13 +1,13 @@
 const express = require('express');
-const router = require('./routes');
 const WebSocket = require('ws');
+const router = require('./routes');
 const { onConnect } = require('./webSocket');
 
 const PORT = process.env.PORT || 3000;
 
 const server = express()
   .use(router)
-  .listen(PORT, () => console.log(`listenting on port ${PORT}`));
+  .listen(PORT, () => console.log(`slackk-casa listening on port ${PORT}`));
 
 const wss = new WebSocket.Server({ server });
 
