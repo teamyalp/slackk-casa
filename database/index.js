@@ -42,25 +42,26 @@ const getMessages = workspaceId =>
     .then(data => client.query('SELECT * FROM $db_name'.replace('$db_name', data.rows[0].db_name)))
     .then(data => data.rows);
 
-// TODO storing username and password as basic text. Change this later to more secure version.
-const createUser = params =>
+const createUser = (username, passhash) =>
   new Promise((resolve, reject) =>
     client.query(
       'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
-      params,
+      [username, passhash],
       (err, data) => {
         if (err) {
           if (err.code === '23505') {
-            resolve(params, '23505');
+            resolve({ username, password: passhash }, '23505');
           }
           reject(err);
         }
-        resolve(data);
+        resolve(data.rows[0]);
       },
     ));
 
-const checkUser = params =>
-  client.query('SELECT * FROM users WHERE username = ($1) AND password = ($2)', params);
+const getUser = username =>
+  client
+    .query('SELECT password FROM users WHERE username = ($1)', [username])
+    .then(data => data.rows[0]);
 
 const createWorkspace = (name, dbName = `ws_${name}${Date.now()}`) =>
   new Promise((resolve, reject) =>
@@ -101,7 +102,7 @@ module.exports = {
   postMessage,
   getMessages,
   createUser,
-  checkUser,
+  getUser,
   createWorkspace,
   getWorkspaces,
 };

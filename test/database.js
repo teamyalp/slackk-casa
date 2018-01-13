@@ -100,18 +100,17 @@ describe('Database', () => {
   });
   describe('createUser', () => {
     it('should create a user with login and password', (done) => {
-      db.createUser(['test', 'test']).then((data) => {
-        expect(data.rows[0].username).to.equal('test');
-        expect(data.rows[0].password).to.equal('test');
+      db.createUser('test', 'test').then((data) => {
+        expect(data.username).to.equal('test');
+        expect(data.password).to.equal('test');
         done();
       });
     }).timeout(1000);
   });
-  describe('checkUser', () => {
-    it('should verify a user login', (done) => {
-      db.checkUser(['test', 'test']).then((data) => {
-        expect(data.rows[0].username).to.equal('test');
-        expect(data.rows[0].password).to.equal('test');
+  describe('getUser', () => {
+    it("should get a user's login info", (done) => {
+      db.getUser('test').then((data) => {
+        expect(data.password).to.equal('test');
         done();
       });
     }).timeout(1000);
