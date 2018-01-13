@@ -9,17 +9,30 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: [],
+      messages: [
+        {
+          text: 'Welcome to slackk-casa! Please select or create a workspace!',
+          username: 'Slack-bot',
+          id: 0,
+          createdAt: new Date(),
+          workspaceId: 0,
+        },
+      ],
       users: [],
+      workSpaces: [],
       query: '',
+      currentWorkSpaceId: 0,
+      currentWorkSpaceName: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.loadWorkSpaces = this.loadWorkSpaces.bind(this);
+    this.changeCurrentWorkSpace = this.changeCurrentWorkSpace.bind(this);
   }
 
   componentDidMount() {
-    // let server = 'wss://slackk-casa.herokuapp.com';
+    // let server = 'ws://localhost:3000';
     let server = location.origin.replace(/^http/, 'ws');
 
     // connect to the websocket server
@@ -39,7 +52,11 @@ export default class App extends React.Component {
     // on key press enter send message and reset text box
     if (event.charCode === 13 && !event.shiftKey) {
       event.preventDefault();
-      sendMessage({ username: this.props.location.state.username, text: this.state.query });
+      sendMessage({
+        username: this.props.location.state.username,
+        text: this.state.query,
+        workspaceId: this.state.currentWorkSpaceId,
+      });
       // resets text box to blank string
       this.setState({
         query: '',
@@ -47,22 +64,38 @@ export default class App extends React.Component {
     }
   }
 
-  // TODO: this.props.location.state.username
+  loadWorkSpaces() {
+    fetch('/workspaces')
+      .then(resp => resp.json())
+      .then(workSpaces => this.setState({ workSpaces }))
+      .catch(console.error);
+  }
+
+  changeCurrentWorkSpace(id, name) {
+    this.setState({ currentWorkSpaceId: id, currentWorkSpaceName: name });
+  }
 
   render() {
-    let { messages, query } = this.state;
+    let {
+      messages, query, workSpaces, currentWorkSpaceId, currentWorkSpaceName,
+    } = this.state;
     return (
       <div className="app-container">
         <NavBar />
-        <Body messages={messages} />
+        <Body
+          messages={messages}
+          workSpaces={workSpaces}
+          loadWorkSpaces={this.loadWorkSpaces}
+          changeCurrentWorkSpace={this.changeCurrentWorkSpace}
+          currentWorkSpaceId={currentWorkSpaceId}
+        />
         <div className="input-container">
-          {/* TODO: substitue main for current channel or DM user */}
           <Input
             value={query}
             className="message-input-box"
             type="textarea"
             name="text"
-            placeholder="Message #main"
+            placeholder={`Message #${currentWorkSpaceName}`}
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
           />

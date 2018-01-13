@@ -21,13 +21,13 @@ export default () => {
       <br />
       <FormGroup>
         <Link style={{ textDecoration: 'none' }} to="/login">
-          <Button color="primary" size="lg" block>
+          <Button color="primary" bssize="lg" block>
             Log In
           </Button>
         </Link>
         <br />
         <Link style={{ textDecoration: 'none' }} to="/signup">
-          <Button color="primary" size="lg" block>
+          <Button color="primary" bssize="lg" block>
             Sign Up
           </Button>
         </Link>

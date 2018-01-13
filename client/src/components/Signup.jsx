@@ -83,7 +83,7 @@ export default class Signup extends React.Component {
                 name="username"
                 onChange={e => this.handleOnChange(e)}
                 onKeyPress={e => this.handleKeyPress(e)}
-                size="lg"
+                bssize="lg"
               />
               <Input
                 type="password"
@@ -91,7 +91,7 @@ export default class Signup extends React.Component {
                 name="password"
                 onChange={e => this.handleOnChange(e)}
                 onKeyPress={e => this.handleKeyPress(e)}
-                size="lg"
+                bssize="lg"
               />
             </FormGroup>
             <Button onClick={() => this.signUp()} color="primary" size="lg" block>

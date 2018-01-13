@@ -1,16 +1,16 @@
 let ws = null;
 let app = null;
 
-// takes in an array of messages
-// objects and sets the component state messages
-// with the new array of messages recieved
-const addNewMessages = (messages) => {
+/* takes in an array of messages
+  objects and sets the component state messages
+  with the new array of messages recieved */
+const loadMessages = (messages) => {
   app.setState({ messages });
 };
 
-// takes in message as object
-// msg ({id: #, text: '', createdAt: date})
-// and concats message to message state of app
+/* takes in message as object
+   msg ({id: INT, text: STRING, createdAt: DATE, workspaceId: INT})
+   and concats message to message state of app */
 const addNewMessage = (message) => {
   app.setState({ messages: [...app.state.messages, message] });
 };
@@ -27,15 +27,27 @@ const sendMessage = (data) => {
     data: {
       username: data.username,
       text: data.text,
+      workspaceId: data.workspaceId,
     },
   };
   ws.send(JSON.stringify(msg));
 };
 
+// takes a workspace Id as INT for parameter and returns the messages for that current workspace
+const getWorkSpaceMessagesFromServer = (id) => {
+  const msg = { method: 'GETMESSAGES', data: { workspaceId: id } };
+  ws.send(JSON.stringify(msg));
+};
+
+// takes in all new messages and filters and concats messages that match the current workSpace
+const filterMsgByWorkSpace = (msg) => {
+  if (msg.workspaceId === app.state.currentWorkSpaceId) {
+    app.setState({ messages: [...app.state.messages, msg.message] });
+  }
+};
+
 // ws refers to websocket object
 const afterConnect = () => {
-  const getMessages = JSON.stringify({ method: 'GETMESSAGES' });
-  ws.send(getMessages);
   ws.onmessage = (event) => {
     let serverResp = JSON.parse(event.data);
 
@@ -47,12 +59,10 @@ const afterConnect = () => {
 
     switch (serverResp.method) {
       case 'GETMESSAGES':
-        // render all messages
-        addNewMessages(serverResp.data);
+        loadMessages(serverResp.data);
         break;
       case 'NEWMESSAGE':
-        // concat new message onto messages array in state
-        addNewMessage(serverResp.data);
+        filterMsgByWorkSpace(serverResp.data);
         break;
       case 'GETUSERS':
         setUsers(serverResp.data);
@@ -76,10 +86,14 @@ const connect = (server, component) => {
     console.log('Connected to the server');
     // sets state to current socket session for App methods to have access
     app.setState({ ws });
+
+    // gets workspaces after connection
+    app.loadWorkSpaces();
+
     // calls after connect function that takes in the socket session
     // and app component
     afterConnect();
   });
 };
 
-export { connect, sendMessage, afterConnect };
+export { connect, sendMessage, afterConnect, getWorkSpaceMessagesFromServer };
