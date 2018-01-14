@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert } from 'reactstrap';
+import { Alert, Row, Col } from 'reactstrap';
 import WorkSpaceEntry from './WorkSpaceEntry.jsx';
 import CreateWorkSpace from './CreateWorkSpace.jsx';
 
@@ -9,7 +9,6 @@ export default class WorkSpaceList extends Component {
     this.state = {
       workSpaceQuery: '',
       createFail: false,
-      createStatus: 'Failed to create workspace',
     };
 
     this.handleFail = this.handleFail.bind(this);
@@ -41,26 +40,33 @@ export default class WorkSpaceList extends Component {
   }
 
   render() {
-    let { changeCurrentWorkSpace } = this.props;
+    let { changeCurrentWorkSpace, currentWorkSpaceId, workSpaces } = this.props;
     let { createFail, createStatus, workSpaceQuery } = this.state;
     return (
       <div>
-        <h3 className="workSpace-header"> Workspaces </h3>
-        {this.props.workSpaces.map(workSpace => (
+        <Row>
+          <Col>
+            <h3 className="workSpace-header"> Workspaces </h3>{' '}
+          </Col>
+          <Col className="mt-2">
+            <CreateWorkSpace
+              getWorkSpaceQuery={this.getWorkSpaceQuery}
+              createWorkSpace={this.createWorkSpace}
+            />
+          </Col>
+        </Row>
+        {workSpaces.map(workSpace => (
           <WorkSpaceEntry
             workSpace={workSpace}
             handleFail={this.handleFail}
             key={workSpace.id}
             changeCurrentWorkSpace={changeCurrentWorkSpace}
+            currentWorkSpaceId={currentWorkSpaceId}
           />
         ))}
-        <CreateWorkSpace
-          getWorkSpaceQuery={this.getWorkSpaceQuery}
-          createWorkSpace={this.createWorkSpace}
-        />
         <br />
         <br />
-        {createFail ? <Alert color="danger"> {createStatus} </Alert> : undefined}
+        {createFail ? <Alert color="danger"> Failed to create workspace </Alert> : undefined}
       </div>
     );
   }

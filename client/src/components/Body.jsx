@@ -25,6 +25,7 @@ export default class Body extends React.Component {
               workSpaces={workSpaces}
               loadWorkSpaces={loadWorkSpaces}
               changeCurrentWorkSpace={changeCurrentWorkSpace}
+              currentWorkSpaceId={currentWorkSpaceId}
             />
           </Col>
           <Col className="message-list-col" xs="10">

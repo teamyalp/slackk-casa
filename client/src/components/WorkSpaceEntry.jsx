@@ -16,13 +16,23 @@ export default class WorkSpaceEntry extends Component {
   }
 
   render() {
-    let { workSpace } = this.props;
+    let { workSpace, currentWorkSpaceId } = this.props;
     return (
       <div className="workSpace-entry-container">
-        <h5 className="workSpace-name" onClick={event => this.handleClick(event)}>
-          {' '}
-          # {workSpace.name}{' '}
-        </h5>
+        {workSpace.id === currentWorkSpaceId ? (
+          <h5
+            className="workSpace-name highlight-workSpace"
+            onClick={event => this.handleClick(event)}
+          >
+            {' '}
+            # {workSpace.name}
+          </h5>
+        ) : (
+          <h5 className="workSpace-name workSpace-hover" onClick={event => this.handleClick(event)}>
+            {' '}
+            # {workSpace.name}
+          </h5>
+        )}
       </div>
     );
   }

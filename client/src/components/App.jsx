@@ -32,7 +32,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    // let server = 'ws://localhost:3000';
+    // let server = 'ws://127.0.0.1:3000';
     let server = location.origin.replace(/^http/, 'ws');
 
     // connect to the websocket server
@@ -81,7 +81,7 @@ export default class App extends React.Component {
     } = this.state;
     return (
       <div className="app-container">
-        <NavBar />
+        <NavBar currentWorkSpaceName={currentWorkSpaceName} />
         <Body
           messages={messages}
           workSpaces={workSpaces}
@@ -95,7 +95,7 @@ export default class App extends React.Component {
             className="message-input-box"
             type="textarea"
             name="text"
-            placeholder={`Message #${currentWorkSpaceName}`}
+            placeholder={`Message #${currentWorkSpaceName || 'select a workspace!'}`}
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
           />

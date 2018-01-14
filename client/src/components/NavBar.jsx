@@ -30,33 +30,25 @@ export default class NavBar extends React.Component {
   render() {
     return (
       <Navbar color="faded" light expand="md">
-        <NavbarBrand href="/">
+        <NavbarBrand>
           <h1>slackk-casa</h1>
         </NavbarBrand>
+        <h3 className="text-center">
+          #{this.props.currentWorkSpaceName || 'select a workspace!'}{' '}
+        </h3>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
-            {
-              // <NavItem>
-              // <NavLink href="/">Profile</NavLink>
-              // </NavItem>
-            }
-            <NavItem>
-              <NavLink href="/">Sign Out</NavLink>
-            </NavItem>
-            {
-              // <UncontrolledDropdown nav inNavbar>
-              //   <DropdownToggle nav caret>
-              //     Options
-              //   </DropdownToggle>
-              //   <DropdownMenu>
-              //     <DropdownItem>Option 1</DropdownItem>
-              //     <DropdownItem>Option 2</DropdownItem>
-              //     <DropdownItem divider />
-              //     <DropdownItem>Reset</DropdownItem>
-              //   </DropdownMenu>
-              // </UncontrolledDropdown>
-            }
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                Options
+              </DropdownToggle>
+              <DropdownMenu>
+                <NavLink href="/login">
+                  <DropdownItem>Sign Out</DropdownItem>
+                </NavLink>
+              </DropdownMenu>
+            </UncontrolledDropdown>
           </Nav>
         </Collapse>
       </Navbar>

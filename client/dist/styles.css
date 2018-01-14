@@ -53,20 +53,26 @@
   color: #c7c1c6;
 }
 
-.workSpace-entry-container {
-  padding: 10px 0 10px 0;
-}
-
-.workSpace-entry-container:hover {
-  background-color: #3e323c;
-}
-
 .workSpace-header {
   margin-top: 10px;
+}
+
+.workSpace-entry-container {
+  margin: 10px 0 10px 0;
 }
 
 .workSpace-name {
   color: #c7c1c6;
   text-align: left;
   font-size: 1em;
+  padding: 5px 0 5px 0;
+}
+
+.workSpace-hover:hover {
+  background-color: #3e323c;
+}
+
+.highlight-workSpace {
+  background-color: #4c9689;
+  color: #ffffff;
 }
