@@ -18,7 +18,7 @@ const updateEveryoneElse = (ws, wss, data) => {
   });
 };
 
-const onMessage = (ws, wss, data) => {
+const onMessage = async (ws, wss, data) => {
   let message;
   try {
     message = JSON.parse(data);
@@ -28,23 +28,32 @@ const onMessage = (ws, wss, data) => {
 
   switch (message.method) {
     case 'GETMESSAGES':
-      return db
-        .getMessages(Number(message.data.workspaceId))
-        .then(messages => ws.send(response(200, 'Request success', message.method, messages)))
-        .catch(err => ws.send(response(400, err.stack, message.method)));
+      try {
+        const messages = await db.getMessages(Number(message.data.workspaceId));
+        return ws.send(response(200, 'Request success', message.method, messages));
+      } catch (err) {
+        return ws.send(response(400, err.stack, message.method));
+      }
     case 'POSTMESSAGE':
-      return db
-        .postMessage(message.data.text, message.data.username, message.data.workspaceId)
-        .then((dbData) => {
-          const postMsgData = { message: dbData.rows[0], workspaceId: message.data.workspaceId };
-          ws.send(response(201, 'Post success', message.method, dbData.rows[0]));
-          return updateEveryoneElse(
-            ws,
-            wss,
-            response(200, 'New message', 'NEWMESSAGE', postMsgData),
-          );
-        })
-        .catch(err => ws.send(response(400, err.stack, message.method)));
+      try {
+        let postedMessage = await db.postMessage(
+          message.data.text,
+          message.data.username,
+          message.data.workspaceId,
+        );
+        [postedMessage] = postedMessage.rows;
+        ws.send(response(201, 'Post success', message.method, postedMessage));
+        return updateEveryoneElse(
+          ws,
+          wss,
+          response(200, 'New message', 'NEWMESSAGE', {
+            message: postedMessage,
+            workspaceId: message.data.workspaceId,
+          }),
+        );
+      } catch (err) {
+        return ws.send(response(400, err.stack, message.method));
+      }
     default:
       return ws.send(response(405, 'Unknown method', message.method));
   }

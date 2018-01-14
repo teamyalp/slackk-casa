@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt');
 const db = require('../database');
 
-const addUser = (username, password) =>
-  bcrypt.hash(password, 1).then(hash => db.createUser(username, hash));
+const addUser = async (username, password) =>
+  db.createUser(username, await bcrypt.hash(password, 1));
 
-const checkUser = (username, password) =>
-  db.getUser(username).then(data => bcrypt.compare(password, data.password));
+const checkUser = async (username, password) =>
+  bcrypt.compare(password, (await db.getUser(username)).password);
 
 module.exports = {
   addUser,

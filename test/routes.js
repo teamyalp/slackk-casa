@@ -81,7 +81,7 @@ describe('Static Files', () => {
         .request(server)
         .post('/workspaces')
         .type('application/JSON')
-        .send(JSON.stringify({ name: 'ws_test' }))
+        .send(JSON.stringify({ name: 'ws_test123' }))
         .end((err, res) => {
           expect(res).to.have.status(201);
           done();
