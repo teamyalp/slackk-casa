@@ -1,54 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
-const CronJob = require('cron').CronJob;
-const nodemailer = require('nodemailer');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const path = require('path');
 
 const db = require('../database');
 const auth = require('./auth');
-
-// settings used for nodemailer
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
-
-/*
-  Passport configuration setup
-*/
-passport.use(new LocalStrategy(async (username, password, done) => {
-  try {
-    // uses auth.checkUser function to compare username and password with username and password hash from database
-    if (await auth.checkUser(username, password)) {
-      // return a user object if password matches
-      return done(null, await db.getUser(username));
-    }
-    return done(null, false);
-  } catch (err) {
-    return done(err);
-  }
-}));
-
-// serialize user object using username
-passport.serializeUser((user, done) => done(null, user.username));
-
-passport.deserializeUser(async (name, done) => {
-  try {
-    // deserialize user by pulling full user object from database using username
-    return done(null, (await db.getUser(name)));
-  } catch (err) {
-    return done(err);
-  }
-});
+const passport = require('./passport');
+const email = require('./email');
 
 /*
   Express routes
@@ -57,7 +16,7 @@ passport.deserializeUser(async (name, done) => {
 const router = express.Router();
 
 router.use(cookieParser());
-router.use(session({ secret: 'slackk-casa' }));
+router.use(session({ secret: 'slackk-casa', resave: false, saveUninitialized: false }));
 router.use(passport.initialize());
 router.use(passport.session());
 
@@ -93,20 +52,7 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json('username exists');
     }
     await auth.addUser(req.body.username, req.body.password, req.body.email, req.body.passwordHint);
-    let mailOptions = {
-      from: `${process.env.EMAIL_USERNAME}`,
-      to: `${req.body.email}`,
-      subject: `Welcome to slackk-casa! ${req.body.username}`,
-      text: 'Thanks for joining slackk-casa! We hope you have a great time using our service!',
-      html: 'Thanks for joining slackk! We hope you have a great time.</p>',
-    };
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        throw error;
-      }
-      console.log('Message sent: %s', info.messageId);
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    });
+    email.sendWelcomeEmail(req.body.username, req.body.email).then().catch();
     return res.sendStatus(200);
   } catch (err) {
     return res.status(401).json(err.stack);
@@ -147,7 +93,7 @@ router.post('/recover', bodyParser.json());
 router.post('/recover', async (req, res) => {
   try {
     const hint = await db.getPasswordHint(req.body.username);
-    res.status(200).json(hint);
+    return res.status(200).json(hint);
   } catch (err) {
     return res.status(500).json(err.stack);
   }
@@ -166,9 +112,9 @@ router.post('/recover', async (req, res) => {
 */
 router.get('/workspaces', async (req, res) => {
   try {
-    res.status(200).json(await db.getWorkspaces());
+    return res.status(200).json(await db.getWorkspaces());
   } catch (err) {
-    res.status(500).json(err.stack);
+    return res.status(500).json(err.stack);
   }
 });
 
@@ -201,33 +147,3 @@ router.post('/workspaces', async (req, res) => {
 });
 
 module.exports = router;
-
-// sends an email every ___ to a list of all emails grabbed from the database.
-// const parseEmails = (emailList) => {
-//   let emails = [];
-//   emailList.map(emailObj => {
-//     emails.push(emailObj.email);
-//   });
-//   return emails.join(', ');
-// }
-//
-// new CronJob('* * * * * *', function() {
-//   db.getEmails()
-//   .then(data => {
-//     let emails = parseEmails(data);
-//     console.log(emails);
-//     let mailOptions = {
-//       from : 'slackkcasa@gmail.com',
-//       to: emails,
-//       subject: 'testing',
-//       text: 'test',
-//       html: '<p>test</p>',
-//     };
-//     transporter.sendMail(mailOptions, (error, info) => {
-//       if (error) {
-//         console.error(error);
-//       }
-//     });
-//   })
-//   .catch(err => console.error(err));
-// }, null, true, 'America/Los_Angeles');
