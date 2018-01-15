@@ -9,23 +9,33 @@ export default class Signup extends React.Component {
       username: '',
       password: '',
       email: '',
+      passwordHint: '',
       signupSuccess: false,
       signupStatus: '',
     };
   }
 
   signUp() {
+    let {
+      username, password, email, passwordHint,
+    } = this.state;
     if (username === '') {
       return this.setState({ signupStatus: 'Enter a username' });
     }
-    let { username, password, email } = this.state;
-    //TODO whats the point of the double?
-    if (username === '') {
-      return this.setState({ signupStatus: 'Enter a username' });
+    if (password === '') {
+      return this.setState({ signupStatus: 'Enter a password' });
+    }
+    if (password === '') {
+      return this.setState({ signupStatus: 'Enter an email' });
     }
     fetch('/signup', {
       method: 'POST',
-      body: JSON.stringify({ username, password, email }),
+      body: JSON.stringify({
+        username,
+        password,
+        email,
+        passwordHint,
+      }),
       headers: { 'content-type': 'application/json' },
     })
       .then(resp =>
@@ -81,7 +91,7 @@ export default class Signup extends React.Component {
             <FormGroup>
               <Input
                 type="text"
-                placeholder="Username"
+                placeholder="Username*"
                 name="username"
                 onChange={e => this.handleOnChange(e)}
                 onKeyPress={e => this.handleKeyPress(e)}
@@ -89,7 +99,7 @@ export default class Signup extends React.Component {
               />
               <Input
                 type="password"
-                placeholder="Password"
+                placeholder="Password*"
                 name="password"
                 onChange={e => this.handleOnChange(e)}
                 onKeyPress={e => this.handleKeyPress(e)}
@@ -97,8 +107,16 @@ export default class Signup extends React.Component {
               />
               <Input
                 type="email"
-                placeholder="Email"
+                placeholder="Email*"
                 name="email"
+                onChange={e => this.handleOnChange(e)}
+                onKeyPress={e => this.handleKeyPress(e)}
+                bssize="lg"
+              />
+              <Input
+                type="passwordHint"
+                placeholder="Password Hint"
+                name="passwordHint"
                 onChange={e => this.handleOnChange(e)}
                 onKeyPress={e => this.handleKeyPress(e)}
                 bssize="lg"
@@ -107,6 +125,7 @@ export default class Signup extends React.Component {
             <Button onClick={() => this.signUp()} color="primary" size="lg" block>
               Sign up
             </Button>
+            <div>*Required</div>
           </div>
         )}
       </div>

@@ -8,18 +8,15 @@ const auth = require('./auth');
 const CronJob = require('cron').CronJob;
 const nodemailer = require('nodemailer');
 
-
-
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
-    user: 'slackkcasa@gmail.com',
-    pass: 'Casa1234', //TODO replace with ENV variable.
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
-
 
 const router = express.Router();
 
@@ -45,22 +42,21 @@ router.post('/signup', async (req, res) => {
     if (await db.getUser(req.body.username)) {
       return res.status(400).json('username exists');
     }
-    await auth.addUser(req.body.username, req.body.password, req.body.email);
+    await auth.addUser(req.body.username, req.body.password, req.body.email, req.body.passwordHint);
     let mailOptions = {
-      from: 'slackkcasa@gmail.com',
+      from: `${process.env.EMAIL_USERNAME}`,
       to: `${req.body.email}`,
-      subject: `Welcome to slackk-casa!, ${req.body.username}`,
+      subject: `Welcome to slackk-casa! ${req.body.username}`,
       text: 'Thanks for joining slackk-casa! We hope you have a great time using our service!',
       html: 'Thanks for joining slackk! We hope you have a great time.</p>',
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        return console.log(error);
+        throw error;
       }
       console.log('Message sent: %s', info.messageId);
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
-
     return res.sendStatus(200);
   } catch (err) {
     return res.status(401).json(err.stack);
@@ -79,6 +75,16 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.post('/recover', bodyParser.json());
+router.post('/recover', async (req, res) => {
+  try {
+    const hint = await db.getPasswordHint(req.body.username);
+    res.status(200).json(hint);
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
 router.post('/workspaces', bodyParser.json());
 router.post('/workspaces', async (req, res) => {
   try {
@@ -94,7 +100,6 @@ router.post('/workspaces', async (req, res) => {
     return res.status(500).json(err.stack);
   }
 });
-
 
 // sends an email every ___ to a list of all emails grabbed from the database.
 // const parseEmails = (emailList) => {
@@ -125,6 +130,5 @@ router.post('/workspaces', async (req, res) => {
 //   })
 //   .catch(err => console.error(err));
 // }, null, true, 'America/Los_Angeles');
-
 
 module.exports = router;

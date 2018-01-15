@@ -107,7 +107,12 @@ describe('Static Files', () => {
         .request(server)
         .post('/signup')
         .type('application/JSON')
-        .send(JSON.stringify({ username: 'test1234', password: 'test1234' }))
+        .send(JSON.stringify({
+          username: 'test1234',
+          password: 'test1234',
+          email: 'Test_email',
+          passwordHint: 'testHint',
+        }))
         .end((err, res) => {
           expect(res).to.have.status(200 || 400);
           done();
@@ -128,5 +133,4 @@ describe('Static Files', () => {
     }).timeout(1000);
   });
 });
-
 after(() => process.exit(0));
