@@ -12,6 +12,7 @@ export default class CreateWorkSpace extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.closePopUp = this.closePopUp.bind(this);
   }
 
   toggle() {
@@ -22,10 +23,17 @@ export default class CreateWorkSpace extends React.Component {
 
   handleClick() {
     this.props.createWorkSpace();
+    this.closePopUp();
   }
 
   handleChange(event) {
     this.props.getWorkSpaceQuery(event.target.value);
+  }
+
+  closePopUp() {
+    this.setState({
+      popoverOpen: false,
+    });
   }
 
   render() {
