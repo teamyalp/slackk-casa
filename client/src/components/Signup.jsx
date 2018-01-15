@@ -8,6 +8,7 @@ export default class Signup extends React.Component {
     this.state = {
       username: '',
       password: '',
+      email: '',
       signupSuccess: false,
       signupStatus: '',
     };
@@ -17,13 +18,14 @@ export default class Signup extends React.Component {
     if (username === '') {
       return this.setState({ signupStatus: 'Enter a username' });
     }
-    let { username, password } = this.state;
+    let { username, password, email } = this.state;
+    //TODO whats the point of the double?
     if (username === '') {
       return this.setState({ signupStatus: 'Enter a username' });
     }
     fetch('/signup', {
       method: 'POST',
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password, email }),
       headers: { 'content-type': 'application/json' },
     })
       .then(resp =>
@@ -89,6 +91,14 @@ export default class Signup extends React.Component {
                 type="password"
                 placeholder="Password"
                 name="password"
+                onChange={e => this.handleOnChange(e)}
+                onKeyPress={e => this.handleKeyPress(e)}
+                bssize="lg"
+              />
+              <Input
+                type="email"
+                placeholder="Email"
+                name="email"
                 onChange={e => this.handleOnChange(e)}
                 onKeyPress={e => this.handleKeyPress(e)}
                 bssize="lg"

@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL || 'postgresql://austin123:austin123@localhost/slackk',
   ssl: true,
 });
 
@@ -42,21 +42,22 @@ const getMessages = workspaceId =>
     .then(data => client.query('SELECT * FROM $db_name'.replace('$db_name', data.rows[0].db_name)))
     .then(data => data.rows);
 
-const createUser = (username, passhash) =>
+const createUser = (username, passhash, email) =>
   new Promise((resolve, reject) =>
     client.query(
-      'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
-      [username, passhash],
+      'INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING *',
+      [username, passhash, email],
       (err, data) => {
         if (err) {
           if (err.code === '23505') {
-            resolve({ username, password: passhash }, '23505');
+            resolve({ username, password: passhash, email }, '23505');
           }
           reject(err);
         }
         resolve(data.rows[0]);
       },
     ));
+
 
 const getUser = username =>
   client
@@ -90,11 +91,23 @@ const createWorkspace = (name, dbName = `ws_${name}${Date.now()}`) =>
 
 const getWorkspaces = () => client.query('SELECT * FROM workspaces').then(data => data.rows);
 
-if (process.env.INITIALIZEDB) {
+const getEmails = () =>
+  new Promise((resolve, reject) =>
+    client.query(
+      'SELECT email FROM USERS',
+      (err, data) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(data.rows);
+      },
+    ));
+
+// if (process.env.INITIALIZEDB) {
   initializeDB()
     .then()
     .catch(err => console.error('error creating database tables, ', err.stack));
-}
+// }
 
 module.exports = {
   client,
@@ -105,4 +118,5 @@ module.exports = {
   getUser,
   createWorkspace,
   getWorkspaces,
+  getEmails,
 };
