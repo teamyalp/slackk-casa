@@ -6,7 +6,7 @@ describe('Auth', () => {
   describe('auth.addUser', () => {
     it('should add a user to the database', (done) => {
       auth
-        .addUser('testUser', 'testPassword')
+        .addUser('testUser', 'testPassword', 'test@test.com')
         .then(() => db.getUser('testUser'))
         .then((data) => {
           expect(data.password).to.be.a('string');

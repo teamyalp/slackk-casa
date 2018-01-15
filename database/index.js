@@ -43,29 +43,12 @@ const getMessages = workspaceId =>
     .then(data => data.rows);
 
 const createUser = (username, passhash, email, passhint) =>
-  new Promise((resolve, reject) =>
-    client.query(
-      'INSERT INTO users (username, password, email, password_hint) VALUES ($1, $2, $3, $4) RETURNING *',
-      [username, passhash, email, passhint],
-      (err, data) => {
-        if (err) {
-          if (err.code === '23505') {
-            resolve(
-              {
-                username,
-              },
-              '23505',
-            );
-          }
-          reject(err);
-        }
-        resolve(data.rows[0]);
-      },
-    ));
+  client.query('INSERT INTO users (username, password, email, password_hint) VALUES ($1, $2, $3, $4) RETURNING *',
+    [username, passhash, email, passhint]).then(data => data.rows[0]);
 
 const getUser = username =>
   client
-    .query('SELECT password FROM users WHERE username = ($1)', [username])
+    .query('SELECT * FROM users WHERE username = ($1)', [username])
     .then(data => data.rows[0]);
 
 const getPasswordHint = username =>
@@ -73,21 +56,8 @@ const getPasswordHint = username =>
     .query('SELECT password_hint FROM users WHERE username = ($1)', [username])
     .then(data => data.rows[0]);
 
-const createWorkspace = (name, dbName = `ws_${name}${Date.now()}`) =>
-  new Promise((resolve, reject) =>
-    client.query(
-      'INSERT INTO workspaces (name, db_name) VALUES ($1, $2) RETURNING *',
-      [name, dbName],
-      (err, data) => {
-        if (err) {
-          if (err.code === '23505') {
-            resolve({ name, db_name: dbName }, '23505');
-          }
-          reject(err);
-        }
-        resolve(data);
-      },
-    ))
+const createWorkspace = (name, dbName = `ws_${name[0]}${Date.now()}`) =>
+  client.query('INSERT INTO workspaces (name, db_name) VALUES ($1, $2) RETURNING *', [name, dbName])
     .then(() =>
       new Promise((resolve, reject) => {
         fs.readFile(

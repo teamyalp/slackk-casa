@@ -100,7 +100,7 @@ describe('Database', () => {
   });
   describe('createUser', () => {
     it('should create a user with login and password', (done) => {
-      db.createUser('test', 'test').then((data) => {
+      db.createUser('test', 'test', 'test@test.com').then((data) => {
         expect(data.username).to.equal('test');
         expect(data.password).to.equal('test');
         done();

@@ -1,6 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+const cookieParser = require('cookie-parser')
 
 const db = require('../database');
 const auth = require('./auth');
@@ -18,7 +22,38 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+passport.use(new LocalStrategy(
+  async (username, password, done) => {
+    try { 
+      if (await auth.checkUser(username, password)) {
+        return done(null, await db.getUser(username));
+      }
+      return done(null, false);
+    } catch(err) {
+      return done(err);
+    }
+  }
+));
+
+passport.serializeUser((user, done) => {
+  return done(null, user.username);
+});
+
+passport.deserializeUser(async (name, done) => {
+  try {
+    return done(null, (await db.getUser(name)));
+  } catch(err) {
+    return done(err);
+  }
+});
+
 const router = express.Router();
+
+router.use(cookieParser());
+router.use(session({ secret: 'slackk-casa' }));
+router.use(passport.initialize());
+router.use(passport.session());
+
 
 const reactRoute = (req, res) => res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
 
@@ -64,15 +99,8 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', bodyParser.json());
-router.post('/login', async (req, res) => {
-  try {
-    if (await auth.checkUser(req.body.username, req.body.password)) {
-      return res.sendStatus(201);
-    }
-    return res.sendStatus(401);
-  } catch (err) {
-    return res.status(401).json(err.stack);
-  }
+router.post('/login', passport.authenticate('local'), (req, res) => {
+  return res.sendStatus(200);
 });
 
 router.post('/recover', bodyParser.json());
