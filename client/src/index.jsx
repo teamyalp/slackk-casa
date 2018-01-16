@@ -9,6 +9,8 @@ import Login from './components/Login.jsx';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
+//Renders the dom. Route path tells the dom which component to render on which request.
+//Home is the page with signup and login
 ReactDOM.render(<Router>
   <div>
     <Route exact path="/" component={Home} />

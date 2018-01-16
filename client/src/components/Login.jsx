@@ -13,6 +13,7 @@ export default class Login extends React.Component {
     };
   }
 
+  //Function to that loggs in a user
   logIn() {
     let { username, password } = this.state;
     if (username === '') {
@@ -30,6 +31,8 @@ export default class Login extends React.Component {
       .catch(console.error);
   }
 
+  //function to allow password recovery. 
+  //TODO: recovery by email
   recoverPassword() {
     let { username } = this.state;
     if (username === '') {

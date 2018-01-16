@@ -13,6 +13,7 @@ export default () => {
       textAlign: 'center',
     },
   };
+  //<Link> tags direct requests
   return (
     <Container style={styles.body}>
       <Link style={{ textDecoration: 'none' }} to="">

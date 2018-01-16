@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Media } from 'reactstrap';
 
+//Individual message container
 export default class extends React.Component {
   constructor(props) {
     super(props);
@@ -13,6 +14,7 @@ export default class extends React.Component {
   }
   render() {
     const { message } = this.props;
+    //for the color changing avatars
     let color = () => {
       let colors = [
         '#346A85',
@@ -33,6 +35,7 @@ export default class extends React.Component {
       let index = Math.floor(Math.random() * colors.length);
       return colors[index];
     };
+    //Styles for individual message component
     const styles = {
       body: {
         padding: '15px 0 15px 0',

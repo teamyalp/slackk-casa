@@ -5,10 +5,12 @@ import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import Body from './Body.jsx';
 
+//The main component of the App. Renders the core functionality of the project.
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      //Default message informs the user to select a workspace
       messages: [
         {
           text: 'Welcome to slackk-casa! Please select or create a workspace!',
@@ -24,11 +26,6 @@ export default class App extends React.Component {
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.loadWorkSpaces = this.loadWorkSpaces.bind(this);
-    this.changeCurrentWorkSpace = this.changeCurrentWorkSpace.bind(this);
   }
 
   componentDidMount() {
@@ -62,7 +59,7 @@ export default class App extends React.Component {
       });
     }
   }
-
+  //grabs all existing workspaces
   loadWorkSpaces() {
     fetch('/workspaces')
       .then(resp => resp.json())
@@ -70,10 +67,11 @@ export default class App extends React.Component {
       .catch(console.error);
   }
 
+  //Helper function to reassign current workspace
   changeCurrentWorkSpace(id, name) {
     this.setState({ currentWorkSpaceId: id, currentWorkSpaceName: name });
   }
-
+  //renders nav bar, body(which contains all message components other than input), and message input
   render() {
     let {
       messages, query, workSpaces, currentWorkSpaceId, currentWorkSpaceName,
@@ -84,8 +82,8 @@ export default class App extends React.Component {
         <Body
           messages={messages}
           workSpaces={workSpaces}
-          loadWorkSpaces={this.loadWorkSpaces}
-          changeCurrentWorkSpace={this.changeCurrentWorkSpace}
+          loadWorkSpaces={() => this.loadWorkSpaces()}
+          changeCurrentWorkSpace={(id, name) => this.changeCurrentWorkSpace(id, name)}
           currentWorkSpaceId={currentWorkSpaceId}
         />
         <div className="input-container">
@@ -95,8 +93,8 @@ export default class App extends React.Component {
             type="textarea"
             name="text"
             placeholder={`Message #${currentWorkSpaceName || 'select a workspace!'}`}
-            onChange={this.handleChange}
-            onKeyPress={this.handleKeyPress}
+            onChange={event => this.handleChange(event)}
+            onKeyPress={event => this.handleKeyPress(event)}
           />
         </div>
       </div>

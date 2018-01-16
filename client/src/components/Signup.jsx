@@ -15,7 +15,9 @@ export default class Signup extends React.Component {
     };
   }
 
+  
   signUp() {
+    //checks for validity
     let {
       username, password, email, passwordHint,
     } = this.state;
@@ -28,6 +30,7 @@ export default class Signup extends React.Component {
     if (email === '') {
       return this.setState({ signupStatus: 'Enter an email' });
     }
+    //actual post to database
     fetch('/signup', {
       method: 'POST',
       body: JSON.stringify({
@@ -45,12 +48,14 @@ export default class Signup extends React.Component {
       .catch(console.error);
   }
 
+  //Handles form input
   handleOnChange(event) {
     this.setState({
       [event.target.name]: event.target.value,
     });
   }
 
+  //Handles for confirm on Enter
   handleKeyPress(event) {
     return event.key === 'Enter' ? this.signUp() : undefined;
   }
