@@ -18,6 +18,10 @@
    1. [Roadmap](#roadmap)
 1. [Contributing](#contributing)
 
+## Demo
+
+Try it here: [slackk-casa](https://slackk-casa.herokuapp.com)
+
 ## Usage
 
 From within the root directory:
