@@ -1,5 +1,8 @@
 let ws = null;
 let app = null;
+let sent = false;
+const beep = new Audio('/sounds/pling.wav'); // sound on receive msg
+const oneup = new Audio('/sounds/coin.wav'); // sound on send msg
 
 /* takes in an array of messages
   objects and sets the component state messages
@@ -12,6 +15,11 @@ const loadMessages = (messages) => {
    msg ({id: INT, text: STRING, createdAt: DATE, workspaceId: INT})
    and concats message to message state of app */
 const addNewMessage = (message) => {
+  if (sent) {
+    sent = false;
+  } else {
+    beep.play();
+  }
   app.setState({ messages: [...app.state.messages, message] });
 };
 
@@ -30,6 +38,8 @@ const sendMessage = (data) => {
       workspaceId: data.workspaceId,
     },
   };
+  oneup.play();
+  sent = true;
   ws.send(JSON.stringify(msg));
 };
 
@@ -41,6 +51,11 @@ const getWorkSpaceMessagesFromServer = (id) => {
 
 // takes in all new messages and filters and concats messages that match the current workSpace
 const filterMsgByWorkSpace = (msg) => {
+  if (sent) {
+    sent = false;
+  } else {
+    beep.play();
+  }
   if (msg.workspaceId === app.state.currentWorkSpaceId) {
     app.setState({ messages: [...app.state.messages, msg.message] });
   }

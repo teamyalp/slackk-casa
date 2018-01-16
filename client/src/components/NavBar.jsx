@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import {
   Collapse,
+  inNavBar,
   Navbar,
   NavbarToggler,
   NavbarBrand,
