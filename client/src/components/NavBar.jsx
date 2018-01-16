@@ -47,6 +47,9 @@ export default class NavBar extends React.Component {
                 Options
               </DropdownToggle>
               <DropdownMenu>
+                <NavLink href="/profile">
+                  <DropdownItem>Preferences</DropdownItem>
+                </NavLink>
                 <NavLink href="/login">
                   <DropdownItem>Sign Out</DropdownItem>
                 </NavLink>
