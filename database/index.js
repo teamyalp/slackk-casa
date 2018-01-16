@@ -3,8 +3,9 @@ const path = require('path');
 const fs = require('fs');
 
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
+  // connectionString: process.env.DATABASE_URL,
+  // ssl: true,
+  connectionString: 'localhost:127.0.0.1:5432/slap'
 });
 
 client
