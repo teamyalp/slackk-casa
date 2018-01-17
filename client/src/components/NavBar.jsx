@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Search from './Search.jsx'
 
 import {
   Collapse,
@@ -34,11 +35,12 @@ export default class NavBar extends React.Component {
     return (
       <Navbar color="faded" light expand="md">
         <NavbarBrand>
-          <h1>slackk-casa</h1>
+          <h1>Slap!</h1>
         </NavbarBrand>
         <h3 className="text-center">
           #{this.props.currentWorkSpaceName || 'select a workspace!'}{' '}
         </h3>
+        <Search searchClick={this.props.searchClick} />
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>

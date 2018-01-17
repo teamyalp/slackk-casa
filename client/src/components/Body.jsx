@@ -3,22 +3,24 @@ import { Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import MessageList from './MessageList.jsx';
 import WorkSpaceList from './WorkSpaceList.jsx';
 import PropTypes from 'prop-types';
+import SearchResults from './SearchResults.jsx'
 
 //container for other containers
 export default class Body extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
   }
 
   render() {
     let {
       workSpaces,
       messages,
+      filteredMessages,
       loadWorkSpaces,
       changeCurrentWorkSpace,
       currentWorkSpaceId,
     } = this.props;
+    console.log(filteredMessages)
     return (
       <Container fluid>
         <Row>
@@ -31,7 +33,10 @@ export default class Body extends React.Component {
             />
           </Col>
           <Col className="message-list-col" xs="10">
-            <MessageList messages={messages} currentWorkSpaceId={currentWorkSpaceId} />
+          {!filteredMessages.length ? 
+            <MessageList messages={messages} currentWorkSpaceId={currentWorkSpaceId} /> :
+            <SearchResults messages={filteredMessages} />
+          }
           </Col>
         </Row>
       </Container>

@@ -83,7 +83,7 @@ export default class Signup extends React.Component {
         ) : (
           <div>
             <Link style={{ textDecoration: 'none' }} to="/">
-              <h1>slackk-casa</h1>
+              <h1>Slap!</h1>
             </Link>
             <br />
             {this.state.signupStatus ? (
