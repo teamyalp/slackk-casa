@@ -94,11 +94,11 @@ const getEmails = () => client.query('SELECT email FROM USERS')
   .then(data => data.rows);
 
 // create necessary tables if environment flag INITIALIZEDB is set to true
-if (process.env.INITIALIZEDB) {
+//if (process.env.INITIALIZEDB) {
   initializeDB()
     .then()
     .catch(err => console.error('error creating database tables, ', err.stack));
-}
+//}
 
 module.exports = {
   client,

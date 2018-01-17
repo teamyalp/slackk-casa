@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
@@ -47,9 +48,9 @@ export default class NavBar extends React.Component {
                 Options
               </DropdownToggle>
               <DropdownMenu>
-                <NavLink href="/profile">
+                <Link to="/profile">
                   <DropdownItem>Preferences</DropdownItem>
-                </NavLink>
+                </Link>
                 <NavLink href="/login">
                   <DropdownItem>Sign Out</DropdownItem>
                 </NavLink>
