@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ImageUpload from './ImageUpload.jsx';
+import LoginSettingsForm from './LoginSettingsForm.jsx';
+import ProfileInformationForm from './ProfileInformationForm.jsx';
 import classnames from 'classnames';
 
 import { 
@@ -107,58 +109,12 @@ export default class Profile extends React.Component {
                     </Nav>
                         <TabContent activeTab={this.state.activeTab}>
                             <TabPane tabId="1">
-                                <Form>
-                                    <FormGroup>
-                                        <Label for="username">Username</Label>
-                                        <Input
-                                            type="text"
-                                            id="username"
-                                            placeholder="replace this with the current username"
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="email">Email</Label>
-                                        <Input type="email" id="email" placeholder="replace with user's email"/>
-                                        <FormText color="muted">
-                                            This is some placeholder block-level help text for the above input.
-                                        </FormText>
-                                    </FormGroup>
-                                </Form>
-                                <Button color="success">Save</Button>
+                                <LoginSettingsForm />
                             </TabPane>
                         </TabContent>
                         <TabContent activeTab={this.state.activeTab}>
                             <TabPane tabId="2">
-                                <Form>
-                                    <FormGroup>
-                                        <Label for="fullName">Full Name</Label>
-                                        <Input 
-                                            type="text" 
-                                            id="fullName" 
-                                            placeholder="replace this with the current user's fullname" 
-                                            onChange={this.fullnameOnChange}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="statusSelect">Status</Label>
-                                        <Input type="select" id="statusSelect" placeholder="none">
-                                            <option> </option>
-                                            <option>Away</option>
-                                            <option>In a Meeting</option>
-                                            <option>Working Remote</option>
-                                            <option>Vacationing</option>
-                                            <option>Out Sick</option>
-                                        </Input>
-                                        <FormText color="muted">
-                                            This is some placeholder block-level help text for the above input.
-                                        </FormText>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="whatYouDo">What You Do</Label>
-                                        <Input type="text" id="whatYouDo" placeholder="replace this with the current user's info, if available" />
-                                    </FormGroup>
-                                </Form>
-                                <Button color="success">Save</Button>
+                                <ProfileInformationForm />
                             </TabPane>
                         </TabContent>
                     </Col>
