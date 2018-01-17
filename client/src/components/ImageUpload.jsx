@@ -1,11 +1,19 @@
 import React from 'react';
-import { Button, Container, Row } from 'reactstrap';
+import { Button, 
+        Container, 
+        Form, 
+        FormGroup,
+        FormText, 
+        Input, 
+        Label, 
+        Row 
+    } from 'reactstrap';
 
 export default class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
-            image: '' 
+            imageSrc: "/../images/twitter-egg.png" 
         };
     }
 
@@ -14,11 +22,35 @@ export default class ImageUpload extends React.Component {
     //change user's profile image
 
     render() {
-        let { image } = this.state;
+        let { imageSrc } = this.state;
+        const styles = {
+            egg: {
+                backgroundColor: 'lightblue',
+                display: 'block',
+                width: '100%',
+                margin: '0 0 10px 0',
+            },
+        }
         return (
             <Container>
                 <Row>
-                    Profile Image
+                <Form>
+                    <FormGroup>
+                        <Label for="profileImage">Profile Image</Label>
+
+                        <img
+                            className="egg img-responsive"
+                            alt="profile-pic"
+                            src={imageSrc}
+                            style={styles.egg}
+                        />
+
+                        <Input type="file" name="file" id="profileImage" />
+                        <FormText color="muted">
+                            This is some placeholder block-level help text for the above input.
+                        </FormText>
+                    </FormGroup>
+                </Form>
                 </Row>
                 <Row>
                     <Button color="secondary">Cancel</Button>
