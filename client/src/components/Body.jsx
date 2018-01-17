@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
+import { Container, Row, Col, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import MessageList from './MessageList.jsx';
 import WorkSpaceList from './WorkSpaceList.jsx';
 import PropTypes from 'prop-types';
@@ -20,7 +20,6 @@ export default class Body extends React.Component {
       changeCurrentWorkSpace,
       currentWorkSpaceId,
     } = this.props;
-    console.log(filteredMessages)
     return (
       <Container fluid>
         <Row>
@@ -33,7 +32,7 @@ export default class Body extends React.Component {
             />
           </Col>
           <Col className="message-list-col" xs="10">
-          {!filteredMessages.length ? 
+          {!filteredMessages ? 
             <MessageList messages={messages} currentWorkSpaceId={currentWorkSpaceId} /> :
             <SearchResults messages={filteredMessages} />
           }

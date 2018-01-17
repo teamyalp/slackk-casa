@@ -64,6 +64,7 @@
     "react-sound": "^1.0.0",
     "reactstrap": "^5.0.0-alpha.4",
     "redux": "^3.7.2",
+    "rm-emoji-picker": "^0.3.31",
     "ws": "^4.0.0"
   },
   "babel": {

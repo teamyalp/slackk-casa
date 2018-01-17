@@ -29,7 +29,6 @@
 
 /* send message div container */
 .input-container {
-  height: 25vh;
   margin-left: 17%;
   margin-top: 10px;
 }
@@ -75,4 +74,15 @@
 .highlight-workSpace {
   background-color: #4c9689;
   color: #ffffff;
+}
+
+
+
+.search {
+  position: absolute;
+  right: 12%;
+}
+
+.searchResults {
+  width: 80%;
 }

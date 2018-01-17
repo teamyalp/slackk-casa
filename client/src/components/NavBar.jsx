@@ -41,6 +41,10 @@ export default class NavBar extends React.Component {
         <h3 className="text-center">
           #{this.props.currentWorkSpaceName || 'select a workspace!'}{' '}
         </h3>
+        {this.props.filteredMessages ? 
+          <h4 style={{'paddingLeft': '30px'}}>Showing search results...</h4> :
+          ''
+        }
         <Search searchClick={this.props.searchClick} />
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
