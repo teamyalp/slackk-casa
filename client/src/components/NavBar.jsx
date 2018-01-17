@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Search from './Search.jsx'
 
@@ -49,6 +50,9 @@ export default class NavBar extends React.Component {
                 Options
               </DropdownToggle>
               <DropdownMenu>
+                <Link to="/profile">
+                  <DropdownItem>Settings</DropdownItem>
+                </Link>
                 <NavLink href="/login">
                   <DropdownItem>Sign Out</DropdownItem>
                 </NavLink>

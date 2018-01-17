@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const client = new Client({
   // connectionString: process.env.DATABASE_URL,
+
   connectionString: 'postgres://localhost:5432/slap',
   // ssl: true,
 });
@@ -94,11 +95,12 @@ const getEmails = () => client.query('SELECT email FROM users')
   .then(data => data.rows);
 
 // create necessary tables if environment flag INITIALIZEDB is set to true
-// if (process.env.INITIALIZEDB) {
-initializeDB()
-  .then()
-  .catch(err => console.error('error creating database tables, ', err.stack));
-// }
+
+//if (process.env.INITIALIZEDB) {
+  initializeDB()
+    .then()
+    .catch(err => console.error('error creating database tables, ', err.stack));
+//}
 
 module.exports = {
   client,

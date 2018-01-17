@@ -6,6 +6,7 @@ import App from './components/App.jsx';
 import Home from './components/Home.jsx';
 import Signup from './components/Signup.jsx';
 import Login from './components/Login.jsx';
+import Profile from './components/Profile.jsx';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
@@ -17,5 +18,6 @@ ReactDOM.render(<Router>
     <Route path="/signup" component={Signup}/>
     <Route path="/login" component={Login}/>
     <Route path="/messages" component={App}/>
+    <Route path="/profile" component={Profile}/>
   </div>
 </Router>, document.getElementById('app'));
