@@ -134,9 +134,7 @@ router.post('/workspaces', bodyParser.json());
 router.post('/workspaces', async (req, res) => {
   try {
     const workspaces = await db.getWorkspaces();
-    if (
-      workspaces.find(workspace => workspace.name.toLowerCase() === req.body.name.toLowerCase())
-    ) {
+    if (workspaces.find(workspace => workspace.name.toLowerCase() === req.body.name.toLowerCase())) {
       return res.status(400).json('workspace exists');
     }
     await db.createWorkspace(req.body.name);
@@ -145,5 +143,18 @@ router.post('/workspaces', async (req, res) => {
     return res.status(500).json(err.stack);
   }
 });
+
+
+
+router.post('/search', bodyParser.json());
+router.post('/search', async (req, res) => {
+  try {
+    const messages = await db.getMessages(req.body.workspaceId);
+    return res.status(201).json(messages);
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
 
 module.exports = router;

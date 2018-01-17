@@ -4,7 +4,8 @@ const fs = require('fs');
 
 const client = new Client({
   // connectionString: process.env.DATABASE_URL,
-  connectionString: 'localhost:127.0.0.1:5432/slap'
+
+  connectionString: 'postgres://localhost:5432/slap',
   // ssl: true,
 });
 
@@ -90,10 +91,11 @@ const createWorkspace = (name, dbName = `ws_${name[0]}${Date.now()}`) =>
 const getWorkspaces = () => client.query('SELECT * FROM workspaces').then(data => data.rows);
 
 // pull all emails from users table
-const getEmails = () => client.query('SELECT email FROM USERS')
+const getEmails = () => client.query('SELECT email FROM users')
   .then(data => data.rows);
 
 // create necessary tables if environment flag INITIALIZEDB is set to true
+
 //if (process.env.INITIALIZEDB) {
   initializeDB()
     .then()
