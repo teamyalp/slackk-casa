@@ -6,8 +6,8 @@ export default class Search extends React.Component {
   }
   render() {
     return(
-      <div>
-        <input ref="searchTerm" type="text" placeholder="Search" />
+      <div className="search">
+        <input ref="searchTerm" type="text" placeholder="Search" size="30" />
         <button onClick={e => this.props.searchClick(e, this.refs.searchTerm.value)}>Search!</button>
       </div>
     )
