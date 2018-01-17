@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect, sendMessage } from '../socketHelpers';
 import { Input } from 'reactstrap';
-import EmojiPicker from "rm-emoji-picker";
 import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import Body from './Body.jsx';
@@ -35,13 +34,6 @@ export default class App extends React.Component {
 
     // connect to the websocket server
     connect(server, this);
-
-    // instantiate emojiPicker
-    const picker = new EmojiPicker();
-    const icon      = document.getElementById('showEmojis');
-    const container = document.getElementById('input-container');
-    const editable  = document.getElementById('messageInput');
-    picker.listenOn(icon, container, editable);
   }
 
   // changes the query state based on user input in text field
@@ -129,7 +121,6 @@ export default class App extends React.Component {
           currentWorkSpaceId={currentWorkSpaceId}
         />
         <div id="input-container" className="input-container">
-          <button id="showEmojis">:D</button>
           <Input
             value={query}
             id="messageInput"
