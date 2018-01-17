@@ -28,7 +28,7 @@ export default class ImageUpload extends React.Component {
                 backgroundColor: 'lightblue',
                 display: 'block',
                 width: '100%',
-                margin: '0 0 10px 0',
+                margin: '8px 0 10px 0',
             },
         }
         return (

@@ -15,8 +15,13 @@ export default class LoginSettingsForm extends React.Component {
   }
 
   render() {
+    const styles = {
+      container: {
+          padding: '20px'
+      }
+    }
     return (
-      <Container>
+      <Container style={styles.container}>
         <Form>
           <FormGroup>
             <Label for="username">Username</Label>

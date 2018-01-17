@@ -28,34 +28,9 @@ export default class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            fullname: '',
-            username: '',
-            about: '',
-            email: '',
-            friends: [],
             activeTab: '1', 
         };
-        this.fullnameOnChange = this.fullnameOnChange.bind(this);
         this.toggle = this.toggleTabs.bind(this);
-    }
-
-    componentWillMount() {
-        //get user data
-    }
-
-    //get user data
-
-    //onChange methods for each data input
-        //Full Name
-        //Username (?)
-        //About/What You Do
-        //Email
-        //Friends (? discuss direct messages...)
-
-    fullnameOnChange(e) {
-        this.setState({
-            fullname: e.target.value
-        })
     }
 
     toggleTabs(tab) {
@@ -66,20 +41,25 @@ export default class Profile extends React.Component {
         }
     }
 
-    saveChanges() {
-
-    }
-
     render() {
+        let { activeTab } = this.state;
+        const styles = {
+            brand: {
+                margin: '0 0 0 10px',
+            },
+            exit: {
+                margin: '0',
+            }
+        };
         return (
             <Container fluid className="profilePage">
                 <Row>
                     <Col xs={{size: 8, offset: 3}}>
                         <Navbar expand="md">
-                            <Button type="secondary">
+                            <Button outline color="secondary" className="exit" style={styles.exit}>
                                 <Link to="/messages">X</Link>
                             </Button>
-                            <NavbarBrand>Settings</NavbarBrand>
+                            <NavbarBrand className="brand" style={styles.brand}>Settings</NavbarBrand>
                         </Navbar>
                     </Col>
                 </Row>
@@ -88,31 +68,30 @@ export default class Profile extends React.Component {
                         <ImageUpload/>
                     </Col>
                     <Col xs={4}>
-
-                    <Nav tabs>
-                        <NavItem>
-                            <NavLink 
-                            className={classnames({ active: this.state.activeTab === '1' })}
-                            onClick={() => { this.toggleTabs('1') }}
-                            >
-                                Login Details
-                            </NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink 
-                            className={classnames({ active: this.state.activeTab === '2' })}
-                            onClick={() => { this.toggleTabs('2') }}
-                            >
-                                Profile Information
-                            </NavLink>
-                        </NavItem>
-                    </Nav>
-                        <TabContent activeTab={this.state.activeTab}>
+                        <Nav tabs>
+                            <NavItem>
+                                <NavLink 
+                                className={classnames({ active: activeTab === '1' })}
+                                onClick={() => { this.toggleTabs('1') }}
+                                >
+                                    Login Details
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink 
+                                className={classnames({ active: activeTab === '2' })}
+                                onClick={() => { this.toggleTabs('2') }}
+                                >
+                                    Profile Information
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                        <TabContent activeTab={activeTab}>
                             <TabPane tabId="1">
                                 <LoginSettingsForm />
                             </TabPane>
                         </TabContent>
-                        <TabContent activeTab={this.state.activeTab}>
+                        <TabContent activeTab={activeTab}>
                             <TabPane tabId="2">
                                 <ProfileInformationForm />
                             </TabPane>
