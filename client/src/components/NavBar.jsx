@@ -49,7 +49,7 @@ export default class NavBar extends React.Component {
               </DropdownToggle>
               <DropdownMenu>
                 <Link to="/profile">
-                  <DropdownItem>Preferences</DropdownItem>
+                  <DropdownItem>Settings</DropdownItem>
                 </Link>
                 <NavLink href="/login">
                   <DropdownItem>Sign Out</DropdownItem>

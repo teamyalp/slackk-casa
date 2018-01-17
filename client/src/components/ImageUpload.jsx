@@ -17,7 +17,7 @@ export default class ImageUpload extends React.Component {
         };
     }
 
-    //get user's profile image
+    //get user's profile image from db (or default to egg
 
     //change user's profile image
 
@@ -34,26 +34,25 @@ export default class ImageUpload extends React.Component {
         return (
             <Container>
                 <Row>
-                <Form>
-                    <FormGroup>
-                        <Label for="profileImage">Profile Image</Label>
+                    <Form>
+                        <FormGroup>
+                            <Label for="profileImage">Profile Image</Label>
 
-                        <img
-                            className="egg img-responsive"
-                            alt="profile-pic"
-                            src={imageSrc}
-                            style={styles.egg}
-                        />
+                            <img
+                                className="egg img-responsive"
+                                alt="profile-pic"
+                                src={imageSrc}
+                                style={styles.egg}
+                            />
 
-                        <Input type="file" name="file" id="profileImage" />
-                        <FormText color="muted">
-                            This is some placeholder block-level help text for the above input.
-                        </FormText>
-                    </FormGroup>
-                </Form>
+                            <Input type="file" name="file" id="profileImage" />
+                            <FormText color="muted">
+                                This is some placeholder block-level help text for the above input.
+                            </FormText>
+                        </FormGroup>
+                    </Form>
                 </Row>
                 <Row>
-                    <Button color="secondary">Cancel</Button>
                     <Button color="success">Save</Button>
                 </Row>
             </Container>
