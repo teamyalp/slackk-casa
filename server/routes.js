@@ -29,7 +29,6 @@ router.use(express.static(path.join(__dirname, '../client/dist')));
 router.get('/signup', reactRoute);
 router.get('/login', reactRoute);
 router.get('/messages', passport.authenticate('local', { failureRedirect: '/login' }), reactRoute);
-router.get('/profile', passport.authenticate('local', { failureRedirect: '/login' }), reactRoute);
 
 // POST request to /signup, used to register users
 /*
