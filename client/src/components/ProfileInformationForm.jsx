@@ -11,8 +11,25 @@ import {
 
 export default class ProfileInformationForm extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = {
+      fullname: '',
+      status: '',
+      about: ''
+    }
   }
+  
+  //create profiles table in database (user_id(from users table), fullname, status, about...image?)
+
+  //get user's current profile information from DB profiles table
+    //update state
+
+  // create onChange funcs for each field
+    //each will update the current state (make sure that if the changes are not saved, the values will revert back to original)
+
+  //create onSubmit func when Save btn is clicked 
+    //alters information in DB profiles table
+
 
   render() {
     const styles = {

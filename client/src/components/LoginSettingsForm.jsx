@@ -1,18 +1,32 @@
 import React from 'react';
+
 import {
- Button,
- Container,
- Form, 
- FormGroup,
- FormText,
- Input,
- Label
+  Button,
+  Container,
+  Form, 
+  FormGroup,
+  FormText,
+  Input,
+  Label
 } from 'reactstrap';
 
 export default class LoginSettingsForm extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = {
+      username: '',
+      email: '',
+    };
   }
+
+  //get user's current login information from DB users table (username, email, pw)
+    //update state
+
+  // create onChange funcs for each field (username, email, pw)
+    //each will update the current state (make sure that if the changes are not saved, the values will revert back to original)
+
+  //create onSubmit func when Save btn is clicked 
+    //alters information in DB users table
 
   render() {
     const styles = {

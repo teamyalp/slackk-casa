@@ -1,9 +1,10 @@
 import React from 'react';
+import classnames from 'classnames';
+
 import { Link } from 'react-router-dom';
 import ImageUpload from './ImageUpload.jsx';
 import LoginSettingsForm from './LoginSettingsForm.jsx';
 import ProfileInformationForm from './ProfileInformationForm.jsx';
-import classnames from 'classnames';
 
 import { 
     Button,

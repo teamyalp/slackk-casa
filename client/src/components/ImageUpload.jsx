@@ -1,13 +1,14 @@
 import React from 'react';
+
 import { Button, 
-        Container, 
-        Form, 
-        FormGroup,
-        FormText, 
-        Input, 
-        Label, 
-        Row 
-    } from 'reactstrap';
+    Container, 
+    Form, 
+    FormGroup,
+    FormText, 
+    Input, 
+    Label, 
+    Row 
+} from 'reactstrap';
 
 export default class ImageUpload extends React.Component {
     constructor(props) {
@@ -17,9 +18,13 @@ export default class ImageUpload extends React.Component {
         };
     }
 
-    //get user's profile image from db (or default to egg
+    //create profileImages table in db or add images field to profiles table
+
+    //get user's profile image from db (profiles or images table?) and update state (if null, default to egg image)
 
     //change user's profile image
+
+    //TODO: when rendering messages, pull image from db rather than default egg image, same with user/display name
 
     render() {
         let { imageSrc } = this.state;
