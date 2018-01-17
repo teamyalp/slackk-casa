@@ -13,13 +13,14 @@ export default class App extends React.Component {
       //Default message informs the user to select a workspace
       messages: [
         {
-          text: 'Welcome to slackk-casa! Please select or create a workspace!',
-          username: 'Slack-bot',
+          text: 'Welcome to Slap! Please select or create a workspace!',
+          username: 'Slap-bot',
           id: 0,
           createdAt: new Date(),
           workspaceId: 0,
         },
       ],
+      filteredMessages: [],
       users: [],
       workSpaces: [],
       query: '',
@@ -73,16 +74,42 @@ export default class App extends React.Component {
   changeCurrentWorkSpace(id, name) {
     this.setState({ currentWorkSpaceId: id, currentWorkSpaceName: name });
   }
+
+  //*new*
+  searchClick(e, searchTerm) {
+    this.state.filteredMessages = [];
+    let filteredMessages = [];
+    this.state.messages.map(message => {
+      let messageWordArr = [];
+      messageWordArr = messageWordArr.concat(message.text.split(' '));
+      messageWordArr.map(word => {
+        if (word.toLowerCase() === searchTerm.toLowerCase()) {
+          filteredMessages.push(message);
+        }
+      })
+    })
+    this.setState({filteredMessages: filteredMessages});
+  }
+
+
   //renders nav bar, body(which contains all message components other than input), and message input
   render() {
     let {
-      messages, query, workSpaces, currentWorkSpaceId, currentWorkSpaceName,
+      messages, 
+      query, workSpaces, 
+      currentWorkSpaceId, 
+      currentWorkSpaceName, 
+      filteredMessages
     } = this.state;
     return (
       <div className="app-container">
-        <NavBar currentWorkSpaceName={currentWorkSpaceName} />
+        <NavBar 
+          currentWorkSpaceName={currentWorkSpaceName} 
+          searchClick={this.searchClick.bind(this)}
+        />
         <Body
           messages={messages}
+          filteredMessages={filteredMessages}
           workSpaces={workSpaces}
           loadWorkSpaces={() => this.loadWorkSpaces()}
           changeCurrentWorkSpace={(id, name) => this.changeCurrentWorkSpace(id, name)}
