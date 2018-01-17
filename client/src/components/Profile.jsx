@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ImageUpload from './ImageUpload.jsx';
+
 import { 
     Button,
     Col,
@@ -40,8 +42,8 @@ export default class Profile extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col xs={2}>
-                        Profile Image
+                    <Col xs={3}>
+                        <ImageUpload />
                     </Col>
                     <Col xs={4}>
                         <Form col-6>
