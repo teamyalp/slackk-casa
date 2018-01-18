@@ -230,11 +230,9 @@ router.post('/profile', bodyParser.json());
 router.post('/profile', async (req, res) => {
   try {
     const profile = await db.getProfile(req.body.username);
-    if (profile) {
-      console.log('PROFILE EXISTS, NOW UPDATING')
+    if (profile) { //update existing profile
       return res.status(200).json(await db.updateProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
-    } else {
-      console.log('CREATING NEW PROFILE')
+    } else { //create new profile
       return res.status(200).json(await db.createProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
     }
   } catch (err) {

@@ -20,6 +20,7 @@ export default class ProfileInformationForm extends React.Component {
       bio: this.props.user.bio || 'Add a brief bio',
       phone: this.props.user.phone || 'Add a phone number',
       updateSuccess: false,
+      save: false,
     }
     this.onSave = this.onSave.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -30,16 +31,16 @@ export default class ProfileInformationForm extends React.Component {
     //refactor to submit button & handling submit?? (e.preventDefault())
   onChange(event, input) {
     if (input === 'fullname') {
-      this.setState({ fullname: event.target.value })
+      this.setState({ fullname: event.target.value, save: true, updateSuccess: false })
     }
     if (input === 'status') {
-      this.setState({ status: event.target.value })
+      this.setState({ status: event.target.value, save: true, updateSuccess: false })
     }
     if (input === 'bio') {
-      this.setState({ bio: event.target.value })
+      this.setState({ bio: event.target.value, save: true, updateSuccess: false })
     }
     if (input === 'phone') {
-      this.setState({ phone: event.target.value })
+      this.setState({ phone: event.target.value, save: true, updateSuccess: false })
     }
   }
 
@@ -55,7 +56,7 @@ export default class ProfileInformationForm extends React.Component {
     })
     .then(resp => 
       (resp.status === 200
-      ? this.setState({ updateSuccess: true })
+      ? this.setState({ updateSuccess: true, save: false })
       : undefined ))
     .catch(console.error);
   }
@@ -118,8 +119,8 @@ export default class ProfileInformationForm extends React.Component {
             />
           </FormGroup>
         </Form>
-        <Button onClick={this.onSave} color="success">
-          { this.state.updateSuccess ? 'Saved!' : 'Save' }
+        <Button onClick={this.onSave} color="success" disabled={!this.state.save}>
+          { this.state.updateSuccess ? 'Updated!' : 'Update Profile Info' }
         </Button>
       </Container>
     )
