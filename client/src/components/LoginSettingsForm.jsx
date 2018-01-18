@@ -14,14 +14,20 @@ export default class LoginSettingsForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      username: this.props.username,
       email: '',
     };
   }
 
   //get user's current login information from DB users table (username, email, pw)
     //update state
+  getUserLoginInfo() {
 
+    fetch('/userlogin', {
+      method: 'POST',
+
+    })
+  }
   // create onChange funcs for each field (username, email, pw)
     //each will update the current state (make sure that if the changes are not saved, the values will revert back to original)
 
@@ -47,7 +53,11 @@ export default class LoginSettingsForm extends React.Component {
           </FormGroup>
           <FormGroup>
             <Label for="email">Email</Label>
-            <Input type="email" id="email" placeholder="replace with user's email" />
+            <Input 
+              type="email" 
+              id="email" 
+              placeholder="replace with user's email" 
+            />
             <FormText color="muted">
               This is some placeholder block-level help text for the above input.
             </FormText>

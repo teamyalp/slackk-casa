@@ -14,6 +14,7 @@ export default class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
+            username: this.props.username,
             imageSrc: "/../images/twitter-egg.png" 
         };
     }

@@ -223,6 +223,7 @@ export default class App extends React.Component {
           filteredMessages={filteredMessages}
           currentWorkSpaceName={currentWorkSpaceName} 
           searchClick={this.searchClick.bind(this)}
+          user={this.props.location.state}
         />
         <Body
           messages={messages}

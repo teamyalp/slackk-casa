@@ -13,6 +13,7 @@ export default class ProfileInformationForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: this.props.username,
       fullname: '',
       status: '',
       about: ''
