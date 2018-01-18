@@ -36,6 +36,10 @@ export default class Profile extends React.Component {
         this.toggle = this.toggleTabs.bind(this);
     }
 
+    componentWillMount() {
+        this.getUserProfile();
+    }
+
     toggleTabs(tab) {
         if (this.state.activeTab !== tab) {
             this.setState({
@@ -47,21 +51,19 @@ export default class Profile extends React.Component {
     getUserProfile() {
         let { username } = this.state
         //GET request to server/db from profiles table using this.state.username
-        fetch('/profile', {
+        fetch(`/profile/${username}`, {
             method: 'GET',
-            body: JSON.stringify( username ),
             headers: { 'content-type': 'application/json' },
         })
         //update this.state.userProfile to returned object
-            .then(resp => {
-                console.log(resp);
-                resp.status === 200
-                ? this.setState({ userProfile: resp })
-                : undefined 
+            .then(resp => { return resp.json() })
+            .then(data => {
+                console.log(data);
+                this.setState({ userProfile: data })
             })
             .catch(console.error);
-        //expecting object to have an 'image' key to pass to UploadImage below
     }
+
 
     render() {
         let { username, userProfile, activeTab } = this.state;

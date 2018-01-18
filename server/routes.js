@@ -201,8 +201,10 @@ router.post('/directmsg', async (req, res) => {
     return res.sendStatus(201);
 //GET request to /profile, return profile object
 router.get('/profile', async (req, res) => {
+//GET request to /profile, provide username, return profile object
+router.get('/profile/:username', async (req, res) => {
   try {
-    return res.status(200).json(await db.getProfile());
+    return res.status(201).json(await db.getProfile(req.params.username));
   } catch (err) {
     return res.status(500).json(err.stack);
   }
@@ -229,8 +231,10 @@ router.post('/profile', async (req, res) => {
   try {
     const profile = await db.getProfile(req.body.username);
     if (profile) {
+      console.log('PROFILE EXISTS, NOW UPDATING')
       return res.status(200).json(await db.updateProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
     } else {
+      console.log('CREATING NEW PROFILE')
       return res.status(200).json(await db.createProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
     }
   } catch (err) {
