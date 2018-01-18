@@ -116,24 +116,41 @@ const getPasswordHint = username =>
     .query('SELECT password_hint FROM users WHERE username = ($1)', [username])
     .then(data => data.rows[0]);
 
+
+
 // get user profile informaton (does not include login information)
 const getProfile = username => 
   client
     .query('SELECT * FROM profiles WHERE username = ($1)', [username])
     .then(data => data.rows[0]);
 
+// create new user profile (does not include login information)
 const createProfile = (username, fullname, status, bio, phone) => 
   client
     .query('INSERT INTO profiles (username, fullname, status, bio, phone) VALUES ($1, $2, $3, $4, $5)',
     [username, fullname, status, bio, phone])
     .then(data => data.rows[0]);
 
-// update EXISTING user profile information (does not include login information)
+// update existing user profile information (does not include login information)
 const updateProfile = (username, fullname, status, bio, phone) => 
   client
     .query('UPDATE profiles SET fullname=($2), status=($3), bio=($4), phone=($5) WHERE username=($1)', 
     [username, fullname, status, bio, phone])
     .then(data => data.rows[0]);
+
+// save uploaded profile image url
+const saveProfileImage = (username, image) =>
+  client
+    .query('UPDATE profiles SET image=($2) WHERE username=($1)', [username, image])
+    .then(data => data.rows[0]);
+
+// get user profile image url
+const getProfileImage = username => 
+  client
+    .query('SELECT image FROM profiles WHERE username=($1)', [username])
+    .then(data => data.rows[0]);
+
+    
 
 // creates a new workspace
 const createWorkspace = (name, dbName = `ws_${name[0]}${Date.now()}`) =>
