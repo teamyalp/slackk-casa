@@ -14,9 +14,9 @@ export default class ProfileInformationForm extends React.Component {
     super(props);
     this.state = {
       username: this.props.username,
-      fullname: '',
-      status: '',
-      about: ''
+      fullname: this.props.user.fullname || '',
+      status: this.props.user.status || '',
+      bio: this.props.user.bio || ''
     }
   }
   
