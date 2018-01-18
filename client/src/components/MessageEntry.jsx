@@ -76,7 +76,6 @@ export default class extends React.Component {
     };
 
     var messageElement;
-    console.log(this.state.sameUser)
     if (this.state.sameUser) {
       messageElement = <span style={styles.sameUserMessage}>{message.text}</span>
     } else {
