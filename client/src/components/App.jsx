@@ -37,13 +37,17 @@ export default class App extends React.Component {
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
       currentUsername: this.props.location.state.username,
-      currentUserId: 0
+      // currentUserId: 0
     };
   }
 
   componentDidMount() {
     let server = location.origin.replace(/^http/, 'ws');
-
+    // console.log(this.props);
+    // console.log(this.state);
+    // server += this.state.currentUserId;
+    // console.log('componentDidMount: ', this.state.currentUserId);
+    // console.log('componentDidMount: ', this.state.currentUsername);
     // connect to the websocket server
     connect(server, this);
     if (this.state.currentWorkSpaceId === 0) {
@@ -63,6 +67,9 @@ export default class App extends React.Component {
   // only when shift+enter pressed breaks to new line
   handleKeyPress(event) {
     // on key press enter send message and reset text box
+    // currentWorkSpaceId: 0,
+    // currentWorkSpaceName: '',
+    console.log(this.state.currentWorkSpaceId, this.state.currentWorkSpaceName);
     if (event.charCode === 13 && !event.shiftKey) {
       event.preventDefault();
       sendMessage({
@@ -98,26 +105,9 @@ export default class App extends React.Component {
   loadUsers() {
     fetch('/users')
       .then(resp => resp.json())
-      .then(users => {
-        let currentUserId;
-        //iterate through the users array to set the currentUserId(state)
-        for (let i = 0; i < users.length; i++) {
-          if (users[i].username === this.state.currentUsername) {
-            currentUserId = users[i].id;
-          }
-        }
-
-        let { ws } = this.state;
-        //
-        ws.userId = currentUserId;
-        console.log('App ws: ', this.state.ws);
-        this.setState({ users });
-      })
+      .then(users => this.setState({ users }))
       .catch(console.error);
   }
-
-  //updates `this.currentUserId`
-
 
   //Helper function to reassign current workspace
   changeCurrentWorkSpace(id, name) {

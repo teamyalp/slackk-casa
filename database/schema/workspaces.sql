@@ -1,3 +1,5 @@
+  -- DROP TABLE IF EXISTS workspaces;
+  
   CREATE TABLE IF NOT EXISTS "workspaces" (
 	"id" serial NOT NULL,
 	"name" varchar(1024) NOT NULL UNIQUE,

@@ -1,4 +1,6 @@
 const WebSocket = require('ws');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const db = require('../database');
 
@@ -23,6 +25,7 @@ const response = (code, message, method, data) =>
 // sends data to all clients except client ws
 const updateEveryoneElse = (ws, wss, data) => {
   wss.clients.forEach((client) => {
+    console.log('these are clients:', client)
     if (client !== ws && client.readyState === WebSocket.OPEN) {
       client.send(data);
     }
@@ -40,6 +43,7 @@ const updateEveryoneElse = (ws, wss, data) => {
 
 // event handler for incoming data from any client
 const onMessage = async (ws, wss, data) => {
+  console.log(ws);
   let message;
   try {
     // attempt to parse data from client, if unparseable responsd back with 400 and parsing error
@@ -163,9 +167,22 @@ const onMessage = async (ws, wss, data) => {
   }
 };
 
+let connectedClient = [];
+
 // event handler for when client connects to websocket server
+// ws will be an object
+// data will contain additional data (ie. toUser, fromUser)
 const onConnect = (ws, req, wss) => {
-  console.log(req);
+  // console.log('Server-webSocket.js: ', req.session.user);
+  // console.log('yooo: ', req.session);
+  // cookieParser(req, {}, (err, req) => {
+  //   session(req, {}, (err, req) => {
+  //     console.log('Req: ', req);
+  //     // req.sessions
+  //   });
+  // });
+  // connectedClient.push({ userId: req.session.passport.user, ws: ws });
+  // console.log(connectedClient);
   // attaches event handler for when client sends message to server
   ws.on('message', data => onMessage(ws, wss, data));
 };

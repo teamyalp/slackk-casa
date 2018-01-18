@@ -17,7 +17,7 @@ client
 // create tables needed by server
 const initializeDB = () => {
   // initialize tables by reading schema files and running as query
-  const schemas = ['/schema/users.sql', '/schema/workspaces.sql'];
+  const schemas = ['/schema/users.sql', '/schema/workspaces.sql', '/schema/directmsg.sql', '/schema/dMessages.sql'];
   return Promise.all(schemas.map(schema =>
     new Promise((resolve, reject) => {
       fs.readFile(
@@ -58,6 +58,26 @@ const postMessage = (message, username, workspaceId) =>
         [message, username],
       ));
 
+const postDMessage = (message, username, workspaceName) =>
+
+  client
+    .query(
+      'INSERT INTO dMessages (text, username, workspacename) VALUES ($1, $2, $3) RETURNING *',
+      [message, username, workspaceName],
+    )
+    .then(data => console.log('this is postDMessage data returned', data));
+
+const postDUser = (username, workspaceName) => {
+  console.log('Post Message!!', username, workspaceName);
+  client
+    .query(
+      'INSERT INTO directmsg (username, workspacename) VALUES ($1, $2) RETURNING *',
+      [username, workspaceName],
+    )
+    .then(data => console.log('this is postDUser data returned', data));
+};
+
+
 // get messages for workspace from database
 const getMessages = workspaceId =>
   // pull workspace messages table name using workspaceId
@@ -91,7 +111,7 @@ const createWorkspace = (name, dbName = `ws_${name[0]}${Date.now()}`) =>
   // add a new entry into workspaces table
   client.query('INSERT INTO workspaces (name, db_name) VALUES ($1, $2) RETURNING *', [name, dbName])
     .then(() =>
-    // read messages schema and insert workspace table name
+      // read messages schema and insert workspace table name
       new Promise((resolve, reject) => {
         fs.readFile(
           path.join(__dirname, '/schema/messages.sql'),
@@ -132,4 +152,5 @@ module.exports = {
   getEmails,
   getPasswordHint,
   getUsers,
+  postDUser,
 };

@@ -96,10 +96,11 @@ const connect = (server, component) => {
   // create new socket server instance
   ws = new WebSocket(server);
   console.log('Connect method: ', ws);
+  console.log('App: ', component);
   app = component;
+  ws.username = component.state.currentUsername;
   // on connection run the callback
   ws.addEventListener('open', () => {
-    ws.send('i am user id #3');
     console.log('Connected to the server');
     // sets state to current socket session for App methods to have access
     app.setState({ ws });

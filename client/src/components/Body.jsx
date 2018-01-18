@@ -10,28 +10,27 @@ import MemberList from './MemberList.jsx';
 export default class Body extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.directMessage = this.directMessage.bind(this);
   }
 
-  directMessage(username) {
-    const { loadWorkSpaces, users } = this.props;
-    let userId;
-    for (var i = 0; i < users.length; i++) {
-      if (users[i].username === username) {
-        userId = users[i].id;
-        break;
+  // MemberEntry + MessageEntry, fires this method onClick
+  // @ param `toUser`: the other user
+  directMessage(toUser) {
+    const { loadWorkSpaces, username } = this.props;
+    /*
+      body: {
+        toUser: toUser,
+        fromUser: username,
+        name: `${toUser}-${username}`
       }
-    }
-    if (userId) {
-      fetch('/workspaces', {
-        method: 'POST',
-        body: JSON.stringify({ name: username, id: userId }),
-        headers: { 'content-type': 'application/json' },
-      })
-        .then(resp => (resp.status === 201 ? loadWorkSpaces() : console.log('createWorkSpace failed')))
-        .catch(console.error);
-    }
+    */
+    fetch('/directmsg', {
+      method: 'POST',
+      body: JSON.stringify({ fromUser: username, toUser, name: `${toUser}-${username}` }),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(resp => (resp.status === 201 ? loadWorkSpaces() : console.log('directmsg failed')))
+      .catch(console.error);
   }
 
   render() {
