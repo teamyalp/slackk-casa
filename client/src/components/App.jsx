@@ -19,6 +19,13 @@ export default class App extends React.Component {
           createdAt: new Date(),
           workspaceId: 0,
         },
+        {
+          text: 'You can ask me any questions!!',
+          username: 'Slap-bot',
+          id: 1,
+          createdAt: new Date(),
+          workspaceId: 0,
+        },
       ],
       filteredMessages: null,
       users: [],
