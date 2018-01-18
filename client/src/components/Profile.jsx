@@ -30,6 +30,7 @@ export default class Profile extends React.Component {
         super(props);
         this.state = {
             username: this.props.match.params.username,
+            userProfile: {},
             activeTab: '1', 
         };
         this.toggle = this.toggleTabs.bind(this);
@@ -43,8 +44,14 @@ export default class Profile extends React.Component {
         }
     }
 
+    getUserProfile() {
+        //GET request to server/db from profiles table using this.state.username
+        //update this.state.userProfile to returned object
+        //expecting object to have an 'image' key to pass to UploadImage below
+    }
+
     render() {
-        let { username, activeTab } = this.state;
+        let { username, userProfile, activeTab } = this.state;
         const styles = {
             brand: {
                 margin: '0 0 0 10px',
@@ -68,7 +75,7 @@ export default class Profile extends React.Component {
                 </Row>
                 <Row>
                     <Col xs={{size: 2, offset: 3}}>
-                        <ImageUpload username={username}/>
+                        <ImageUpload image={userProfile.image}/>
                     </Col>
                     <Col xs={4}>
                         <Nav tabs>
@@ -91,12 +98,12 @@ export default class Profile extends React.Component {
                         </Nav>
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId="1">
-                                <LoginSettingsForm username={username} />
+                                <LoginSettingsForm user={userProfile} username={username}/>
                             </TabPane>
                         </TabContent>
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId="2">
-                                <ProfileInformationForm username={username} />
+                                <ProfileInformationForm user={userProfile} username={username}/>
                             </TabPane>
                         </TabContent>
                     </Col>

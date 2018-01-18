@@ -199,9 +199,18 @@ router.post('/directmsg', async (req, res) => {
     await db.postDUser(toUser, name);
     await db.postDUser(fromUser, name);
     return res.sendStatus(201);
+//GET request to /profile, return profile object
+//need to create db getProfileImage()
+router.get('/profile', async (req, res) => {
+  try {
+    return res.status(200).json(await db.getProfileImage());
   } catch (err) {
     return res.status(500).json(err.stack);
   }
 });
     
+
+//POST request to /profile/image, send API request, receive returned image url
+router.post('/profile/image', )
+
 module.exports = router;
