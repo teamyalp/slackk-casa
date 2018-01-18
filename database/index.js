@@ -28,6 +28,21 @@ const initializeDB = () => {
     }).then(data => client.query(data))));
 };
 
+// post member for workspace from database
+// const postMember = (username, workspaceId) =>
+//   // pull workspace table name using workspaceId
+//   client
+//     .query('SELECT db_name from workspaces where id = $1', [workspaceId])
+//     // post new member into workspace's members table
+//     .then(data =>
+//       client.query(
+//         'INSERT into $db_name (username) VALUES ($1, $2) RETURNING *'.replace(
+//           '$db_name',
+//           data.rows[0].db_name,
+//         ),
+//         [username],
+//       ));
+
 // post message to database
 const postMessage = (message, username, workspaceId) =>
   // pull workspace messages table name using workspaceId
@@ -94,11 +109,14 @@ const getWorkspaces = () => client.query('SELECT * FROM workspaces').then(data =
 const getEmails = () => client.query('SELECT email FROM users')
   .then(data => data.rows);
 
+const getUsers = () => client.query('SELECT id, username FROM users')
+  .then(data => data.rows);
+
 // create necessary tables if environment flag INITIALIZEDB is set to true
 
 //if (process.env.INITIALIZEDB) {
   initializeDB()
-    .then()
+    .then(() => console.log('Connected'))
     .catch(err => console.error('error creating database tables, ', err.stack));
 //}
 
@@ -113,4 +131,5 @@ module.exports = {
   getWorkspaces,
   getEmails,
   getPasswordHint,
+  getUsers,
 };

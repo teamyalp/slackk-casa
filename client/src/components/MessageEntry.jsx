@@ -9,13 +9,13 @@ export default class extends React.Component {
       toggleHover: false,
     };
   }
-  
+
   toggleHover() {
     this.setState({ toggleHover: !this.state.toggleHover });
   }
 
   render() {
-    const { message } = this.props;
+    const { message, directMessage } = this.props;
     //for the color changing avatars
     let color = () => {
       let colors = [
@@ -100,7 +100,23 @@ export default class extends React.Component {
 
     return (
       <div className="message-entry-container">
-          {messageElement}
+        {messageElement}
+        <Container style={styles.body}>
+          <Media left href="#">
+            <img
+              className="egg img-responsive"
+              href="#"
+              src="/images/twitter-egg.png"
+              alt="profile-pic"
+              style={styles.egg}
+            />
+          </Media>
+          <span style={styles.username} onClick={() => directMessage(message.username)}>
+            {message.username}
+            <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
+          </span>
+          <div style={styles.message}>{message.text}</div>
+        </Container>
       </div>
     );
   }

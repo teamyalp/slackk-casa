@@ -2,6 +2,7 @@ import React from 'react';
 import { connect, sendMessage } from '../socketHelpers';
 import { Input } from 'reactstrap';
 import profanity from 'profanity-censor'
+import { InputGroup,  InputGroupAddon, Input } from 'reactstrap';
 import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import Body from './Body.jsx';
@@ -35,6 +36,8 @@ export default class App extends React.Component {
       lasteMessage: '',
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
+      currentUsername: this.props.location.state.username,
+      currentUserId: 0
     };
   }
 
@@ -91,6 +94,31 @@ export default class App extends React.Component {
       .catch(console.error);
   }
 
+  //grabs all existing users
+  loadUsers() {
+    fetch('/users')
+      .then(resp => resp.json())
+      .then(users => {
+        let currentUserId;
+        //iterate through the users array to set the currentUserId(state)
+        for (let i = 0; i < users.length; i++) {
+          if (users[i].username === this.state.currentUsername) {
+            currentUserId = users[i].id;
+          }
+        }
+
+        let { ws } = this.state;
+        //
+        ws.userId = currentUserId;
+        console.log('App ws: ', this.state.ws);
+        this.setState({ users });
+      })
+      .catch(console.error);
+  }
+
+  //updates `this.currentUserId`
+
+
   //Helper function to reassign current workspace
   changeCurrentWorkSpace(id, name) {
     this.setState({ 
@@ -121,10 +149,14 @@ export default class App extends React.Component {
   render() {
     let {
       messages, 
-      query, workSpaces, 
-      currentWorkSpaceId, 
-      currentWorkSpaceName, 
-      filteredMessages
+      filteredMessages,
+      query,
+      workSpaces,
+      currentWorkSpaceId,
+      currentWorkSpaceName,
+      users,
+      currentUsername,
+      currentUserId,
     } = this.state;
     return (
       <div className="app-container">
@@ -140,6 +172,9 @@ export default class App extends React.Component {
           loadWorkSpaces={() => this.loadWorkSpaces()}
           changeCurrentWorkSpace={(id, name) => this.changeCurrentWorkSpace(id, name)}
           currentWorkSpaceId={currentWorkSpaceId}
+          users={users}
+          username={currentUsername}
+          userId={currentUserId}
         />
         <div id="input-container" className="input-container">
           <Input

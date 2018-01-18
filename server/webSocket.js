@@ -20,7 +20,7 @@ const response = (code, message, method, data) =>
     data,
   });
 
-// sends data to all cients except client ws
+// sends data to all clients except client ws
 const updateEveryoneElse = (ws, wss, data) => {
   wss.clients.forEach((client) => {
     if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -28,6 +28,15 @@ const updateEveryoneElse = (ws, wss, data) => {
     }
   });
 };
+
+// sends data only to clients that pass filter
+// const updateDirectMsg = (ws, wss, data) => {
+//   wss.clients.forEach((client) => {
+//     if (client === ws || client.userId === && client.readyState === WebSocket.OPEN) {
+//       client.send(data);
+//     }
+//   });
+// };
 
 // event handler for incoming data from any client
 const onMessage = async (ws, wss, data) => {
@@ -83,6 +92,17 @@ const onMessage = async (ws, wss, data) => {
         text: 'test message',
         username: 'testUser',
         workspaceId: 1, //workspace id to post messsage to
+      }
+    }
+
+    Direct Msg request from client to server:
+    {
+      method: 'POSTMESSAGE',
+      data: {
+        text: 'test message',
+        username: 'testUser',
+        workspaceId: 1, //workspace id to post messsage to
+        otherUserId: 1, //user id to post message to
       }
     }
 
@@ -144,7 +164,8 @@ const onMessage = async (ws, wss, data) => {
 };
 
 // event handler for when client connects to websocket server
-const onConnect = (ws, wss) => {
+const onConnect = (ws, req, wss) => {
+  console.log(req);
   // attaches event handler for when client sends message to server
   ws.on('message', data => onMessage(ws, wss, data));
 };

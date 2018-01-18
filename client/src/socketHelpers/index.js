@@ -68,7 +68,7 @@ const afterConnect = () => {
 
     // TODO: better error handling. Temp till complete switch statements
     if (serverResp.code === 400) {
-      console.log(serverResp.method);
+      // console.log(serverResp.method);
       throw serverResp.message;
     }
 
@@ -95,15 +95,19 @@ const afterConnect = () => {
 const connect = (server, component) => {
   // create new socket server instance
   ws = new WebSocket(server);
+  console.log('Connect method: ', ws);
   app = component;
   // on connection run the callback
   ws.addEventListener('open', () => {
+    ws.send('i am user id #3');
     console.log('Connected to the server');
     // sets state to current socket session for App methods to have access
     app.setState({ ws });
 
     // gets workspaces after connection
     app.loadWorkSpaces();
+    // gets users after connection
+    app.loadUsers();
 
     // calls after connect function that takes in the socket session
     // and app component
