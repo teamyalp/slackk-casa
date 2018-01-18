@@ -16,20 +16,48 @@ export default class ProfileInformationForm extends React.Component {
       username: this.props.username,
       fullname: this.props.user.fullname || '',
       status: this.props.user.status || '',
-      bio: this.props.user.bio || ''
+      bio: this.props.user.bio || '',
+      phone: this.props.user.phone || '',
+      updateSuccess: false,
     }
+    this.onSave = this.onSave.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
-  
-  //create profiles table in database (user_id(from users table), fullname, status, about...image?)
-
-  //get user's current profile information from DB profiles table
-    //update state
 
   // create onChange funcs for each field
     //each will update the current state (make sure that if the changes are not saved, the values will revert back to original)
+  onChange(event, input) {
+    if (input === 'fullname') {
+      this.setState({ fullname: event.target.value })
+    }
+    if (input === 'status') {
+      this.setState({ status: event.target.value })
+    }
+    if (input === 'bio') {
+      this.setState({ bio: event.target.value })
+    }
+    if (input === 'phone') {
+      this.setState({ phone: event.target.value })
+    }
+  }
 
   //create onSubmit func when Save btn is clicked 
     //alters information in DB profiles table
+  onSave() {
+    let { username, fullname, status, bio, phone }=this.state;
+    console.log(username, fullname, status, bio, phone)
+    // //POST to /profile, update information in database
+    // fetch('/profile', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ username, fullname, status, bio, phone }),
+    //   headers: { 'content-type': 'application/json' }
+    // })
+    // .then(resp => 
+    //   (resp.status === 200
+    //   ? this.setState({ updateSuccess: true })
+    //   : undefined ))
+    // .catch(console.error);
+  }
 
 
   render() {
@@ -42,34 +70,53 @@ export default class ProfileInformationForm extends React.Component {
       <Container style={styles.container}>
         <Form>
           <FormGroup>
-            <Label for="fullName">Full Name</Label>
+            <Label for="fullname">Full Name</Label>
             <Input
               type="text"
-              id="fullName"
+              id="fullname"
               placeholder="replace this with the current user's fullname"
-              onChange={this.fullnameOnChange}
+              onChange={(event) => this.onChange(event, 'fullname')}
             />
           </FormGroup>
+
           <FormGroup>
-            <Label for="statusSelect">Status</Label>
-            <Input type="select" id="statusSelect" placeholder="none">
-              <option> </option>
-              <option>Away</option>
-              <option>In a Meeting</option>
-              <option>Working Remote</option>
-              <option>Vacationing</option>
-              <option>Out Sick</option>
+            <Label for="status">Status</Label>
+            <Input type="select" id="status" placeholder="none" onChange={(event) => this.onChange(event, 'status')}>
+              <option value=""> </option>
+              <option value="Away">Away</option>
+              <option value="In a Meeting">In a Meeting</option>
+              <option value="Working Remote">Working Remote</option>
+              <option value="Vacationing">Vacationing</option>
+              <option value="Out Sick">Out Sick</option>
             </Input>
             <FormText color="muted">
-              This is some placeholder block-level help text for the above input.
+              Let others know what you're doing.
             </FormText>
           </FormGroup>
+
           <FormGroup>
-            <Label for="whatYouDo">What You Do</Label>
-            <Input type="text" id="whatYouDo" placeholder="replace this with the current user's info, if available" />
+            <Label for="bio">Bio</Label>
+            <Input 
+              type="text" 
+              id="bio" 
+              placeholder="replace this with the current user's info, if available" 
+              onChange={(event) => this.onChange(event, 'bio')}
+
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label for="phone">Phone</Label>
+            <Input 
+              type="text" 
+              id="phone" 
+              placeholder="replace this with the current user's info, if available"
+              onChange={(event) => this.onChange(event, 'phone')}
+ 
+            />
           </FormGroup>
         </Form>
-        <Button color="success">Save</Button>
+        <Button onClick={this.onSave} color="success">Save</Button>
       </Container>
     )
   }

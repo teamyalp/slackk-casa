@@ -200,10 +200,39 @@ router.post('/directmsg', async (req, res) => {
     await db.postDUser(fromUser, name);
     return res.sendStatus(201);
 //GET request to /profile, return profile object
-//need to create db getProfileImage()
 router.get('/profile', async (req, res) => {
   try {
-    return res.status(200).json(await db.getProfileImage());
+    return res.status(200).json(await db.getProfile());
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
+//POST request to /profile, used to update EXISTING profile record
+/*
+  Request object from client:
+  {
+    username: 'username',
+    fullname: 'fullname',
+    status: 'current status/activity',
+    bio: 'short bio',
+    phone: 'phone number'
+  }
+
+  Server response status codes:
+    - 201 - 
+    - 400 - 
+    - 500 - Database error, all other errors
+*/
+router.post('/profile', bodyParser.json());
+router.post('/profile', async (req, res) => {
+  try {
+    const profile = await db.getProfile(req.body.username);
+    if (profile) {
+      return res.status(200).json(await db.updateProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
+    } else {
+      return res.status(200).json(await db.createProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
+    }
   } catch (err) {
     return res.status(500).json(err.stack);
   }

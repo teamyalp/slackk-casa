@@ -45,8 +45,21 @@ export default class Profile extends React.Component {
     }
 
     getUserProfile() {
+        let { username } = this.state
         //GET request to server/db from profiles table using this.state.username
+        fetch('/profile', {
+            method: 'GET',
+            body: JSON.stringify( username ),
+            headers: { 'content-type': 'application/json' },
+        })
         //update this.state.userProfile to returned object
+            .then(resp => {
+                console.log(resp);
+                resp.status === 200
+                ? this.setState({ userProfile: resp })
+                : undefined 
+            })
+            .catch(console.error);
         //expecting object to have an 'image' key to pass to UploadImage below
     }
 
@@ -84,7 +97,7 @@ export default class Profile extends React.Component {
                                 className={classnames({ active: activeTab === '1' })}
                                 onClick={() => { this.toggleTabs('1') }}
                                 >
-                                    Login Details
+                                    Profile Information
                                 </NavLink>
                             </NavItem>
                             <NavItem>
@@ -92,18 +105,18 @@ export default class Profile extends React.Component {
                                 className={classnames({ active: activeTab === '2' })}
                                 onClick={() => { this.toggleTabs('2') }}
                                 >
-                                    Profile Information
+                                    Login Details
                                 </NavLink>
                             </NavItem>
                         </Nav>
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId="1">
-                                <LoginSettingsForm user={userProfile} username={username}/>
+                                <ProfileInformationForm user={userProfile} username={username} />
                             </TabPane>
                         </TabContent>
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId="2">
-                                <ProfileInformationForm user={userProfile} username={username}/>
+                                <LoginSettingsForm user={userProfile} username={username} />
                             </TabPane>
                         </TabContent>
                     </Col>
