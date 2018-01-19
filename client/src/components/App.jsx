@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect, sendMessage } from '../socketHelpers';
 import { Input } from 'reactstrap';
+import profanity from 'profanity-censor'
 import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import Body from './Body.jsx';
-import fck from 'f-ck'
 
 //The main component of the App. Renders the core functionality of the project.
 export default class App extends React.Component {
@@ -59,7 +59,7 @@ export default class App extends React.Component {
       event.preventDefault();
       sendMessage({
         username: this.props.location.state.username,
-        text: fck.vowel(this.state.query),
+        text: profanity.filter(this.state.query),
         workspaceId: this.state.currentWorkSpaceId,
       });
       // resets text box to blank string
@@ -102,7 +102,6 @@ export default class App extends React.Component {
     })
     this.setState({filteredMessages: filteredMessages});
   }
-
 
   //renders nav bar, body(which contains all message components other than input), and message input
   render() {

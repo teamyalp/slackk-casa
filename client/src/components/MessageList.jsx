@@ -4,7 +4,7 @@ import MessageEntry from './MessageEntry.jsx';
 
 //container for message components
 export default ({ messages, currentWorkSpaceId }) => (
-  <div className="message-list-container">
+  <div className="message-list-container" id="messages">
     <Container>
       {
         messages.map((message, i) => {
