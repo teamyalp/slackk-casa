@@ -24,6 +24,9 @@ export default class Body extends React.Component {
         name: `${toUser}-${username}`
       }
     */
+    //invoke a second function that sets state @ app for selected user
+    this.props.changeDirectMessageUser(toUser); 
+
     fetch('/directmsg', {
       method: 'POST',
       body: JSON.stringify({ fromUser: username, toUser, name: `${toUser}-${username}` }),
@@ -43,7 +46,6 @@ export default class Body extends React.Component {
       currentWorkSpaceId,
       users,
       username,
-      currentWorkSpaceName,
     } = this.props;
     return (
       <Container fluid>
@@ -54,7 +56,6 @@ export default class Body extends React.Component {
               loadWorkSpaces={loadWorkSpaces}
               changeCurrentWorkSpace={changeCurrentWorkSpace}
               currentWorkSpaceId={currentWorkSpaceId}
-              currentWorkSpaceName={currentWorkSpaceName}
             />
             <MemberList
               directMessage={this.directMessage}
@@ -78,5 +79,5 @@ export default class Body extends React.Component {
 Body.propTypes = {
   messages: PropTypes.array,
   workspaces: PropTypes.array,
-  currentWorkSpaceId: PropTypes.number,
+  currentWorkSpaceId: PropTypes.number
 }

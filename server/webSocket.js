@@ -4,6 +4,8 @@ const session = require('express-session');
 
 const db = require('../database');
 
+let counter = 1;
+let connectedClient = {};
 // creates a response object for sending to clients
 /*
 Object used for communication between server and clients through WebSockets -
@@ -24,6 +26,7 @@ const response = (code, message, method, data) =>
 
 // sends data to all clients except client ws
 const updateEveryoneElse = (ws, wss, data) => {
+  console.log('this is websocket data packet', data);
   wss.clients.forEach((client) => {
     // console.log('these are clients:', client)
     if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -34,10 +37,10 @@ const updateEveryoneElse = (ws, wss, data) => {
 
 // sends data to only direct-message clients
 // ***********************TODO: filter by toUser and fromUser****************************
-const updateDMUser = (ws, wss, data) => {
+const updateDMUser = (ws, wss, data, fromUser, toUser) => {
+  console.log('this is websocket data packet-39', data, fromUser, toUser);
   wss.clients.forEach((client) => {
-    // console.log('these are clients:', client)
-    if (client !== ws && client.readyState === WebSocket.OPEN) {
+    if (client.readyState === WebSocket.OPEN && (connectedClient[fromUser] === client || connectedClient[toUser] === client)) {
       client.send(data);
     }
   });
@@ -59,7 +62,6 @@ const onMessage = async (ws, wss, data) => {
   try {
     // attempt to parse data from client, if unparseable responsd back with 400 and parsing error
     message = JSON.parse(data);
-    console.log('this is onMeessage data', data);
   } catch (err) {
     return ws.send(response(400, err.message));
   }
@@ -98,9 +100,9 @@ const onMessage = async (ws, wss, data) => {
         // respond back to client with error response and error message if messages can't be pulled from database
         return ws.send(response(400, err.stack, message.method));
       }
-      case 'GETDMESSAGES':
+    case 'GETDMESSAGES':
       // method GETDMESSAGES returns a list of previous direct-messages for the given workspacename 
-    
+
       try {
         const messages = await db.getDMessages(message.data.workspacename);
 
@@ -156,13 +158,13 @@ const onMessage = async (ws, wss, data) => {
           message.data.workspace,
         );
         //postedMessage = message object
-
+        console.log('this is message data object; 161-websocket.js', message.data);
         // [postedMessage] = postedMessage.rows;
         // postedMessage = postedMessage.rows[0]X;
         // if (postedMessage) {
         //   console.log('this is result from db.postMessage (data.rows) :', postedMessage);
         // }
-        
+
         // respond back to client with success response and list of messages if successfully posted to the database
         ws.send(response(201, 'Post success', message.method, postedMessage));
         // notify all other connected clients that a new message has been posted with a NEWMESSAGE response
@@ -203,12 +205,10 @@ const onMessage = async (ws, wss, data) => {
           message.data.text,
           message.data.username,
           message.data.workspacename,
-          message.data.workspaceId,
         );
 
         //postedMessage is an object within array;
-
-        console.log('this is result from db.postDMessage (data.rows) :', postedMessage[0])
+        console.log('this is message data object; 210-websocket.js', message.data);
         // [postedMessage] = postedMessage.rows;
         // respond back to client with success response and list of messages if successfully posted to the database
         ws.send(response(201, 'Post success', message.method, postedMessage[0]));
@@ -235,6 +235,8 @@ const onMessage = async (ws, wss, data) => {
             message: postedMessage[0],
             workspaceId: message.data.workspaceId,
           }),
+          message.data.fromUser,
+          message.data.toUser,
         );
       } catch (err) {
         // respond back to client with error response and error message if message can't be posted to database
@@ -247,7 +249,20 @@ const onMessage = async (ws, wss, data) => {
   }
 };
 
-let connectedClient = [];
+/*
+  -> on web socket client connect, store the key(id)-value(ws) mapping into an object({})
+  -> define a global variable counter and initialize it to zero (let counter = 0)
+  (i.e.):
+    connectedClients = {
+      0: ws,
+      1: ws,
+      ...
+    }
+
+  -> 
+
+*/
+
 
 // event handler for when client connects to websocket server
 // ws will be an object
@@ -261,7 +276,11 @@ const onConnect = (ws, req, wss) => {
   //     // req.sessions
   //   });
   // });
-  connectedClient.push(ws)
+  connectedClient[counter] = ws;
+  ws.send(JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
+  counter++;
+
+
   // console.log('this is WS:', ws);
   // console.log('this is connected Client:', connectedClient)
   // connectedClient.push({ userId: req.session.passport.user, ws: ws });

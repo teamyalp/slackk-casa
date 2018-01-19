@@ -52,12 +52,24 @@ const sendDMessage = (data) => {
       username: data.username,
       text: data.text,
       workspacename: data.workspacename,
-      workspaceId: data.currentWorkSpaceId,
+      fromUser: data.fromUser,
+      toUser: data.toUser,
     },
   };
   oneup.play();
   sent = true;
   ws.send(JSON.stringify(msg));
+};
+
+const addClientInfo = (id) => {
+  //get id
+  //get current username (from state)
+  //add a property to an object (on state) for this current key(username)/value(id)
+
+  console.log('addClientInfo is firing');
+  let { clientWS } = app.state;
+  clientWS[app.state.currentUsername] = id;
+  app.setState({ clientWS });
 };
 
 // takes a workspace Id as INT for parameter and returns the messages for that current workspace
@@ -88,7 +100,7 @@ const filterMsgByWorkSpace = (msg) => {
 const afterConnect = () => {
   ws.onmessage = (event) => {
     let serverResp = JSON.parse(event.data);
-
+    console.log('Message Sent From Server: ', serverResp);
     // TODO: better error handling. Temp till complete switch statements
     if (serverResp.code === 400) {
       // console.log(serverResp.method);
@@ -114,6 +126,9 @@ const afterConnect = () => {
         break;
       case 'POSTDMESSAGE':
         addNewMessage(serverResp.data);
+        break;
+      case 'SENDCLIENTINFO':
+        addClientInfo(serverResp.id);
         break;
       default:
     }

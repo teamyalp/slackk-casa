@@ -14,7 +14,7 @@ export default ({ messages, currentWorkSpaceId, directMessage }) => (
           } else {
             sameUser = false;
           }
-          return <MessageEntry sameUser={sameUser} message={message} key={message.id} />
+          return <MessageEntry sameUser={sameUser} message={message} key={message.id} directMessage={directMessage} />;
         })
       }
     </Container>

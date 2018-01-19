@@ -41,8 +41,12 @@ export default class App extends React.Component {
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
       currentUsername: this.props.location.state.username,
+      currentToUser: '',
+      //key = username; value = clientWS ID
+      clientWS: { 4: 2 },
       // currentUserId: 0
     };
+    this.changeDirectMessageUser = this.changeDirectMessageUser.bind(this);
   }
 
   componentDidMount() {
@@ -81,6 +85,9 @@ export default class App extends React.Component {
           text: this.state.query,
           workspacename: this.state.currentWorkSpaceName,
           workspaceId: this.state.currentWorkSpaceId,
+          //how to send the address? sending IDs;
+          fromUser: this.state.clientWS[this.props.location.state.username],
+          toUser: this.state.clientWS[this.state.currentToUser],
         });
         // resets text box to blank string
         this.setState({
@@ -155,6 +162,9 @@ export default class App extends React.Component {
     this.setState({filteredMessages: filteredMessages});
   }
 
+  changeDirectMessageUser(toUser) {
+    this.setState({currentToUser: toUser}, () => console.log('toUser is set in state', toUser));
+  }
   //renders nav bar, body(which contains all message components other than input), and message input
   render() {
     let {
@@ -185,6 +195,7 @@ export default class App extends React.Component {
           users={users}
           username={currentUsername}
           userId={currentUserId}
+          changeDirectMessageUser={this.changeDirectMessageUser}
         />
         <div id="input-container" className="input-container">
           <Input
