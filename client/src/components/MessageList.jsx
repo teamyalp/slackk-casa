@@ -9,13 +9,14 @@ export default ({ messages, currentWorkSpaceId }) => (
       {
         messages.map((message, i) => {
           var sameUser = false;
-          if (i > 0 && message.username === messages[i - 1].username && messages.length > 0) {
+          if (i > 0 && message.username === messages[i - 1].username) {
             sameUser = true;
           } else {
             sameUser = false;
           }
           return <MessageEntry sameUser={sameUser} message={message} key={message.id} />
-        })}
+        })
+      }
     </Container>
   </div>
 );

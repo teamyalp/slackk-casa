@@ -7,12 +7,13 @@ export default class extends React.Component {
     super(props);
     this.state = {
       toggleHover: false,
-      sameUser: this.props.sameUser,
     };
   }
+  
   toggleHover() {
     this.setState({ toggleHover: !this.state.toggleHover });
   }
+
   render() {
     const { message } = this.props;
     //for the color changing avatars
@@ -76,7 +77,7 @@ export default class extends React.Component {
     };
 
     var messageElement;
-    if (this.state.sameUser) {
+    if (this.props.sameUser) {
       messageElement = <span style={styles.sameUserMessage}>{message.text}</span>
     } else {
       messageElement = <Container style={styles.body}>
