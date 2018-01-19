@@ -43,6 +43,10 @@ export default class App extends React.Component {
 
     // connect to the websocket server
     connect(server, this);
+    if (this.state.currentWorkSpaceId === 0) {
+      document.getElementById('messageInput').setAttribute('disabled', 'disabled');
+      document.getElementById('messageInput').setAttribute('placeholder', 'Select a Workspace to Chat!');
+    }
   }
 
   // changes the query state based on user input in text field
@@ -82,7 +86,7 @@ export default class App extends React.Component {
   //grabs all existing workspaces
   loadWorkSpaces() {
     fetch('/workspaces')
-      .then(resp => resp.json());
+      .then(resp => resp.json())
       .then(workSpaces => this.setState({ workSpaces }))
       .catch(console.error);
   }
@@ -94,6 +98,7 @@ export default class App extends React.Component {
       currentWorkSpaceName: name, 
       filteredMessages: null 
     });
+    document.getElementById('messageInput').removeAttribute('disabled');
   }
 
   //*new*
@@ -143,7 +148,7 @@ export default class App extends React.Component {
             className="message-input-box"
             type="textarea"
             name="text"
-            placeholder={`Message #${currentWorkSpaceName || 'select a workspace!'}`}
+            placeholder={`Message #${currentWorkSpaceName}`}
             onChange={event => this.handleChange(event)}
             onKeyPress={event => this.handleKeyPress(event)}
             onKeyDown={event => this.getLastMessage(event)}
