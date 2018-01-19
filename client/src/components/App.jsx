@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect, sendMessage } from '../socketHelpers';
 import { Input } from 'reactstrap';
+import profanity from 'profanity-censor'
 import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import Body from './Body.jsx';
@@ -16,6 +17,13 @@ export default class App extends React.Component {
           text: 'Welcome to Slap! Please select or create a workspace!',
           username: 'Slap-bot',
           id: 0,
+          createdAt: new Date(),
+          workspaceId: 0,
+        },
+        {
+          text: 'You can ask me any questions!!',
+          username: 'Slap-bot',
+          id: 1,
           createdAt: new Date(),
           workspaceId: 0,
         },
@@ -51,7 +59,7 @@ export default class App extends React.Component {
       event.preventDefault();
       sendMessage({
         username: this.props.location.state.username,
-        text: this.state.query,
+        text: profanity.filter(this.state.query),
         workspaceId: this.state.currentWorkSpaceId,
       });
       // resets text box to blank string
@@ -94,7 +102,6 @@ export default class App extends React.Component {
     })
     this.setState({filteredMessages: filteredMessages});
   }
-
 
   //renders nav bar, body(which contains all message components other than input), and message input
   render() {

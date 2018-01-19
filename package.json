@@ -55,6 +55,7 @@
     "passport-local": "^1.0.0",
     "pg": "^7.4.1",
     "postgresql": "0.0.1",
+    "profanity-censor": "^1.0.5",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

@@ -7,6 +7,7 @@ export default class extends React.Component {
     super(props);
     this.state = {
       toggleHover: false,
+      sameUser: this.props.sameUser,
     };
   }
   toggleHover() {
@@ -58,6 +59,15 @@ export default class extends React.Component {
         display: 'fixed',
         left: '63.99',
       },
+      sameUserMessage: {
+        fontSize: '0.9em',
+        overflowWrap: 'break-word',
+        textAlign: 'left',
+        display: 'fixed',
+        position: 'relative',
+        left: '70px',
+        marginTop: '-5px'
+      },
       egg: {
         backgroundColor: color(),
         float: 'left',
@@ -65,24 +75,31 @@ export default class extends React.Component {
       },
     };
 
+    var messageElement;
+    if (this.state.sameUser) {
+      messageElement = <span style={styles.sameUserMessage}>{message.text}</span>
+    } else {
+      messageElement = <Container style={styles.body}>
+        <Media left href="#">
+          <img
+            className="egg img-responsive"
+            href="#"
+            src="/images/twitter-egg.png"
+            alt="profile-pic"
+            style={styles.egg}
+          />
+        </Media>
+        <span style={styles.username}>
+          {message.username}
+          <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
+        </span>
+        <div style={styles.message}>{message.text}</div>
+      </Container>
+    }
+
     return (
       <div className="message-entry-container">
-        <Container style={styles.body}>
-          <Media left href="#">
-            <img
-              className="egg img-responsive"
-              href="#"
-              src="/images/twitter-egg.png"
-              alt="profile-pic"
-              style={styles.egg}
-            />
-          </Media>
-          <span style={styles.username}>
-            {message.username}
-            <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
-          </span>
-          <div style={styles.message}>{message.text}</div>
-        </Container>
+          {messageElement}
       </div>
     );
   }
