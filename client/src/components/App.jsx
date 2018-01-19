@@ -32,6 +32,7 @@ export default class App extends React.Component {
       users: [],
       workSpaces: [],
       query: '',
+      lasteMessage: '',
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
     };
@@ -63,17 +64,25 @@ export default class App extends React.Component {
         workspaceId: this.state.currentWorkSpaceId,
       });
       // resets text box to blank string
+      this.setState({lastMessage: this.state.query});
       this.setState({
         query: '',
       });
     }
-
-
   }
+
+  getLastMessage(event) {
+  if (event.keyCode === 38) {
+      event.preventDefault();
+      document.getElementById('messageInput').value = this.state.lastMessage;
+      this.setState({query: this.state.lastMessage});
+    }
+  }
+
   //grabs all existing workspaces
   loadWorkSpaces() {
     fetch('/workspaces')
-      .then(resp => resp.json())
+      .then(resp => resp.json());
       .then(workSpaces => this.setState({ workSpaces }))
       .catch(console.error);
   }
@@ -137,6 +146,7 @@ export default class App extends React.Component {
             placeholder={`Message #${currentWorkSpaceName || 'select a workspace!'}`}
             onChange={event => this.handleChange(event)}
             onKeyPress={event => this.handleKeyPress(event)}
+            onKeyDown={event => this.getLastMessage(event)}
           />
         </div>
       </div>
