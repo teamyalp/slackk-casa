@@ -25,7 +25,18 @@ const response = (code, message, method, data) =>
 // sends data to all clients except client ws
 const updateEveryoneElse = (ws, wss, data) => {
   wss.clients.forEach((client) => {
-    console.log('these are clients:', client)
+    // console.log('these are clients:', client)
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+};
+
+// sends data to only direct-message clients
+// ***********************TODO: filter by toUser and fromUser****************************
+const updateDMUser = (ws, wss, data) => {
+  wss.clients.forEach((client) => {
+    // console.log('these are clients:', client)
     if (client !== ws && client.readyState === WebSocket.OPEN) {
       client.send(data);
     }
@@ -43,11 +54,12 @@ const updateEveryoneElse = (ws, wss, data) => {
 
 // event handler for incoming data from any client
 const onMessage = async (ws, wss, data) => {
-  console.log(ws);
+  // console.log(ws);
   let message;
   try {
     // attempt to parse data from client, if unparseable responsd back with 400 and parsing error
     message = JSON.parse(data);
+    console.log('this is onMeessage data', data);
   } catch (err) {
     return ws.send(response(400, err.message));
   }
@@ -55,29 +67,29 @@ const onMessage = async (ws, wss, data) => {
   // switch case to determine what to do with the message
   switch (message.method) {
     case 'GETMESSAGES':
-    // method GETMESSAGES returns a list of previous messages for the given workspaceId
-    /*
-    Request from client to server:
-    {
-      method: 'GETMESSAGES',
-      data: {
-        workspaceId: 1, //request workspace's id
+      // method GETMESSAGES returns a list of previous messages for the given workspaceId
+      /*
+      Request from client to server:
+      {
+        method: 'GETMESSAGES',
+        data: {
+          workspaceId: 1, //request workspace's id
+        }
       }
-    }
-
-    Response from server to client:
-    {
-      code: 200,
-      message: 'Request success',
-      method: 'GETMESSAGES',
-      data: [{  //return an array of message objects from the requested workspace
-        id: 1,
-        text: 'this is a test message',
-        username: 'testUser',
-        createdAt: '2018-01-15T20:15:29.269Z',
-      }, ...],
-    }
-    */
+  
+      Response from server to client:
+      {
+        code: 200,
+        message: 'Request success',
+        method: 'GETMESSAGES',
+        data: [{  //return an array of message objects from the requested workspace
+          id: 1,
+          text: 'this is a test message',
+          username: 'testUser',
+          createdAt: '2018-01-15T20:15:29.269Z',
+        }, ...],
+      }
+      */
       try {
         const messages = await db.getMessages(Number(message.data.workspaceId));
         // respond back to client with success response and list of messages if successfully pulled from database
@@ -86,51 +98,71 @@ const onMessage = async (ws, wss, data) => {
         // respond back to client with error response and error message if messages can't be pulled from database
         return ws.send(response(400, err.stack, message.method));
       }
+      case 'GETDMESSAGES':
+      // method GETDMESSAGES returns a list of previous direct-messages for the given workspacename 
+    
+      try {
+        const messages = await db.getDMessages(message.data.workspacename);
+
+        console.log('GETDMESSAGES WebSocket messages:', messages);
+        // respond back to client with success response and list of messages if successfully pulled from database
+        return ws.send(response(200, 'Request success', message.method, messages));
+      } catch (err) {
+        // respond back to client with error response and error message if messages can't be pulled from database
+        return ws.send(response(400, err.stack, message.method));
+      }
     case 'POSTMESSAGE':
-    // method POSTMESSAGE posts a message to the workspace for the given workspaceId
-    /*
-    Request from client to server:
-    {
-      method: 'POSTMESSAGE',
-      data: {
-        text: 'test message',
-        username: 'testUser',
-        workspaceId: 1, //workspace id to post messsage to
+      // method POSTMESSAGE posts a message to the workspace for the given workspaceId
+      /*
+      Request from client to server:
+      {
+        method: 'POSTMESSAGE',
+        data: {
+          text: 'test message',
+          username: 'testUser',
+          workspaceId: 1, //workspace id to post messsage to
+        }
       }
-    }
-
-    Direct Msg request from client to server:
-    {
-      method: 'POSTMESSAGE',
-      data: {
-        text: 'test message',
-        username: 'testUser',
-        workspaceId: 1, //workspace id to post messsage to
-        otherUserId: 1, //user id to post message to
+  
+      Direct Msg request from client to server:
+      {
+        method: 'POSTMESSAGE',
+        data: {
+          text: 'test message',
+          username: 'testUser',
+          workspaceId: 1, //workspace id to post messsage to
+          otherUserId: 1, //user id to post message to
+        }
       }
-    }
-
-    Response from server to client:
-    {
-      code: 200,
-      message: 'Post success',
-      method: 'POSTMESSAGE',
-      data: {  //return back the successfully posted message object
-        id: 1,
-        text: 'test message',
-        username: 'testUser',
-        createdAt: '2018-01-15T20:15:29.269Z',
-      },
-    }
-    */
+  
+      Response from server to client:
+      {
+        code: 200,
+        message: 'Post success',
+        method: 'POSTMESSAGE',
+        data: {  //return back the successfully posted message object
+          id: 1,
+          text: 'test message',
+          username: 'testUser',
+          createdAt: '2018-01-15T20:15:29.269Z',
+        },
+      }
+      */
       try {
         // post the given message to the database
         let postedMessage = await db.postMessage(
           message.data.text,
           message.data.username,
-          message.data.workspaceId,
+          message.data.workspace,
         );
-        [postedMessage] = postedMessage.rows;
+        //postedMessage = message object
+
+        // [postedMessage] = postedMessage.rows;
+        // postedMessage = postedMessage.rows[0]X;
+        // if (postedMessage) {
+        //   console.log('this is result from db.postMessage (data.rows) :', postedMessage);
+        // }
+        
         // respond back to client with success response and list of messages if successfully posted to the database
         ws.send(response(201, 'Post success', message.method, postedMessage));
         // notify all other connected clients that a new message has been posted with a NEWMESSAGE response
@@ -161,6 +193,54 @@ const onMessage = async (ws, wss, data) => {
         // respond back to client with error response and error message if message can't be posted to database
         return ws.send(response(400, err.stack, message.method));
       }
+
+    case 'POSTDMESSAGE':
+      // method POSTDMESSAGE posts a direct message to the "dmessages" table
+
+      try {
+        // post the given message to the database
+        let postedMessage = await db.postDMessage(
+          message.data.text,
+          message.data.username,
+          message.data.workspacename,
+          message.data.workspaceId,
+        );
+
+        //postedMessage is an object within array;
+
+        console.log('this is result from db.postDMessage (data.rows) :', postedMessage[0])
+        // [postedMessage] = postedMessage.rows;
+        // respond back to client with success response and list of messages if successfully posted to the database
+        ws.send(response(201, 'Post success', message.method, postedMessage[0]));
+        // notify all other connected clients that a new message has been posted with a NEWMESSAGE response
+        /*
+        Request from server to client:
+        {
+          method: 'NEWMESSAGE',
+          data: {  //send the new message to all other clients along with workspaceId of message
+            message: {
+              id: 1,
+              text: 'test message',
+              username: 'testUser',
+              createdAt: '2018-01-15T20:15:29.269Z',
+            },
+            workspaceId: 1,
+          },
+        }
+        */
+        return updateDMUser(
+          ws,
+          wss,
+          response(200, 'New message', 'NEWMESSAGE', {
+            message: postedMessage[0],
+            workspaceId: message.data.workspaceId,
+          }),
+        );
+      } catch (err) {
+        // respond back to client with error response and error message if message can't be posted to database
+        return ws.send(response(400, err.stack, message.method));
+      }
+
     default:
       // unknown message sent to server, respond back to client
       return ws.send(response(405, 'Unknown method', message.method));
@@ -181,6 +261,9 @@ const onConnect = (ws, req, wss) => {
   //     // req.sessions
   //   });
   // });
+  connectedClient.push(ws)
+  // console.log('this is WS:', ws);
+  // console.log('this is connected Client:', connectedClient)
   // connectedClient.push({ userId: req.session.passport.user, ws: ws });
   // console.log(connectedClient);
   // attaches event handler for when client sends message to server

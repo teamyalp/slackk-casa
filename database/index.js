@@ -44,9 +44,9 @@ const initializeDB = () => {
 //       ));
 
 // post message to database
-const postMessage = (message, username, workspaceId) =>
-  // pull workspace messages table name using workspaceId
-  client
+const postMessage = (message, username, workspaceId) => {
+
+  return client
     .query('SELECT db_name FROM workspaces WHERE id = $1', [workspaceId])
     // post new message into workspace's messages table
     .then(data =>
@@ -56,24 +56,25 @@ const postMessage = (message, username, workspaceId) =>
           data.rows[0].db_name,
         ),
         [message, username],
-      ));
+      )).then(data => data.rows[0])
+};
+// pull workspace messages table name using workspaceId
 
 const postDMessage = (message, username, workspaceName) =>
 
   client
     .query(
-      'INSERT INTO dMessages (text, username, workspacename) VALUES ($1, $2, $3) RETURNING *',
-      [message, username, workspaceName],
-    )
-    .then(data => console.log('this is postDMessage data returned', data));
+    'INSERT INTO dMessages (text, username, workspacename) VALUES ($1, $2, $3) RETURNING *',
+    [message, username, workspaceName],
+  )
+    .then(data => data.rows);
 
 const postDUser = (username, workspaceName) => {
-  console.log('Post Message!!', username, workspaceName);
   client
     .query(
-      'INSERT INTO directmsg (username, workspacename) VALUES ($1, $2) RETURNING *',
-      [username, workspaceName],
-    )
+    'INSERT INTO directmsg (username, workspacename) VALUES ($1, $2) RETURNING *',
+    [username, workspaceName],
+  )
     .then(data => console.log('this is postDUser data returned', data));
 };
 
@@ -84,8 +85,17 @@ const getMessages = workspaceId =>
   client
     .query('SELECT db_name FROM workspaces WHERE id = $1', [workspaceId])
     // pull messages from workspace's messages table
-    .then(data => client.query('SELECT * FROM $db_name'.replace('$db_name', data.rows[0].db_name)))
+    .then(data => client.query(`SELECT * FROM ${data.rows[0].db_name}`))
     .then(data => data.rows);
+
+const getDMessages = (workspaceName) => {
+  // pull workspace messages table name using workspaceName
+  client.query('SELECT * FROM dmessages WHERE dmessages.workspacename = $1', [workspaceName])
+    .then((data) => {
+      console.log('getDMessages Data :', data.rows);
+      return data.rows;
+    });
+};
 
 // post new user to users table in database
 const createUser = (username, passhash, email, passhint) =>
@@ -145,6 +155,7 @@ module.exports = {
   initializeDB,
   postMessage,
   getMessages,
+  getDMessages,
   createUser,
   getUser,
   createWorkspace,
@@ -153,4 +164,5 @@ module.exports = {
   getPasswordHint,
   getUsers,
   postDUser,
+  postDMessage,
 };

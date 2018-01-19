@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS directmsg;
+-- DROP TABLE IF EXISTS directmsg;
 -- adds user(s) to specific workspace
 CREATE TABLE IF NOT EXISTS "directmsg" (
 	"id" serial NOT NULL,

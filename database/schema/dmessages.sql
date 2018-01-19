@@ -1,4 +1,4 @@
-  DROP TABLE IF EXISTS dmessages;
+  -- DROP TABLE IF EXISTS dmessages;
   
   CREATE TABLE IF NOT EXISTS "dmessages" (
 	"id" serial NOT NULL,

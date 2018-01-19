@@ -8,6 +8,7 @@ const oneup = new Audio('/sounds/coin.wav'); // sound on send msg
   objects and sets the component state messages
   with the new array of messages recieved */
 const loadMessages = (messages) => {
+  console.log('heyy gurrll:, ', messages);
   app.setState({ messages });
 };
 
@@ -20,6 +21,7 @@ const addNewMessage = (message) => {
   } else {
     beep.play();
   }
+  console.log(message);
   app.setState({ messages: [...app.state.messages, message] });
 };
 
@@ -35,7 +37,22 @@ const sendMessage = (data) => {
     data: {
       username: data.username,
       text: data.text,
-      workspaceId: data.workspaceId,
+      workspace: data.workspaceId,
+    },
+  };
+  oneup.play();
+  sent = true;
+  ws.send(JSON.stringify(msg));
+};
+
+const sendDMessage = (data) => {
+  const msg = {
+    method: 'POSTDMESSAGE',
+    data: {
+      username: data.username,
+      text: data.text,
+      workspacename: data.workspacename,
+      workspaceId: data.currentWorkSpaceId,
     },
   };
   oneup.play();
@@ -46,6 +63,12 @@ const sendMessage = (data) => {
 // takes a workspace Id as INT for parameter and returns the messages for that current workspace
 const getWorkSpaceMessagesFromServer = (id) => {
   const msg = { method: 'GETMESSAGES', data: { workspaceId: id } };
+  ws.send(JSON.stringify(msg));
+};
+
+// takes a workspace name as parameter and returns the direct-messages for that workspace
+const getWorkSpaceDMessagesFromServer = (name) => {
+  const msg = { method: 'GETDMESSAGES', data: { workspacename: name } };
   ws.send(JSON.stringify(msg));
 };
 
@@ -71,10 +94,14 @@ const afterConnect = () => {
       // console.log(serverResp.method);
       throw serverResp.message;
     }
-
+    console.log('afterConnect: ', serverResp);
     switch (serverResp.method) {
       case 'GETMESSAGES':
         loadMessages(serverResp.data);
+        break;
+      case 'GETDMESSAGES':
+        console.log('GETDMESSAGES - serverResp.data:', serverResp.data);
+        // loadMessages(serverResp.data);
         break;
       case 'NEWMESSAGE':
         filterMsgByWorkSpace(serverResp.data);
@@ -83,6 +110,9 @@ const afterConnect = () => {
         setUsers(serverResp.data);
         break;
       case 'POSTMESSAGE':
+        addNewMessage(serverResp.data);
+        break;
+      case 'POSTDMESSAGE':
         addNewMessage(serverResp.data);
         break;
       default:
@@ -98,7 +128,6 @@ const connect = (server, component) => {
   console.log('Connect method: ', ws);
   console.log('App: ', component);
   app = component;
-  ws.username = component.state.currentUsername;
   // on connection run the callback
   ws.addEventListener('open', () => {
     console.log('Connected to the server');
@@ -116,4 +145,4 @@ const connect = (server, component) => {
   });
 };
 
-export { connect, sendMessage, afterConnect, getWorkSpaceMessagesFromServer };
+export { connect, sendMessage, afterConnect, getWorkSpaceMessagesFromServer, getWorkSpaceDMessagesFromServer, sendDMessage };

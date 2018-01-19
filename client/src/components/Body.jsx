@@ -43,6 +43,7 @@ export default class Body extends React.Component {
       currentWorkSpaceId,
       users,
       username,
+      currentWorkSpaceName,
     } = this.props;
     return (
       <Container fluid>
@@ -53,6 +54,7 @@ export default class Body extends React.Component {
               loadWorkSpaces={loadWorkSpaces}
               changeCurrentWorkSpace={changeCurrentWorkSpace}
               currentWorkSpaceId={currentWorkSpaceId}
+              currentWorkSpaceName={currentWorkSpaceName}
             />
             <MemberList
               directMessage={this.directMessage}
