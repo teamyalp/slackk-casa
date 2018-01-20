@@ -202,8 +202,12 @@ router.post('/directmsg', async (req, res) => {
     await db.postDUser(toUser, name);
     await db.postDUser(fromUser, name);
     return res.sendStatus(201);
-//GET request to /profile, return profile object
-router.get('/profile', async (req, res) => {
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
+
 //GET request to /profile, provide username, return profile object
 //GET request to /profile/:username, provide username, return profile object
 router.get('/profile/:username', async (req, res) => {
