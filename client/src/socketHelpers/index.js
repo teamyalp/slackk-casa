@@ -8,7 +8,6 @@ const oneup = new Audio('/sounds/coin.wav'); // sound on send msg
   objects and sets the component state messages
   with the new array of messages recieved */
 const loadMessages = (messages) => {
-  console.log('heyy gurrll:, ', messages);
   app.setState({ messages });
 };
 
@@ -21,7 +20,6 @@ const addNewMessage = (message) => {
   } else {
     beep.play();
   }
-  console.log('index.js @ 24 - addNewMessages - messages to state: ', message);
   app.setState({ messages: [...app.state.messages, message] });
 };
 
@@ -61,6 +59,7 @@ const sendDMessage = (data) => {
   ws.send(JSON.stringify(msg));
 };
 
+
 // const addClientInfo = (id) => {
 //   //get id
 //   //get current username (from state)
@@ -89,6 +88,26 @@ const sendDMessage = (data) => {
 //   app.setState({ clientWS });
 // };
 
+const addClientInfo = (id) => {
+  //get id
+  //get current username (from state)
+  //add a property to an object (on state) for this current key(username)/value(id)
+
+  /*
+    When a user logouts and login, on server-side, the connectedClient array will assign the user a new id,
+
+  */
+  let { clientWS } = app.state;
+  // console.log(app.state.users);
+  let user = app.state.users.filter((user) => {
+    if (user.id === id) {
+      return user.username;
+    }
+  });
+  clientWS[user[0].username] = id;
+  app.setState({ clientWS });
+};
+
 // takes a workspace Id as INT for parameter and returns the messages for that current workspace
 const getWorkSpaceMessagesFromServer = (id) => {
   const msg = { method: 'GETMESSAGES', data: { workspaceId: id } };
@@ -108,7 +127,6 @@ const filterMsgByWorkSpace = (msg) => {
   } else {
     beep.play();
   }
-  console.log('filterMsgByWorkspace index.js/helpers(102)', msg);
   // put this back
   if (msg.workspaceId === app.state.currentWorkSpaceId) {
     app.setState({ messages: [...app.state.messages, msg.message] });
@@ -146,7 +164,6 @@ const afterConnect = () => {
         loadMessages(serverResp.data);
         break;
       case 'GETDMESSAGES':
-        console.log('GETDMESSAGES - serverResp.data:', serverResp.data);
         loadMessages(serverResp.data);
         break;
       case 'NEWMESSAGE':
