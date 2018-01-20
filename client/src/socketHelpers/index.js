@@ -61,33 +61,33 @@ const sendDMessage = (data) => {
   ws.send(JSON.stringify(msg));
 };
 
-const addClientInfo = (id, users) => {
-  //get id
-  //get current username (from state)
-  //add a property to an object (on state) for this current key(username)/value(id)
+// const addClientInfo = (id) => {
+//   //get id
+//   //get current username (from state)
+//   //add a property to an object (on state) for this current key(username)/value(id)
 
-  /*
-    When a user logouts and login, on server-side, the connectedClient array will assign the user a new id,
+//   /*
+//     When a user logouts and login, on server-side, the connectedClient array will assign the user a new id,
 
-//connectedClient = {1: ws(peter), 2: ws(chris)} - the one that logs on --> clientWS
-  //both users & connectedClient rely on counter for syncing
-    // start with users (current) --> pull WS' for each online user --> send (1) c-users & (2) corresponding WS' to state
+// //connectedClient = {1: ws(peter), 2: ws(chris)} - the one that logs on --> clientWS
+//   //both users & connectedClient rely on counter for syncing
+//     // start with users (current) --> pull WS' for each online user --> send (1) c-users & (2) corresponding WS' to state
 
-// hardcode online users array for testing purposes so that we update the users array state at App level
-const users = [
-  {id: 1, username: 'a'},
-  {id: 2, username: 'b'},
-];
+// // hardcode online users array for testing purposes so that we update the users array state at App level
+// const users = [
+//   {id: 1, username: 'a'},
+//   {id: 2, username: 'b'},
+// ];
 
-//set app.state.users = users
-//set clientWS to the WS' that correspond with users  {1: WS(a), 2: WS(b)}
-// App ClientWS = {'a': 1, 'b': 2}
-  */
-  console.log('addClientInfo is firing: ', id, '-', users);
-  let { clientWS } = app.state;
-  clientWS[users[users.length - 1].username] = id;
-  app.setState({ clientWS });
-};
+// //set app.state.users = users
+// //set clientWS to the WS' that correspond with users  {1: WS(a), 2: WS(b)}
+// // App ClientWS = {'a': 1, 'b': 2}
+//   */
+//   console.log('addClientInfo is firing: ', id, '-', users);
+//   let { clientWS } = app.state;
+//   clientWS[users[users.length - 1].username] = id;
+//   app.setState({ clientWS });
+// };
 
 // takes a workspace Id as INT for parameter and returns the messages for that current workspace
 const getWorkSpaceMessagesFromServer = (id) => {
@@ -164,10 +164,13 @@ const afterConnect = () => {
         break;
       case 'POSTDMESSAGE':
         addNewMessage(serverResp.data);
+        console.log('POSTDMESSAGE @ 167 (index.js/sockethelpers', serverResp.data);
+        { workspaces } = app.state.workspaces;
+        workspaces.push({})
         break;
-      case 'SENDCLIENTINFO':
-        addClientInfo(serverResp.id, serverResp.users);
-        break;
+      // case 'SENDCLIENTINFO':
+      //   addClientInfo(serverResp.id, serverResp.users);
+      //   break;
       default:
     }
   };
