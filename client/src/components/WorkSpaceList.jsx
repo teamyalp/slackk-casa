@@ -38,6 +38,7 @@ export default class WorkSpaceList extends Component {
         .catch(console.error);
     }
   }
+
   //helper for createWorkSpace
   handleFail() {
     this.setState({ createFail: false });
@@ -47,18 +48,17 @@ export default class WorkSpaceList extends Component {
     let { changeCurrentWorkSpace, currentWorkSpaceId, workSpaces, username } = this.props;
     let { createFail, createStatus, workSpaceQuery } = this.state;
     return (
-      <div>
+      <div className="workSpaces">
         <Row>
           <Col>
-            <h3 className="workSpace-header"> Workspaces </h3>{' '}
+            <h4 className="workSpace-header"> Workspaces </h4>{' '}
           </Col>
-          <Col className="mt-2">
             <CreateWorkSpace
               getWorkSpaceQuery={this.getWorkSpaceQuery}
               createWorkSpace={this.createWorkSpace}
             />
-          </Col>
         </Row>
+<<<<<<< HEAD
         {workSpaces.map((workSpace) => {
           if (workSpace.name.includes('-')) {
             let users = workSpace.name.split('-');
@@ -84,6 +84,18 @@ export default class WorkSpaceList extends Component {
       })}
         <br />
         <br />
+=======
+        {workSpaces.map(workSpace => (
+          <WorkSpaceEntry
+            workSpace={workSpace}
+            handleFail={() => this.handleFail}
+            key={workSpace.id}
+            changeCurrentWorkSpace={changeCurrentWorkSpace}
+            currentWorkSpaceId={currentWorkSpaceId}
+            removeWorkSpace={this.props.removeWorkSpace}
+          />
+        ))}
+>>>>>>> Various styling changes
         {createFail ? <Alert color="danger"> Failed to create workspace </Alert> : undefined}
       </div>
     );

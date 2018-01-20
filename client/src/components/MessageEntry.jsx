@@ -109,7 +109,7 @@ export default class extends React.Component {
     if (this.props.sameUser) {
       console.log('SAME USER', this.state.imageUrl)
       if (message.text.substr(0, 4) === 'http') {
-        messageElement = <img src={message.text} />
+        messageElement = <img className="imageMessage" src={message.text} />
       } else {
         messageElement = <span style={styles.sameUserMessage}>{message.text}</span>
       }
@@ -130,7 +130,7 @@ export default class extends React.Component {
             {message.username}
             <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
           </span>
-          <div style={styles.message}><img src={message.text} /></div>
+          <div style={styles.message}><img className="imageMessage" src={message.text} /></div>
         </Container>
       } else {
         console.log('RIGHT BEFORE', this.state.imageUrl)

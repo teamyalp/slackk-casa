@@ -66,13 +66,13 @@ export default class App extends React.Component {
     this.setState({
       query: event.target.value,
     });
-    console.log(this.state.query)
   }
 
   // sends message on enter key pressed and clears form
   // only when shift+enter pressed breaks to new line
   handleKeyPress(event) {
     // on key press enter send message and reset text box
+<<<<<<< HEAD
     if (this.state.currentWorkSpaceName.includes('-')) {
           console.log('enter')
       if (event.charCode === 13 && !event.shiftKey) {
@@ -88,10 +88,38 @@ export default class App extends React.Component {
         this.setState({
           query: '',
         });
+=======
+    if (event.charCode === 13 && !event.shiftKey) {
+      event.preventDefault();
+      if (!this.state.query.length) {
+        return;
+>>>>>>> Various styling changes
       }
+      if (this.state.currentWorkSpaceName.includes('-')) {
+        if (this.state.query.split('')[0] === '/' || this.state.query.split('')[0] === ':') {
+          this.renderText(renderedText => {
+            sendDMessage({
+              username: this.props.location.state.username,
+              text: renderedText,
+              workspacename: this.state.currentWorkSpaceName,
+              workspaceId: this.state.currentWorkSpaceId,
+              //how to send the address? sending IDs;
+              fromUser: this.state.clientWS[this.props.location.state.username],
+              toUser: this.state.clientWS[this.state.currentToUser],
+            });
+          })
+        } else {
+          sendDMessage({
+            username: this.props.location.state.username,
+            text: profanity.filter(this.state.query),
+            workspacename: this.state.currentWorkSpaceName,
+            workspaceId: this.state.currentWorkSpaceId,
+            //how to send the address? sending IDs;
+            fromUser: this.state.clientWS[this.props.location.state.username],
+            toUser: this.state.clientWS[this.state.currentToUser],
+          });
+        }
     } else {
-      if (event.charCode === 13 && !event.shiftKey) {
-        event.preventDefault();
         if (this.state.query.split('')[0] === '/' || this.state.query.split('')[0] === ':') {
           this.renderText(renderedText => {
             sendMessage({
@@ -107,18 +135,16 @@ export default class App extends React.Component {
             workspaceId: this.state.currentWorkSpaceId,
           });
         }
-        // resets text box to blank string
-        this.setState({lastMessage: this.state.query});
-        this.setState({
-          query: '',
-        });
       }
-    } 
+      this.setState({lastMessage: this.state.query});
+      this.setState({
+        query: '',
+      });
+    }
   }
 
   getLastMessage(event) {
   if (event.keyCode === 38) {
-    console.log('lastMessage')
       event.preventDefault();
       document.getElementById('messageInput').value = this.state.lastMessage;
       this.setState({query: this.state.lastMessage});
@@ -128,7 +154,6 @@ export default class App extends React.Component {
   renderText(cb) {
     let command = this.state.query.substr(1);
     let param = this.state.query.split(' ')[1];
-    console.log(param)
     let commandObj = {
       angry: '( ͡° ʖ̯ ͡°)',
       shrug: '¯\\_(ツ)_/¯',
@@ -137,7 +162,8 @@ export default class App extends React.Component {
       glasses: '(̿▀̿ ̿Ĺ̯̿̿▀̿ ̿)̄',
       flipoff: '凸( ͡° ͜ʖ ͡°)',
       cat: 'ʢ◉ᴥ◉ʡ',
-      happy: '^‿^'
+      happy: '^‿^',
+      llama: 'http://i0.kym-cdn.com/photos/images/newsfeed/000/089/512/bunchie-santa.gif?1293044284'
     }
     if (commandObj[command]) {
       cb(commandObj[command])
@@ -145,6 +171,9 @@ export default class App extends React.Component {
       this.getGiphy(param, (url) => {
         cb(url);
       })
+    } else if(command.startsWith('http')) {
+      cb(commandObj.llama)
+
     } else {
       cb(this.state.query)
     }
@@ -219,7 +248,6 @@ export default class App extends React.Component {
       currentUsername,
       currentUserId,
     } = this.state;
-    console.log('App.jsx-220 WS: ', this.state.clientWS);
     return (
       <div className="app-container">
         <NavBar 

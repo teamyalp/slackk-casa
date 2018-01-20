@@ -47,7 +47,7 @@ export default class Body extends React.Component {
       users,
       username,
     } = this.props;
-    console.log('Body.jsx-50: ', messages);
+    // console.log('Body.jsx-50: ', messages);
     return (
       <Container fluid>
         <Row>

@@ -39,7 +39,7 @@ export default class CreateWorkSpace extends React.Component {
   render() {
     return (
       <div>
-        <Button id="Popover1" onClick={this.toggle}>
+        <Button id="Popover1" className="popupToggle" onClick={this.toggle}>
           +
         </Button>
         <Popover

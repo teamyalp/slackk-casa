@@ -39,7 +39,7 @@ export default class NavBar extends React.Component {
           <h1>Slap!</h1>
         </NavbarBrand>
         <h3 className="text-center">
-          #{this.props.currentWorkSpaceName || 'select a workspace!'}{' '}
+          #{this.props.currentWorkSpaceName || 'Welcome!'}{' '}
         </h3>
         {this.props.filteredMessages ? 
           <h4 style={{'paddingLeft': '30px'}}>Showing search results...</h4> :
@@ -54,9 +54,9 @@ export default class NavBar extends React.Component {
                 Options
               </DropdownToggle>
               <DropdownMenu>
-                <Link to={`/profile/${this.props.user.username}`} >
+{/*                <Link to={`/profile/${this.props.user.username}`} >
                   <DropdownItem>Settings</DropdownItem>
-                </Link>
+                </Link>*/}
                 <NavLink href="/login">
                   <DropdownItem>Sign Out</DropdownItem>
                 </NavLink>
