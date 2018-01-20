@@ -1,11 +1,6 @@
 import React from 'react';
-<<<<<<< 28d47ff199f728cf84e7439d1aeae9d63a6ec1d6
-import { connect, sendMessage } from '../socketHelpers';
-import { Input } from 'reactstrap';
 import profanity from 'profanity-censor'
-=======
 import { connect, sendMessage, sendDMessage } from '../socketHelpers';
->>>>>>> (feat) step 3 of direct msg
 import { InputGroup,  InputGroupAddon, Input } from 'reactstrap';
 import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
