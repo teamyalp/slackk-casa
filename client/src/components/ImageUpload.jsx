@@ -111,13 +111,16 @@ export default class ImageUpload extends React.Component {
         width: '100%',
         margin: '8px 0 10px 0',
       },
+      label: {
+        padding: '5px 0 0 0 '
+      }
     }
     return (
       <Container>
         <Row>
           <Form id="imageForm">
             <FormGroup>
-              <Label for="profileImage">Profile Image</Label>
+              <Label for="profileImage" style={styles.label}>Profile Image</Label>
               <img
                 className="egg img-responsive"
                 alt="profile-pic"
