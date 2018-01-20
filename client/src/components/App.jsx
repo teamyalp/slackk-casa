@@ -2,6 +2,7 @@ import React from 'react';
 import profanity from 'profanity-censor'
 import { connect, sendMessage, sendDMessage } from '../socketHelpers';
 import { InputGroup,  InputGroupAddon, Input } from 'reactstrap';
+import axios from 'axios';
 import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import Body from './Body.jsx';
@@ -64,15 +65,15 @@ export default class App extends React.Component {
     this.setState({
       query: event.target.value,
     });
+    console.log(this.state.query)
   }
 
   // sends message on enter key pressed and clears form
   // only when shift+enter pressed breaks to new line
   handleKeyPress(event) {
     // on key press enter send message and reset text box
-    // currentWorkSpaceId: 0,
-    // currentWorkSpaceName: '',
     if (this.state.currentWorkSpaceName.includes('-')) {
+          console.log('enter')
       if (event.charCode === 13 && !event.shiftKey) {
         event.preventDefault();
         sendDMessage({
@@ -90,29 +91,72 @@ export default class App extends React.Component {
         });
       }
     } else {
-      console.log(this.state.currentWorkSpaceId, this.state.currentWorkSpaceName);
       if (event.charCode === 13 && !event.shiftKey) {
         event.preventDefault();
-        sendMessage({
-          username: this.props.location.state.username,
-          text: profanity.filter(this.state.query),
-          workspaceId: this.state.currentWorkSpaceId,
-        });
+        if (this.state.query.split('')[0] === '/' || this.state.query.split('')[0] === ':') {
+          this.renderText(renderedText => {
+            sendMessage({
+              username: this.props.location.state.username,
+              text: renderedText,
+              workspaceId: this.state.currentWorkSpaceId,
+            });
+          })
+        } else {
+          sendMessage({
+            username: this.props.location.state.username,
+            text: profanity.filter(this.state.query),
+            workspaceId: this.state.currentWorkSpaceId,
+          });
+        }
         // resets text box to blank string
         this.setState({lastMessage: this.state.query});
         this.setState({
           query: '',
         });
-      }  
-    }
+      }
+    } 
   }
 
   getLastMessage(event) {
   if (event.keyCode === 38) {
+    console.log('lastMessage')
       event.preventDefault();
       document.getElementById('messageInput').value = this.state.lastMessage;
       this.setState({query: this.state.lastMessage});
     }
+  }
+
+  renderText(cb) {
+    let command = this.state.query.substr(1);
+    let commandObj = {
+      angry: '( ͡° ʖ̯ ͡°)',
+      shrug: '¯\\_(ツ)_/¯',
+      creepy: '( ͡° ͜ʖ ( ͡° ͜ʖ ( ͡° ͜ʖ ( ͡° ͜ʖ ͡°) ͜ʖ ͡°)ʖ ͡°)ʖ ͡°)',
+      cry: '( T ʖ̯ T)',
+      glasses: '(̿▀̿ ̿Ĺ̯̿̿▀̿ ̿)̄',
+      flipoff: '凸( ͡° ͜ʖ ͡°)',
+      cat: 'ʢ◉ᴥ◉ʡ',
+      happy: '^‿^'
+    }
+    if (commandObj[command]) {
+      cb(commandObj[command])
+    } else if (command === 'giphy') {
+      this.getGiphy(url => {
+        cb(url);
+      })
+    } else {
+      cb(this.state.query)
+    }
+  }
+
+  getGiphy(cb) {
+    axios.get('http://api.giphy.com/v1/gifs/random?api_key=4SmUSyBG0eQCgx9Juz77LHHRkc1a2mYe&tag=ass')
+      .then(function (response) {
+        cb(response.data.data.image_original_url)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   //grabs all existing workspaces

@@ -5,7 +5,7 @@ import MessageEntry from './MessageEntry.jsx';
 //container for message components
 export default ({ messages, currentWorkSpaceId, directMessage }) => (
   <div className="message-list-container" id="messages">
-    <Container>
+    <Container id='messageContainer'>
       {
         messages.map((message, i) => {
           var sameUser = false;
