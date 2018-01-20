@@ -57,6 +57,7 @@ export default class Body extends React.Component {
               loadWorkSpaces={loadWorkSpaces}
               changeCurrentWorkSpace={changeCurrentWorkSpace}
               currentWorkSpaceId={currentWorkSpaceId}
+              username={username}
             />
             <MemberList
               workSpaces={workSpaces}

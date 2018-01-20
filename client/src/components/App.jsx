@@ -39,7 +39,6 @@ export default class App extends React.Component {
       currentUsername: this.props.location.state.username,
       currentToUser: '',
       //key = username; value = clientWS ID
-      clientWS: {},
       // currentUserId: 0
     };
     this.changeDirectMessageUser = this.changeDirectMessageUser.bind(this);
@@ -82,8 +81,6 @@ export default class App extends React.Component {
           workspacename: this.state.currentWorkSpaceName,
           workspaceId: this.state.currentWorkSpaceId,
           //how to send the address? sending IDs;
-          fromUser: this.state.clientWS[this.props.location.state.username],
-          toUser: this.state.clientWS[this.state.currentToUser],
         });
         // resets text box to blank string
         this.setState({

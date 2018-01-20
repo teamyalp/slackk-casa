@@ -4,8 +4,8 @@ const session = require('express-session');
 
 const db = require('../database');
 
-let counter = 1;
-let connectedClient = {};
+// let counter = 1;
+// let connectedClient = {};
 // creates a response object for sending to clients
 /*
 Object used for communication between server and clients through WebSockets -
@@ -285,10 +285,10 @@ const onMessage = async (ws, wss, data) => {
   //both users & connectedClient rely on counter for syncing
 
 // hardcode online users array for testing purposes so that we update the users array state at App level
-const users = [
-  {id: 1, username: '1'},
-  {id: 2, username: 'a'},
-];
+// const users = [
+//   {id: 1, username: '1'},
+//   {id: 2, username: 'a'},
+// ];
 
 
 // event handler for when client connects to websocket server
@@ -303,14 +303,14 @@ const onConnect = (ws, req, wss) => {
   //     // req.sessions
   //   });
   // });
-  connectedClient[counter] = ws;
+  // connectedClient[counter] = ws;
   // build ontop of this
   // ws.send(JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
   
-  console.log('Server webSocket.js-283: ', connectedClient);
+  // console.log('Server webSocket.js-283: ', connectedClient);
   
-  updateEveryone(ws, wss, JSON.stringify({ id: counter, method: 'SENDCLIENTINFO', users }));
-  counter++;
+  // updateEveryone(ws, wss, JSON.stringify({ id: counter, method: 'SENDCLIENTINFO'}));
+  // counter++;
 
   // console.log('this is WS:', ws);
   // console.log('this is connected Client:', connectedClient)
