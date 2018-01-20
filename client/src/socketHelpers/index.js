@@ -66,6 +66,10 @@ const addClientInfo = (id) => {
   //get current username (from state)
   //add a property to an object (on state) for this current key(username)/value(id)
 
+  /*
+    When a user logouts and login, on server-side, the connectedClient array will assign the user a new id,
+
+  */
   console.log('addClientInfo is firing');
   let { clientWS } = app.state;
   // console.log(app.state.users);
