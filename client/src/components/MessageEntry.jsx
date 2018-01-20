@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Media } from 'reactstrap';
+import MiniProfilePopup from './MiniProfilePopup.jsx';
 
 //Individual message container
 export default class extends React.Component {
@@ -8,6 +9,7 @@ export default class extends React.Component {
     this.state = {
       toggleHover: false,
       username: this.props.username,
+      userProfile: {},
       imageUrl: ''
     };
     // this.getImageURI = this.getImageURI.bind(this);
@@ -29,21 +31,19 @@ export default class extends React.Component {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
     })
-      .then(resp => { return resp.json() })
-      .then(data => {
-        console.log(data.image)
-        this.setState({
-          imageUrl: data.image || '/../images / twitter - egg.png'
-        })
+    .then(resp => { return resp.json() })
+    .then(data => {
+      console.log(data.image)
+      this.setState({ 
+        userProfile: data,
+        imageUrl: data.image || '/../images / twitter - egg.png',
       })
       .catch(console.error);
+    })
   }
 
-  render() {
-    console.log('RENDER IMAGE', this.state.imageUrl);
-
-
-    const { message, directMessage, } = this.props;
+  render () {
+    const { message, directMessage,  } = this.props;
     //for the color changing avatars
     let color = () => {
       let colors = [
@@ -64,7 +64,7 @@ export default class extends React.Component {
       ];
       let index = Math.floor(Math.random() * colors.length);
       return colors[index];
-    };
+    }
     //Styles for individual message component
     const styles = {
       body: {
@@ -103,7 +103,7 @@ export default class extends React.Component {
         float: 'left',
         marginRight: '7px',
       },
-    };
+    }
 
     var messageElement;
     if (this.props.sameUser) {
@@ -114,7 +114,6 @@ export default class extends React.Component {
         messageElement = <span style={styles.sameUserMessage}>{message.text}</span>
       }
     } else {
-      console.log('NOT SAME USER', this.state.imageUrl)
       if (message.text.substr(0, 4) === 'http') {
         messageElement = (
           <Container style={styles.body}>
@@ -134,28 +133,29 @@ export default class extends React.Component {
             <div style={styles.message}><img src={message.text} /></div>
           </Container>);
       } else {
-        messageElement = (
-          <Container style={styles.body}>
-            <Media left href="#">
-              <img
-                className="egg img-responsive"
-                href="#"
-                src="/images/twitter-egg.png"
-                alt="profile-pic"
-                style={styles.egg}
-              />
-            </Media>
-            <span style={styles.username}>
-              {message.username}
-              <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
-            </span>
-            <div style={styles.message}>{message.text}</div>
-          </Container>);
+        messageElement = <Container style={styles.body}>
+          <Media left href="#">
+            <img
+              className="image img-responsive"
+              href="#"
+              src=''
+              alt="profile-pic"
+              style={styles.image}
+            />
+          </Media>
+          <span style={styles.username}>
+            {message.username}
+            <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
+          </span>
+          <div style={styles.message}>{message.text}</div>
+        </Container>
       }
     }
 
     return (
+
       <div className="message-entry-container">
+        <MiniProfilePopup user={this.state.userProfile} />
         {messageElement}
       </div>
     );
