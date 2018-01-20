@@ -46,6 +46,8 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log('APP USERNAME', this.props)
+
     let server = location.origin.replace(/^http/, 'ws');
     // console.log(this.props);
     // console.log(this.state);

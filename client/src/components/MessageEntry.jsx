@@ -29,14 +29,14 @@ export default class extends React.Component {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
     })
-      .then(resp => { return resp.json() })
-      .then(data => {
-        console.log(data.image)
-        this.setState({ 
-          imageUrl: data.image || '/../images / twitter - egg.png'
-        })
+    .then(resp => { return resp.json() })
+    .then(data => {
+      console.log(data.image)
+      this.setState({ 
+        imageUrl: data.image || '/../images / twitter - egg.png'
       })
-      .catch(console.error);
+    })
+    .catch(console.error);
   }
 
   render() {
@@ -107,19 +107,21 @@ export default class extends React.Component {
 
     var messageElement;
     if (this.props.sameUser) {
+      console.log('SAME USER', this.state.imageUrl)
       if (message.text.substr(0, 4) === 'http') {
         messageElement = <img src={message.text} />
       } else {
         messageElement = <span style={styles.sameUserMessage}>{message.text}</span>
       }
     } else {
+      console.log('NOT SAME USER', this.state.imageUrl)
       if (message.text.substr(0, 4) === 'http') {
         messageElement = <Container style={styles.body}>
           <Media left href="#">
             <img
               className="image img-responsive"
               href="#"
-              src={this.state.imageUrl}
+              src={`"${this.state.imageUrl}"`}
               alt="profile-pic"
               style={styles.image}
             />
@@ -137,7 +139,7 @@ export default class extends React.Component {
             <img
               className="image img-responsive"
               href="#"
-              src={this.state.imageUrl}
+              src=''
               alt="profile-pic"
               style={styles.image}
             />
