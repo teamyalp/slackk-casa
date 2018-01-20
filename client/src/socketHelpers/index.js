@@ -61,7 +61,7 @@ const sendDMessage = (data) => {
   ws.send(JSON.stringify(msg));
 };
 
-const addClientInfo = (id) => {
+const addClientInfo = (id, users) => {
   //get id
   //get current username (from state)
   //add a property to an object (on state) for this current key(username)/value(id)
@@ -69,18 +69,23 @@ const addClientInfo = (id) => {
   /*
     When a user logouts and login, on server-side, the connectedClient array will assign the user a new id,
 
-  */
-  console.log('addClientInfo is firing');
-  let { clientWS } = app.state;
-  // console.log(app.state.users);
-  let user = app.state.users.filter((user) => {
-    if (user.id === id) {
-      return user.username;
-    }
-  });
-  console.log('this is username index.js(77)', user[0].username);
+//connectedClient = {1: ws(peter), 2: ws(chris)} - the one that logs on --> clientWS
+  //both users & connectedClient rely on counter for syncing
+    // start with users (current) --> pull WS' for each online user --> send (1) c-users & (2) corresponding WS' to state
 
-  clientWS[user[0].username] = id;
+// hardcode online users array for testing purposes so that we update the users array state at App level
+const users = [
+  {id: 1, username: 'a'},
+  {id: 2, username: 'b'},
+];
+
+//set app.state.users = users
+//set clientWS to the WS' that correspond with users  {1: WS(a), 2: WS(b)}
+// App ClientWS = {'a': 1, 'b': 2}
+  */
+  console.log('addClientInfo is firing: ', id, '-', users);
+  let { clientWS } = app.state;
+  clientWS[users[users.length - 1].username] = id;
   app.setState({ clientWS });
 };
 
@@ -160,7 +165,7 @@ const afterConnect = () => {
         addNewMessage(serverResp.data);
         break;
       case 'SENDCLIENTINFO':
-        addClientInfo(serverResp.id);
+        addClientInfo(serverResp.id, serverResp.users);
         break;
       default:
     }

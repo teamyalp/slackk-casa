@@ -34,6 +34,17 @@ const updateEveryoneElse = (ws, wss, data) => {
     }
   });
 };
+
+const updateEveryone = (ws, wss, data) => {
+  console.log('this is websocket data packet websocket.js @ 39', data);
+  wss.clients.forEach((client) => {
+    // console.log('these are clients:', client)
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+};
+
 // sends data to only direct-message clients
 // ***********************TODO: filter by toUser and fromUser****************************
 const updateDMUser = (ws, wss, data) => {
@@ -264,6 +275,12 @@ const onMessage = async (ws, wss, data) => {
 
 */
 
+// hardcode online users array for testing purposes so that we update the users array state at App level
+const users = [
+  {id: 1, username: '1'},
+  {id: 2, username: 'a'},
+];
+
 
 // event handler for when client connects to websocket server
 // ws will be an object
@@ -280,11 +297,11 @@ const onConnect = (ws, req, wss) => {
   connectedClient[counter] = ws;
   // build ontop of this
   // ws.send(JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
-  counter++;
-
+  
   console.log('Server webSocket.js-283: ', connectedClient);
-
-  updateEveryoneElse(ws, wss,JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
+  
+  updateEveryone(ws, wss, JSON.stringify({ id: counter, method: 'SENDCLIENTINFO', users }));
+  counter++;
 
   // console.log('this is WS:', ws);
   // console.log('this is connected Client:', connectedClient)
