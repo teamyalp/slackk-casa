@@ -155,14 +155,16 @@ router.post('/workspaces', async (req, res) => {
   }
 });
 
-<<<<<<< fa12f4f7f4165263df3b14a31be5b2a92d5e680c
-
-
 router.post('/search', bodyParser.json());
 router.post('/search', async (req, res) => {
   try {
     const messages = await db.getMessages(req.body.workspaceId);
     return res.status(201).json(messages);
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
 =======
 // GET request to /users, return array of users
 /*
@@ -177,18 +179,11 @@ router.post('/search', async (req, res) => {
 router.get('/users', async (req, res) => {
   try {
     return res.status(200).json(await db.getUsers());
->>>>>>> (feat) direct msg create workspace
   } catch (err) {
     return res.status(500).json(err.stack);
   }
 });
 
-<<<<<<< 42a2da9bd5ca5152b758e274e5df2c4201995b3b
-<<<<<<< fa12f4f7f4165263df3b14a31be5b2a92d5e680c
-
-=======
->>>>>>> (feat) direct msg create workspace
-=======
 // POST request to /workspaces + /directmsg
 router.post('/directmsg', bodyParser.json());
 router.post('/directmsg', async (req, res) => {
@@ -209,7 +204,5 @@ router.post('/directmsg', async (req, res) => {
     return res.status(500).json(err.stack);
   }
 });
-
->>>>>>> implemented directmsg
+    
 module.exports = router;
-
