@@ -151,7 +151,7 @@ export default class App extends React.Component {
   }
 
   getGiphy(param, cb) {
-    axios.get(`http://api.giphy.com/v1/gifs/random?api_key=4SmUSyBG0eQCgx9Juz77LHHRkc1a2mYe&tag=ass`)
+    axios.get(`http://api.giphy.com/v1/gifs/random?api_key=4SmUSyBG0eQCgx9Juz77LHHRkc1a2mYe&tag=${param}`)
       .then(function (response) {
         console.log(response.data.data.image_original_url)
         cb(response.data.data.image_original_url)
@@ -226,7 +226,6 @@ export default class App extends React.Component {
           filteredMessages={filteredMessages}
           currentWorkSpaceName={currentWorkSpaceName} 
           searchClick={this.searchClick.bind(this)}
-          user={this.props.location.state}
         />
         <Body
           messages={messages}
