@@ -69,7 +69,7 @@ export default class Body extends React.Component {
           </Col>
           <Col className="message-list-col" xs="10">
           {!filteredMessages ? 
-            <MessageList messages={messages} currentWorkSpaceId={currentWorkSpaceId} directMessage={this.directMessage}/> :
+            <MessageList messages={messages} currentWorkSpaceId={currentWorkSpaceId}/> :
             <SearchResults messages={filteredMessages} />
           }
           </Col>

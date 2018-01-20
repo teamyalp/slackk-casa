@@ -152,10 +152,13 @@ const afterConnect = () => {
       case 'NEWMESSAGE':
         filterMsgByWorkSpace(serverResp.data);
         break;
-      case 'NEWDMESSAGE':
-        console.log('this reached NEWDMESSAGE');
-        filterMsgByWorkSpaceName(serverResp.data);
+      case 'NEWDMESSAGE': {
+        console.log('this reached NEWDMESSAGE', serverResp.data);
+        let workSpaces = app.state.workSpaces;
+        workSpaces.push({ db_name: serverResp.data.message.createdAt, id: serverResp.data.message.id, name: serverResp.data.message.workspacename });
+        app.setState({ workSpaces }, filterMsgByWorkSpaceName(serverResp.data));
         break;
+      }
       case 'GETUSERS':
         setUsers(serverResp.data);
         break;
@@ -165,8 +168,6 @@ const afterConnect = () => {
       case 'POSTDMESSAGE':
         addNewMessage(serverResp.data);
         console.log('POSTDMESSAGE @ 167 (index.js/sockethelpers', serverResp.data);
-        { workspaces } = app.state.workspaces;
-        workspaces.push({})
         break;
       // case 'SENDCLIENTINFO':
       //   addClientInfo(serverResp.id, serverResp.users);
