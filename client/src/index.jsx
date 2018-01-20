@@ -18,6 +18,6 @@ ReactDOM.render(<Router>
     <Route path="/signup" component={Signup}/>
     <Route path="/login" component={Login}/>
     <Route path="/messages" component={App}/>
-    <Route path="/profile" component={Profile}/>
+    <Route path="/profile/:username" component={Profile}/>
   </div>
 </Router>, document.getElementById('app'));

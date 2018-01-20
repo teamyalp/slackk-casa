@@ -9,6 +9,9 @@ const auth = require('./auth');
 const passport = require('./passport');
 const email = require('./email');
 
+
+const config = require('../config.js');
+
 /*
   Express routes
 */
@@ -203,5 +206,68 @@ router.post('/directmsg', async (req, res) => {
     return res.status(500).json(err.stack);
   }
 });
+
+
+//GET request to /profile, provide username, return profile object
+//GET request to /profile/:username, provide username, return profile object
+router.get('/profile/:username', async (req, res) => {
+  try {
+    return res.status(201).json(await db.getProfile(req.params.username));
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
+//POST request to /profile, used to update EXISTING profile record
+/*
+  Request object from client:
+  {
+    username: 'username',
+    fullname: 'fullname',
+    status: 'current status/activity',
+    bio: 'short bio',
+    phone: 'phone number'
+  }
+
+  Server response status codes:
+    - 201 - 
+    - 400 - 
+    - 500 - Database error, all other errors
+*/
+router.post('/profile', bodyParser.json());
+router.post('/profile', async (req, res) => {
+  try {
+    const profile = await db.getProfile(req.body.username);
+    if (profile) { //update existing profile
+      return res.status(200).json(await db.updateProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
+    } else { //create new profile
+      return res.status(200).json(await db.createProfile(req.body.username, req.body.fullname, req.body.status, req.body.bio, req.body.phone));
+    }
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
     
+
+// //GET request to /profile/image/:username, provide username, return image url
+// router.get('/profile/image/:username', async (req, res) => {
+//   try {
+//     return res.status(201).json(await db.getProfileImage(req.params.username));
+//   } catch (err) {
+//     return res.status(500).json(err.stack);
+//   }
+// });
+
+//POST request to /profile/image, save image url to profile
+router.post('/profile/image', bodyParser.json());
+router.post('/profile/image', async (req, res) => {
+  try {
+    console.log(req.body.username, req.body.imageUrl)
+    return res.status(200).json(await db.saveProfileImage(req.body.username, req.body.imageUrl));
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
 module.exports = router;
+
