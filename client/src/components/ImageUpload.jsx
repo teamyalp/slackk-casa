@@ -15,10 +15,11 @@ export default class ImageUpload extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      image: '', //uploaded file from user
-      imageUrl: this.props.image, //link received from Imgur api / db
+      imageFile: '', //uploaded file from user
+      imageUrl: '', //link received from Imgur api / db
       imagePreview: '/../images/twitter-egg.png', 
       uploadSuccess: false,
+      save: false,
       uploadStatus: '', 
     };
     this.onChange = this.onChange.bind(this);
@@ -26,17 +27,37 @@ export default class ImageUpload extends React.Component {
     this.updateProfileImage = this.updateProfileImage.bind(this);
   }
 
+  componentWillMount() {
+    this.getUserProfileImage();
+  }
+
+  //GET request to server/db from profiles table using username
+  getUserProfileImage() {
+    let { username } = this.props
+    fetch(`/profile/${username}`, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(resp => { return resp.json() })
+      .then(data => {
+        this.setState({
+          imagePreview: data.image || '/../images / twitter - egg.png' //url saved in db if exists, else default
+        })
+      })
+      .catch(console.error);
+  }
+
   onChange(event) {
     event.preventDefault();
-
     // preview image
     let reader = new FileReader();
     let file = event.target.files[0];
-
     reader.onloadend = () => {
       this.setState({
-        image: file,
-        imagePreview: reader.result
+        imageFile: file,
+        imagePreview: reader.result,
+        uploadSucess: false,
+        save: true
       });
     }
     reader.readAsDataURL(file);
@@ -60,7 +81,6 @@ export default class ImageUpload extends React.Component {
     .then( resp => { return resp.json() } )
     .then( data => { 
       let imageUrl = data.data.link;
-      console.log('IMAGE URL:', imageUrl)
       this.updateProfileImage(imageUrl);
     })
     .catch( console.error );
@@ -75,7 +95,7 @@ export default class ImageUpload extends React.Component {
     })
     .then(resp =>
       (resp.status === 200
-        ? this.setState({ uploadSuccess: true } )
+        ? this.setState({ uploadSuccess: true, save: false } )
         : this.setState({ uploadStatus: `${resp.status} - ${resp.statusText}` })))
     .catch(console.error);
   }  
@@ -83,7 +103,7 @@ export default class ImageUpload extends React.Component {
   //TODO: when rendering messages, pull image from db rather than default egg image, same with user/display name
 
   render() {
-    let { imageUrl, imagePreview } = this.state;
+    let { image, imageUrl, imagePreview, uploadSuccess, save } = this.state;
     const styles = {
       egg: {
         backgroundColor: '#ddd',
@@ -112,7 +132,7 @@ export default class ImageUpload extends React.Component {
           </Form>
         </Row>
         <Row>
-          <Button color="success" onClick={this.getImgurUrl}>Save</Button>
+          <Button color="success" onClick={this.getImgurUrl} disabled={!save}>{ uploadSuccess ? 'Saved!': 'Save' }</Button>
         </Row>
       </Container>
     )

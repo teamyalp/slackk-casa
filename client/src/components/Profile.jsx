@@ -7,61 +7,41 @@ import LoginSettingsForm from './LoginSettingsForm.jsx';
 import ProfileInformationForm from './ProfileInformationForm.jsx';
 
 import { 
-    Button,
-    Col,
-    Container,
-    Form,
-    FormGroup,
-    FormText,
-    Label,
-    Input,
-    Nav,
-    Navbar, 
-    NavbarBrand,
-    NavItem,
-    NavLink,
-    Row,
-    TabContent,
-    TabPane
+  Button,
+  Col,
+  Container,
+  Form,
+  FormGroup,
+  FormText,
+  Label,
+  Input,
+  Nav,
+  Navbar, 
+  NavbarBrand,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane
 } from 'reactstrap';
 
 export default class Profile extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            username: this.props.match.params.username,
-            userProfile: {},
-            activeTab: '1', 
-        };
-        this.toggle = this.toggleTabs.bind(this);
-    }
-
-    componentWillMount() {
-        this.getUserProfile();
+      super(props);
+      this.state = {
+        username: this.props.match.params.username,
+        activeTab: '1', 
+      };
+      this.toggle = this.toggleTabs.bind(this);
     }
 
     toggleTabs(tab) {
-        this.state.activeTab !== tab ? this.setState({ activeTab: tab }) : undefined
-    }
-
-    getUserProfile() {
-        let { username } = this.state
-        //GET request to server/db from profiles table using this.state.username
-        fetch(`/profile/${username}`, {
-            method: 'GET',
-            headers: { 'content-type': 'application/json' },
-        })
-        //update this.state.userProfile to returned object
-            .then(resp => { return resp.json() })
-            .then(data => {
-                console.log(data);
-                this.setState({ userProfile: data })
-            })
-            .catch(console.error);
+      this.state.activeTab !== tab ? this.setState({ activeTab: tab }) : undefined
     }
 
     render() {
         let { username, userProfile, activeTab } = this.state;
+        console.log('USER', userProfile)
         const styles = {
             brand: {
                 margin: '0 0 0 10px',
@@ -85,7 +65,7 @@ export default class Profile extends React.Component {
                 </Row>
                 <Row>
                     <Col xs={{size: 2, offset: 3}}>
-                        <ImageUpload username={username} image={userProfile.image}/>
+                        <ImageUpload username={username} />
                     </Col>
                     <Col xs={4}>
                         <Nav tabs>
@@ -108,12 +88,12 @@ export default class Profile extends React.Component {
                         </Nav>
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId="1">
-                                <ProfileInformationForm user={userProfile} username={username} />
+                                <ProfileInformationForm username={username} />
                             </TabPane>
                         </TabContent>
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId="2">
-                                <LoginSettingsForm user={userProfile} username={username} />
+                                <LoginSettingsForm username={username} />
                             </TabPane>
                         </TabContent>
                     </Col>

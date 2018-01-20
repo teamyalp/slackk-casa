@@ -7,15 +7,38 @@ export default class extends React.Component {
     super(props);
     this.state = {
       toggleHover: false,
+      userProfile: {},
+      imageUrl: "/images/twitter-egg.png"
     };
+  }
+
+  componentDidMount() {
+    this.getUserProfile();
+    // this.setState({ imageUrl: })
   }
 
   toggleHover() {
     this.setState({ toggleHover: !this.state.toggleHover });
   }
 
+  getUserProfile() {
+    let { username } = this.props.message.username
+    //GET request to server/db from profiles table using this.state.username
+    fetch(`/profile/${username}`, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
+    //update this.state.userProfile to returned object
+    .then(resp => { return resp.json() })
+    .then(data => {
+      console.log('HERE', data);
+      this.setState({ userProfile: data, imageUrl: data.image })
+    })
+    .catch(console.error);
+  }
+
   render() {
-    const { message, directMessage } = this.props;
+    const { message, directMessage,  } = this.props;
     //for the color changing avatars
     let color = () => {
       let colors = [
@@ -90,7 +113,7 @@ export default class extends React.Component {
             <img
               className="egg img-responsive"
               href="#"
-              src="/images/twitter-egg.png"
+              src={this.state.imageUrl}
               alt="profile-pic"
               style={styles.egg}
             />
@@ -107,7 +130,7 @@ export default class extends React.Component {
           <img
             className="egg img-responsive"
             href="#"
-            src="/images/twitter-egg.png"
+            src={this.state.imageUrl}
             alt="profile-pic"
             style={styles.egg}
           />
