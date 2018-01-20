@@ -121,9 +121,10 @@ const filterMsgByWorkSpaceName = (msg) => {
   } else {
     beep.play();
   }
-  console.log('filterMsgByWorkspacename index.js/helpers(102)', msg);
+  console.log('filterMsgByWorkspacename index.js/helpers(124)', msg);
   // put this back
   if (msg.workspacename === app.state.currentWorkSpaceName) {
+    console.log('filterMsgByWorkspacename index.js/helpers(102)', 'fired!!!');
     app.setState({ messages: [...app.state.messages, msg.message] });
   }
 };
