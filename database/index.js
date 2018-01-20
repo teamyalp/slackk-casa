@@ -90,7 +90,7 @@ const getMessages = workspaceId =>
 
 const getDMessages = (workspaceName) => {
   // pull workspace messages table name using workspaceName
-  client.query('SELECT * FROM dmessages WHERE dmessages.workspacename = $1', [workspaceName])
+  return client.query('SELECT * FROM dmessages WHERE dmessages.workspacename = $1', [workspaceName])
     .then((data) => {
       console.log('getDMessages Data :', data.rows);
       return data.rows;

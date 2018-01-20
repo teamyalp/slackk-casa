@@ -12,11 +12,14 @@ export default class WorkSpaceEntry extends Component {
   handleClick(event) {
     let { handleFail, changeCurrentWorkSpace, workSpace } = this.props;
     handleFail();
-    console.log('this is workspace ID', workSpace.id)
-    console.log('this is workspace.name', workSpace.name)
+    console.log('this is workspace ID', workSpace.id);
+    console.log('this is workspace.name', workSpace.name);
     changeCurrentWorkSpace(workSpace.id, workSpace.name);
-    getWorkSpaceMessagesFromServer(workSpace.id);
-    getWorkSpaceDMessagesFromServer(workSpace.name);
+    if (workSpace.name.includes('-')) {
+      getWorkSpaceDMessagesFromServer(workSpace.name);
+    } else {
+      getWorkSpaceMessagesFromServer(workSpace.id);
+    }
   }
 
   render() {
