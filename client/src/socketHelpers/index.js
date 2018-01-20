@@ -128,6 +128,7 @@ const afterConnect = () => {
         addNewMessage(serverResp.data);
         break;
       case 'SENDCLIENTINFO':
+        console.log('socketHelpers/index.js-131: ', serverResp);
         addClientInfo(serverResp.id);
         break;
       default:

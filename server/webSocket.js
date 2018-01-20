@@ -278,10 +278,13 @@ const onConnect = (ws, req, wss) => {
   // });
   connectedClient[counter] = ws;
   // build ontop of this
-  ws.send(JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
+  // ws.send(JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
   counter++;
 
   console.log('Server webSocket.js-283: ', connectedClient);
+
+  updateEveryoneElse(ws, wss,JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
+
   // console.log('this is WS:', ws);
   // console.log('this is connected Client:', connectedClient)
   // connectedClient.push({ userId: req.session.passport.user, ws: ws });

@@ -1,5 +1,5 @@
 import React from 'react';
-const config = require('../../../config.js'); 
+// const config = require('../../../config.js');
 
 import { Button, 
   Container, 
