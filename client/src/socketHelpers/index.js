@@ -182,8 +182,8 @@ const afterConnect = () => {
       case 'POSTDMESSAGE':
         addNewMessage(serverResp.data);
         console.log('POSTDMESSAGE @ 167 (index.js/sockethelpers', serverResp.data);
-        { workspaces } = app.state.workspaces;
-        workspaces.push({})
+        // { workspaces } = app.state.workspaces;
+        // workspaces.push({})
         break;
       // case 'SENDCLIENTINFO':
       //   addClientInfo(serverResp.id, serverResp.users);

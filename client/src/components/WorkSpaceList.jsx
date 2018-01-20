@@ -58,7 +58,6 @@ export default class WorkSpaceList extends Component {
               createWorkSpace={this.createWorkSpace}
             />
         </Row>
-<<<<<<< HEAD
         {workSpaces.map((workSpace) => {
           if (workSpace.name.includes('-')) {
             let users = workSpace.name.split('-');
@@ -83,19 +82,6 @@ export default class WorkSpaceList extends Component {
           }
       })}
         <br />
-        <br />
-=======
-        {workSpaces.map(workSpace => (
-          <WorkSpaceEntry
-            workSpace={workSpace}
-            handleFail={() => this.handleFail}
-            key={workSpace.id}
-            changeCurrentWorkSpace={changeCurrentWorkSpace}
-            currentWorkSpaceId={currentWorkSpaceId}
-            removeWorkSpace={this.props.removeWorkSpace}
-          />
-        ))}
->>>>>>> Various styling changes
         {createFail ? <Alert color="danger"> Failed to create workspace </Alert> : undefined}
       </div>
     );

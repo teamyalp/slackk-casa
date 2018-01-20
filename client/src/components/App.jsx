@@ -72,28 +72,10 @@ export default class App extends React.Component {
   // only when shift+enter pressed breaks to new line
   handleKeyPress(event) {
     // on key press enter send message and reset text box
-<<<<<<< HEAD
-    if (this.state.currentWorkSpaceName.includes('-')) {
-          console.log('enter')
-      if (event.charCode === 13 && !event.shiftKey) {
-        event.preventDefault();
-        sendDMessage({
-          username: this.props.location.state.username,
-          text: this.state.query,
-          workspacename: this.state.currentWorkSpaceName,
-          workspaceId: this.state.currentWorkSpaceId,
-          //how to send the address? sending IDs;
-        });
-        // resets text box to blank string
-        this.setState({
-          query: '',
-        });
-=======
     if (event.charCode === 13 && !event.shiftKey) {
       event.preventDefault();
       if (!this.state.query.length) {
         return;
->>>>>>> Various styling changes
       }
       if (this.state.currentWorkSpaceName.includes('-')) {
         if (this.state.query.split('')[0] === '/' || this.state.query.split('')[0] === ':') {
