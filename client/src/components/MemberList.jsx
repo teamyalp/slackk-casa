@@ -13,7 +13,7 @@ const MemberList = (props) => {
 
   return (
     <div>
-      <h3 class="memberList-header">MemberList</h3>
+      <h3 className="memberList-header">MemberList</h3>
       {getMemberEntry()}
     </div>
   );

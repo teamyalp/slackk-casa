@@ -13,12 +13,12 @@ export default class ProfileInformationForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: this.props.user,
       username: this.props.username,
-      fullname: this.props.user.fullname || 'Tell us your full name',
-      status: this.props.user.status || '',
-      bio: this.props.user.bio || 'Add a brief bio',
-      phone: this.props.user.phone || 'Add a phone number',
+      user: {},
+      fullname: '',
+      status: '',
+      bio: '',
+      phone: '',
       updateSuccess: false,
       save: false,
     }
@@ -26,9 +26,33 @@ export default class ProfileInformationForm extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  // create onChange funcs for each field
-    //each will update the current state (make sure that if the changes are not saved, the values will revert back to original)
-    //refactor to submit button & handling submit?? (e.preventDefault())
+  componentWillMount() {
+    this.getUserProfile();
+  }
+
+  getUserProfile() {
+    let { username } = this.state
+    //GET request to server/db from profiles table using this.state.username
+    fetch(`/profile/${username}`, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
+      //update this.state.userProfile to returned object
+      .then(resp => { return resp.json() })
+      .then(data => {
+        this.setState({ 
+          user: data, 
+          fullname: data.fullname || '', 
+          status: data.status || '', 
+          bio: data.bio || '',
+          phone: data.phone || ''
+        })
+      })
+      .catch(console.error);
+  }
+
+  //each will update the current state (make sure that if the changes are not saved, the values will revert back to original)
+  //refactor to submit button & handling submit?? (e.preventDefault())
   onChange(event, input) {
     if (input === 'fullname') {
       this.setState({ fullname: event.target.value, save: true, updateSuccess: false })
@@ -44,11 +68,9 @@ export default class ProfileInformationForm extends React.Component {
     }
   }
 
-  //create onSubmit func when Save btn is clicked 
-    //alters information in DB profiles table
+  //POST to /profile, update database
   onSave() {
     let { username, fullname, status, bio, phone }=this.state;
-    //POST to /profile, update information in database
     fetch('/profile', {
       method: 'POST',
       body: JSON.stringify({ username, fullname, status, bio, phone }),
@@ -63,6 +85,7 @@ export default class ProfileInformationForm extends React.Component {
 
 
   render() {
+    let { username, fullname, status, bio, phone, save, updateSuccess } = this.state;
     const styles = {
       container: {
         padding: '20px'
@@ -76,14 +99,13 @@ export default class ProfileInformationForm extends React.Component {
             <Input
               type="text"
               id="fullname"
-              placeholder={this.props.user.fullname}
+              placeholder={fullname}
               onChange={(event) => this.onChange(event, 'fullname')}
             />
           </FormGroup>
-
           <FormGroup>
             <Label for="status">Status</Label>
-            <Input type="select" id="status" value={this.props.user.status} onChange={(event) => this.onChange(event, 'status')}>
+            <Input type="select" id="status" value={status} onChange={(event) => this.onChange(event, 'status')}>
               <option value=""> </option>
               <option value="Away">Away</option>
               <option value="In a Meeting">In a Meeting</option>
@@ -101,7 +123,7 @@ export default class ProfileInformationForm extends React.Component {
             <Input 
               type="text" 
               id="bio" 
-              placeholder={this.props.user.bio} 
+              placeholder={bio} 
               onChange={(event) => this.onChange(event, 'bio')}
             />
             <FormText color="muted">
@@ -114,13 +136,13 @@ export default class ProfileInformationForm extends React.Component {
             <Input 
               type="text" 
               id="phone" 
-              placeholder={this.props.user.phone}
+              placeholder={phone}
               onChange={(event) => this.onChange(event, 'phone')}
             />
           </FormGroup>
         </Form>
-        <Button onClick={this.onSave} color="success" disabled={!this.state.save}>
-          { this.state.updateSuccess ? 'Updated!' : 'Update Profile Info' }
+        <Button onClick={this.onSave} color="success" disabled={!save}>
+          { updateSuccess ? 'Updated!' : 'Update Profile Info' }
         </Button>
       </Container>
     )
