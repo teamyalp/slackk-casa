@@ -26,7 +26,7 @@ const response = (code, message, method, data) =>
 
 // sends data to all clients except client ws
 const updateEveryoneElse = (ws, wss, data) => {
-  console.log('this is websocket data packet', data);
+  console.log('this is websocket data packet websocket.js @ 29', data);
   wss.clients.forEach((client) => {
     // console.log('these are clients:', client)
     if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -34,13 +34,12 @@ const updateEveryoneElse = (ws, wss, data) => {
     }
   });
 };
-
 // sends data to only direct-message clients
 // ***********************TODO: filter by toUser and fromUser****************************
-const updateDMUser = (ws, wss, data, fromUser, toUser) => {
-  console.log('this is websocket data packet-39', data, fromUser, toUser);
+const updateDMUser = (ws, wss, data) => {
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN && (connectedClient[fromUser] === client || connectedClient[toUser] === client)) {
+    // && (connectedClient[fromUser] === client || connectedClient[toUser] === client)
+    if (client.readyState === WebSocket.OPEN) {
       client.send(data);
     }
   });
@@ -228,12 +227,12 @@ const onMessage = async (ws, wss, data) => {
           },
         }
         */
-        return updateEveryoneElse(
+        return updateDMUser(
           ws,
           wss,
-          response(200, 'New message', 'NEWMESSAGE', {
+          response(200, 'New message', 'NEWDMESSAGE', {
             message: postedMessage[0],
-            workspaceId: message.data.workspaceId,
+            workspaceName: message.data.workspacename,
             fromUser: message.data.fromUser,
             toUser: message.data.toUser,
           }),

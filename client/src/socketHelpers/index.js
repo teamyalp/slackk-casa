@@ -21,7 +21,7 @@ const addNewMessage = (message) => {
   } else {
     beep.play();
   }
-  console.log(message);
+  console.log('index.js @ 24 - addNewMessages - messages to state: ', message);
   app.setState({ messages: [...app.state.messages, message] });
 };
 
@@ -68,7 +68,15 @@ const addClientInfo = (id) => {
 
   console.log('addClientInfo is firing');
   let { clientWS } = app.state;
-  clientWS[app.state.currentUsername] = id;
+  // console.log(app.state.users);
+  let user = app.state.users.filter((user) => {
+    if (user.id === id) {
+      return user.username;
+    }
+  });
+  console.log('this is username index.js(77)', user[0].username);
+
+  clientWS[user[0].username] = id;
   app.setState({ clientWS });
 };
 
@@ -91,10 +99,26 @@ const filterMsgByWorkSpace = (msg) => {
   } else {
     beep.play();
   }
+  console.log('filterMsgByWorkspace index.js/helpers(102)', msg);
+  // put this back
   if (msg.workspaceId === app.state.currentWorkSpaceId) {
     app.setState({ messages: [...app.state.messages, msg.message] });
   }
 };
+
+const filterMsgByWorkSpaceName = (msg) => {
+  if (sent) {
+    sent = false;
+  } else {
+    beep.play();
+  }
+  console.log('filterMsgByWorkspacename index.js/helpers(102)', msg);
+  // put this back
+  if (msg.workspacename === app.state.currentWorkSpaceName) {
+    app.setState({ messages: [...app.state.messages, msg.message] });
+  }
+};
+
 
 // ws refers to websocket object
 const afterConnect = () => {
@@ -118,6 +142,10 @@ const afterConnect = () => {
       case 'NEWMESSAGE':
         filterMsgByWorkSpace(serverResp.data);
         break;
+      case 'NEWDMESSAGE':
+        console.log('this reached NEWDMESSAGE');
+        filterMsgByWorkSpaceName(serverResp.data);
+        break;
       case 'GETUSERS':
         setUsers(serverResp.data);
         break;
@@ -128,7 +156,6 @@ const afterConnect = () => {
         addNewMessage(serverResp.data);
         break;
       case 'SENDCLIENTINFO':
-        console.log('socketHelpers/index.js-131: ', serverResp);
         addClientInfo(serverResp.id);
         break;
       default:
