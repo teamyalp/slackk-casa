@@ -39,7 +39,7 @@ export default class App extends React.Component {
       currentUsername: this.props.location.state.username,
       currentToUser: '',
       //key = username; value = clientWS ID
-      clientWS: { 4: 2 },
+      clientWS: {},
       // currentUserId: 0
     };
     this.changeDirectMessageUser = this.changeDirectMessageUser.bind(this);
@@ -217,6 +217,7 @@ export default class App extends React.Component {
       currentUsername,
       currentUserId,
     } = this.state;
+    console.log('App.jsx-220 WS: ', this.state.clientWS);
     return (
       <div className="app-container">
         <NavBar 
