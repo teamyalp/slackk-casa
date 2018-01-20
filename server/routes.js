@@ -9,6 +9,9 @@ const auth = require('./auth');
 const passport = require('./passport');
 const email = require('./email');
 
+
+const config = require('../config.js');
+
 /*
   Express routes
 */
@@ -202,6 +205,7 @@ router.post('/directmsg', async (req, res) => {
 //GET request to /profile, return profile object
 router.get('/profile', async (req, res) => {
 //GET request to /profile, provide username, return profile object
+//GET request to /profile/:username, provide username, return profile object
 router.get('/profile/:username', async (req, res) => {
   try {
     return res.status(201).json(await db.getProfile(req.params.username));
@@ -241,7 +245,25 @@ router.post('/profile', async (req, res) => {
 });
     
 
-//POST request to /profile/image, send API request, receive returned image url
-router.post('/profile/image', )
+// //GET request to /profile/image/:username, provide username, return image url
+// router.get('/profile/image/:username', async (req, res) => {
+//   try {
+//     return res.status(201).json(await db.getProfileImage(req.params.username));
+//   } catch (err) {
+//     return res.status(500).json(err.stack);
+//   }
+// });
+
+//POST request to /profile/image, save image url to profile
+router.post('/profile/image', bodyParser.json());
+router.post('/profile/image', async (req, res) => {
+  try {
+    console.log(req.body.username, req.body.imageUrl)
+    return res.status(200).json(await db.saveProfileImage(req.body.username, req.body.imageUrl));
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
 
 module.exports = router;
+

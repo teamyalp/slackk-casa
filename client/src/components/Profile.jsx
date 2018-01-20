@@ -41,11 +41,7 @@ export default class Profile extends React.Component {
     }
 
     toggleTabs(tab) {
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            });
-        }
+        this.state.activeTab !== tab ? this.setState({ activeTab: tab }) : undefined
     }
 
     getUserProfile() {
@@ -63,7 +59,6 @@ export default class Profile extends React.Component {
             })
             .catch(console.error);
     }
-
 
     render() {
         let { username, userProfile, activeTab } = this.state;
@@ -90,7 +85,7 @@ export default class Profile extends React.Component {
                 </Row>
                 <Row>
                     <Col xs={{size: 2, offset: 3}}>
-                        <ImageUpload image={userProfile.image}/>
+                        <ImageUpload username={username} image={userProfile.image}/>
                     </Col>
                     <Col xs={4}>
                         <Nav tabs>

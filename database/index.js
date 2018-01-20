@@ -139,18 +139,18 @@ const updateProfile = (username, fullname, status, bio, phone) =>
     .then(data => data.rows[0]);
 
 // save uploaded profile image url
-const saveProfileImage = (username, image) =>
+const saveProfileImage = (username, imageUrl) =>
   client
-    .query('UPDATE profiles SET image=($2) WHERE username=($1)', [username, image])
+    .query('UPDATE profiles SET image=($2) WHERE username=($1)', [username, imageUrl])
     .then(data => data.rows[0]);
 
-// get user profile image url
-const getProfileImage = username => 
-  client
-    .query('SELECT image FROM profiles WHERE username=($1)', [username])
-    .then(data => data.rows[0]);
+// // get user profile image url
+// const getProfileImage = username => 
+//   client
+//     .query('SELECT image FROM profiles WHERE username=($1)', [username])
+//     .then(data => data.rows[0]);
 
-    
+
 
 // creates a new workspace
 const createWorkspace = (name, dbName = `ws_${name[0]}${Date.now()}`) =>
@@ -197,6 +197,7 @@ module.exports = {
   getProfile,
   createProfile,
   updateProfile,
+  saveProfileImage,
   createWorkspace,
   getWorkspaces,
   getEmails,
