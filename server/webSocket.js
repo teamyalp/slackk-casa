@@ -228,15 +228,15 @@ const onMessage = async (ws, wss, data) => {
           },
         }
         */
-        return updateDMUser(
+        return updateEveryoneElse(
           ws,
           wss,
           response(200, 'New message', 'NEWMESSAGE', {
             message: postedMessage[0],
             workspaceId: message.data.workspaceId,
+            fromUser: message.data.fromUser,
+            toUser: message.data.toUser,
           }),
-          message.data.fromUser,
-          message.data.toUser,
         );
       } catch (err) {
         // respond back to client with error response and error message if message can't be posted to database
@@ -277,10 +277,11 @@ const onConnect = (ws, req, wss) => {
   //   });
   // });
   connectedClient[counter] = ws;
+  // build ontop of this
   ws.send(JSON.stringify({ id: counter, method: 'SENDCLIENTINFO' }));
   counter++;
 
-
+  console.log('Server webSocket.js-283: ', connectedClient);
   // console.log('this is WS:', ws);
   // console.log('this is connected Client:', connectedClient)
   // connectedClient.push({ userId: req.session.passport.user, ws: ws });
