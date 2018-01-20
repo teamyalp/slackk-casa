@@ -112,7 +112,7 @@ export default class extends React.Component {
             style={styles.egg}
           />
         </Media>
-        <span style={styles.username}>
+        <span style={styles.username} onClick={directMessage}>
           {message.username}
           <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
         </span>
