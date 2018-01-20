@@ -37,11 +37,12 @@ const updateEveryoneElse = (ws, wss, data) => {
 // sends data to only direct-message clients
 // ***********************TODO: filter by toUser and fromUser****************************
 const updateDMUser = (ws, wss, data) => {
+  console.log('webSocket.js @ 40', data);
   wss.clients.forEach((client) => {
     // && (connectedClient[fromUser] === client || connectedClient[toUser] === client)
-    if (client.readyState === WebSocket.OPEN) {
+    if (client = connectedClient[data.toUser] && client.readyState === WebSocket.OPEN) {
       client.send(data);
-    }
+    } 
   });
 };
 
@@ -103,6 +104,7 @@ const onMessage = async (ws, wss, data) => {
       // method GETDMESSAGES returns a list of previous direct-messages for the given workspacename 
 
       try {
+        console.log('webSocket.js-107: ', message);
         const messages = await db.getDMessages(message.data.workspacename);
 
         console.log('GETDMESSAGES WebSocket messages:', messages);

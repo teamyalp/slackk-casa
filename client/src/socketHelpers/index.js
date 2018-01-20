@@ -137,7 +137,7 @@ const afterConnect = () => {
         break;
       case 'GETDMESSAGES':
         console.log('GETDMESSAGES - serverResp.data:', serverResp.data);
-        // loadMessages(serverResp.data);
+        loadMessages(serverResp.data);
         break;
       case 'NEWMESSAGE':
         filterMsgByWorkSpace(serverResp.data);
