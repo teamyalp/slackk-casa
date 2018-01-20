@@ -27,6 +27,7 @@ const response = (code, message, method, data) =>
 // sends data to all clients except client ws
 const updateEveryoneElse = (ws, wss, data) => {
   console.log('this is websocket data packet websocket.js @ 29', data);
+  console.log('updateEveryoneElse - webSocket.js - line 30: ', wss.clients);
   wss.clients.forEach((client) => {
     // console.log('these are clients:', client)
     if (client !== ws && client.readyState === WebSocket.OPEN) {
@@ -37,6 +38,7 @@ const updateEveryoneElse = (ws, wss, data) => {
 
 const updateEveryone = (ws, wss, data) => {
   console.log('this is websocket data packet websocket.js @ 39', data);
+  console.log('updateEveryone - webSocket.js - line 40: ', wss.clients);
   wss.clients.forEach((client) => {
     // console.log('these are clients:', client)
     if (client.readyState === WebSocket.OPEN) {
@@ -240,12 +242,14 @@ const onMessage = async (ws, wss, data) => {
           },
         }
         */
-        return updateDMUser(
+        
+        // CHANGE THIS BACK LATER? UPDATEDMUSER
+        return updateEveryoneElse(
           ws,
           wss,
           response(200, 'New message', 'NEWDMESSAGE', {
             message: postedMessage[0],
-            workspaceName: message.data.workspacename,
+            workspacename: message.data.workspacename,
             fromUser: message.data.fromUser,
             toUser: message.data.toUser,
           }),
@@ -274,6 +278,11 @@ const onMessage = async (ws, wss, data) => {
   -> 
 
 */
+
+//connectedClient = {1: ws(peter), 2: ws(chris)}
+
+
+  //both users & connectedClient rely on counter for syncing
 
 // hardcode online users array for testing purposes so that we update the users array state at App level
 const users = [
