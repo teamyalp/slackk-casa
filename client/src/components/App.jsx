@@ -127,6 +127,8 @@ export default class App extends React.Component {
 
   renderText(cb) {
     let command = this.state.query.substr(1);
+    let param = this.state.query.split(' ')[1];
+    console.log(param)
     let commandObj = {
       angry: '( ͡° ʖ̯ ͡°)',
       shrug: '¯\\_(ツ)_/¯',
@@ -139,8 +141,8 @@ export default class App extends React.Component {
     }
     if (commandObj[command]) {
       cb(commandObj[command])
-    } else if (command === 'giphy') {
-      this.getGiphy(url => {
+    } else if (command.startsWith('giphy')) {
+      this.getGiphy(param, (url) => {
         cb(url);
       })
     } else {
@@ -148,9 +150,10 @@ export default class App extends React.Component {
     }
   }
 
-  getGiphy(cb) {
-    axios.get('http://api.giphy.com/v1/gifs/random?api_key=4SmUSyBG0eQCgx9Juz77LHHRkc1a2mYe&tag=ass')
+  getGiphy(param, cb) {
+    axios.get(`http://api.giphy.com/v1/gifs/random?api_key=4SmUSyBG0eQCgx9Juz77LHHRkc1a2mYe&tag=ass`)
       .then(function (response) {
+        console.log(response.data.data.image_original_url)
         cb(response.data.data.image_original_url)
       })
       .catch(function (error) {
