@@ -72,7 +72,18 @@ router.post('/signup', async (req, res) => {
     - 401 - User login incorrect
 */
 router.post('/login', bodyParser.json());
-router.post('/login', passport.authenticate('local'), (req, res) => res.sendStatus(200));
+router.post('/login', passport.authenticate('local'), async (req, res) => {
+  try {
+    const user = await db.getUser(req.body.username);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // console.log('**********', req.session);
+    //user: req.session.passport.user
+
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.status(401).json(err.stack);
+  }
+});
 
 // POST request to /recover, used to get password hint for user
 /*
@@ -144,6 +155,7 @@ router.post('/workspaces', async (req, res) => {
   }
 });
 
+<<<<<<< fa12f4f7f4165263df3b14a31be5b2a92d5e680c
 
 
 router.post('/search', bodyParser.json());
@@ -151,10 +163,53 @@ router.post('/search', async (req, res) => {
   try {
     const messages = await db.getMessages(req.body.workspaceId);
     return res.status(201).json(messages);
+=======
+// GET request to /users, return array of users
+/*
+  Returns to client array of users objects
+  [
+    {
+      id: 1,  // user id
+      username: 'peter',  // workspace user name
+    }
+  ]
+*/
+router.get('/users', async (req, res) => {
+  try {
+    return res.status(200).json(await db.getUsers());
+>>>>>>> (feat) direct msg create workspace
   } catch (err) {
     return res.status(500).json(err.stack);
   }
 });
 
+<<<<<<< 42a2da9bd5ca5152b758e274e5df2c4201995b3b
+<<<<<<< fa12f4f7f4165263df3b14a31be5b2a92d5e680c
 
+=======
+>>>>>>> (feat) direct msg create workspace
+=======
+// POST request to /workspaces + /directmsg
+router.post('/directmsg', bodyParser.json());
+router.post('/directmsg', async (req, res) => {
+  try {
+    const workspaces = await db.getWorkspaces();
+    if (
+      workspaces.find(workspace => workspace.name.toLowerCase() === req.body.name.toLowerCase())
+    ) {
+      return res.status(400).json('workspace exists');
+    }
+    const { toUser, fromUser, name } = req.body;
+    await db.createWorkspace(name);
+    console.log('Routes: ', 'Createdworkspace');
+    await db.postDUser(toUser, name);
+    await db.postDUser(fromUser, name);
+    return res.sendStatus(201);
+  } catch (err) {
+    return res.status(500).json(err.stack);
+  }
+});
+
+>>>>>>> implemented directmsg
 module.exports = router;
+

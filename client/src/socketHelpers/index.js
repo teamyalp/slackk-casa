@@ -8,6 +8,7 @@ const oneup = new Audio('/sounds/coin.wav'); // sound on send msg
   objects and sets the component state messages
   with the new array of messages recieved */
 const loadMessages = (messages) => {
+  console.log('heyy gurrll:, ', messages);
   app.setState({ messages });
 };
 
@@ -20,6 +21,7 @@ const addNewMessage = (message) => {
   } else {
     beep.play();
   }
+  console.log(message);
   app.setState({ messages: [...app.state.messages, message] });
 };
 
@@ -35,7 +37,7 @@ const sendMessage = (data) => {
     data: {
       username: data.username,
       text: data.text,
-      workspaceId: data.workspaceId,
+      workspace: data.workspaceId,
     },
   };
   oneup.play();
@@ -43,9 +45,42 @@ const sendMessage = (data) => {
   ws.send(JSON.stringify(msg));
 };
 
+const sendDMessage = (data) => {
+  const msg = {
+    method: 'POSTDMESSAGE',
+    data: {
+      username: data.username,
+      text: data.text,
+      workspacename: data.workspacename,
+      fromUser: data.fromUser,
+      toUser: data.toUser,
+    },
+  };
+  oneup.play();
+  sent = true;
+  ws.send(JSON.stringify(msg));
+};
+
+const addClientInfo = (id) => {
+  //get id
+  //get current username (from state)
+  //add a property to an object (on state) for this current key(username)/value(id)
+
+  console.log('addClientInfo is firing');
+  let { clientWS } = app.state;
+  clientWS[app.state.currentUsername] = id;
+  app.setState({ clientWS });
+};
+
 // takes a workspace Id as INT for parameter and returns the messages for that current workspace
 const getWorkSpaceMessagesFromServer = (id) => {
   const msg = { method: 'GETMESSAGES', data: { workspaceId: id } };
+  ws.send(JSON.stringify(msg));
+};
+
+// takes a workspace name as parameter and returns the direct-messages for that workspace
+const getWorkSpaceDMessagesFromServer = (name) => {
+  const msg = { method: 'GETDMESSAGES', data: { workspacename: name } };
   ws.send(JSON.stringify(msg));
 };
 
@@ -65,16 +100,20 @@ const filterMsgByWorkSpace = (msg) => {
 const afterConnect = () => {
   ws.onmessage = (event) => {
     let serverResp = JSON.parse(event.data);
-
+    console.log('Message Sent From Server: ', serverResp);
     // TODO: better error handling. Temp till complete switch statements
     if (serverResp.code === 400) {
-      console.log(serverResp.method);
+      // console.log(serverResp.method);
       throw serverResp.message;
     }
-
+    console.log('afterConnect: ', serverResp);
     switch (serverResp.method) {
       case 'GETMESSAGES':
         loadMessages(serverResp.data);
+        break;
+      case 'GETDMESSAGES':
+        console.log('GETDMESSAGES - serverResp.data:', serverResp.data);
+        // loadMessages(serverResp.data);
         break;
       case 'NEWMESSAGE':
         filterMsgByWorkSpace(serverResp.data);
@@ -84,6 +123,12 @@ const afterConnect = () => {
         break;
       case 'POSTMESSAGE':
         addNewMessage(serverResp.data);
+        break;
+      case 'POSTDMESSAGE':
+        addNewMessage(serverResp.data);
+        break;
+      case 'SENDCLIENTINFO':
+        addClientInfo(serverResp.id);
         break;
       default:
     }
@@ -95,6 +140,8 @@ const afterConnect = () => {
 const connect = (server, component) => {
   // create new socket server instance
   ws = new WebSocket(server);
+  console.log('Connect method: ', ws);
+  console.log('App: ', component);
   app = component;
   // on connection run the callback
   ws.addEventListener('open', () => {
@@ -104,6 +151,8 @@ const connect = (server, component) => {
 
     // gets workspaces after connection
     app.loadWorkSpaces();
+    // gets users after connection
+    app.loadUsers();
 
     // calls after connect function that takes in the socket session
     // and app component
@@ -111,4 +160,4 @@ const connect = (server, component) => {
   });
 };
 
-export { connect, sendMessage, afterConnect, getWorkSpaceMessagesFromServer };
+export { connect, sendMessage, afterConnect, getWorkSpaceMessagesFromServer, getWorkSpaceDMessagesFromServer, sendDMessage };

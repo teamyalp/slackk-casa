@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import { getWorkSpaceMessagesFromServer } from '../socketHelpers/index.js';
+import { getWorkSpaceMessagesFromServer, getWorkSpaceDMessagesFromServer } from '../socketHelpers/index.js';
 import PropTypes from 'prop-types';
 
 export default class WorkSpaceEntry extends Component {
@@ -12,8 +12,11 @@ export default class WorkSpaceEntry extends Component {
   handleClick(event) {
     let { handleFail, changeCurrentWorkSpace, workSpace } = this.props;
     handleFail();
-    getWorkSpaceMessagesFromServer(workSpace.id);
+    console.log('this is workspace ID', workSpace.id)
+    console.log('this is workspace.name', workSpace.name)
     changeCurrentWorkSpace(workSpace.id, workSpace.name);
+    getWorkSpaceMessagesFromServer(workSpace.id);
+    getWorkSpaceDMessagesFromServer(workSpace.name);
   }
 
   render() {

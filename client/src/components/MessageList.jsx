@@ -3,7 +3,7 @@ import { Container, ListGroup } from 'reactstrap';
 import MessageEntry from './MessageEntry.jsx';
 
 //container for message components
-export default ({ messages, currentWorkSpaceId }) => (
+export default ({ messages, currentWorkSpaceId, directMessage }) => (
   <div className="message-list-container" id="messages">
     <Container>
       {
@@ -14,7 +14,7 @@ export default ({ messages, currentWorkSpaceId }) => (
           } else {
             sameUser = false;
           }
-          return <MessageEntry sameUser={sameUser} message={message} key={message.id} />
+          return <MessageEntry sameUser={sameUser} message={message} key={message.id} directMessage={directMessage} />;
         })
       }
     </Container>

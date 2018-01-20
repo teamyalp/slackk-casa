@@ -22,6 +22,7 @@ export default class Login extends React.Component {
     fetch('/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
+      credentials: 'include',
       headers: { 'content-type': 'application/json' },
     })
       .then(resp =>

@@ -48,11 +48,14 @@
 }
 
 .workSpace-name,
-.workSpace-header {
+.workSpace-header,
+.memberList-header,
+.memberEntry-name {
   color: #c7c1c6;
 }
 
-.workSpace-header {
+.workSpace-header,
+.memberList-header {
   margin-top: 10px;
 }
 
@@ -60,14 +63,16 @@
   margin: 10px 0 10px 0;
 }
 
-.workSpace-name {
+.workSpace-name,
+.memberEntry-name {
   color: #c7c1c6;
   text-align: left;
   font-size: 1em;
   padding: 5px 0 5px 0;
 }
 
-.workSpace-hover:hover {
+.workSpace-hover:hover,
+.memberEntry-hover:hover {
   background-color: #3e323c;
 }
 
@@ -75,8 +80,6 @@
   background-color: #4c9689;
   color: #ffffff;
 }
-
-
 
 .search {
   position: absolute;

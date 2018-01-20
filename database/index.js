@@ -17,7 +17,7 @@ client
 // create tables needed by server
 const initializeDB = () => {
   // initialize tables by reading schema files and running as query
-  const schemas = ['/schema/users.sql', '/schema/workspaces.sql'];
+  const schemas = ['/schema/users.sql', '/schema/workspaces.sql', '/schema/directmsg.sql', '/schema/dMessages.sql'];
   return Promise.all(schemas.map(schema =>
     new Promise((resolve, reject) => {
       fs.readFile(
@@ -28,10 +28,25 @@ const initializeDB = () => {
     }).then(data => client.query(data))));
 };
 
+// post member for workspace from database
+// const postMember = (username, workspaceId) =>
+//   // pull workspace table name using workspaceId
+//   client
+//     .query('SELECT db_name from workspaces where id = $1', [workspaceId])
+//     // post new member into workspace's members table
+//     .then(data =>
+//       client.query(
+//         'INSERT into $db_name (username) VALUES ($1, $2) RETURNING *'.replace(
+//           '$db_name',
+//           data.rows[0].db_name,
+//         ),
+//         [username],
+//       ));
+
 // post message to database
-const postMessage = (message, username, workspaceId) =>
-  // pull workspace messages table name using workspaceId
-  client
+const postMessage = (message, username, workspaceId) => {
+
+  return client
     .query('SELECT db_name FROM workspaces WHERE id = $1', [workspaceId])
     // post new message into workspace's messages table
     .then(data =>
@@ -41,7 +56,28 @@ const postMessage = (message, username, workspaceId) =>
           data.rows[0].db_name,
         ),
         [message, username],
-      ));
+      )).then(data => data.rows[0])
+};
+// pull workspace messages table name using workspaceId
+
+const postDMessage = (message, username, workspaceName) =>
+
+  client
+    .query(
+    'INSERT INTO dMessages (text, username, workspacename) VALUES ($1, $2, $3) RETURNING *',
+    [message, username, workspaceName],
+  )
+    .then(data => data.rows);
+
+const postDUser = (username, workspaceName) => {
+  client
+    .query(
+    'INSERT INTO directmsg (username, workspacename) VALUES ($1, $2) RETURNING *',
+    [username, workspaceName],
+  )
+    .then(data => console.log('this is postDUser data returned', data));
+};
+
 
 // get messages for workspace from database
 const getMessages = workspaceId =>
@@ -49,8 +85,17 @@ const getMessages = workspaceId =>
   client
     .query('SELECT db_name FROM workspaces WHERE id = $1', [workspaceId])
     // pull messages from workspace's messages table
-    .then(data => client.query('SELECT * FROM $db_name'.replace('$db_name', data.rows[0].db_name)))
+    .then(data => client.query(`SELECT * FROM ${data.rows[0].db_name}`))
     .then(data => data.rows);
+
+const getDMessages = (workspaceName) => {
+  // pull workspace messages table name using workspaceName
+  client.query('SELECT * FROM dmessages WHERE dmessages.workspacename = $1', [workspaceName])
+    .then((data) => {
+      console.log('getDMessages Data :', data.rows);
+      return data.rows;
+    });
+};
 
 // post new user to users table in database
 const createUser = (username, passhash, email, passhint) =>
@@ -76,7 +121,7 @@ const createWorkspace = (name, dbName = `ws_${name[0]}${Date.now()}`) =>
   // add a new entry into workspaces table
   client.query('INSERT INTO workspaces (name, db_name) VALUES ($1, $2) RETURNING *', [name, dbName])
     .then(() =>
-    // read messages schema and insert workspace table name
+      // read messages schema and insert workspace table name
       new Promise((resolve, reject) => {
         fs.readFile(
           path.join(__dirname, '/schema/messages.sql'),
@@ -94,11 +139,14 @@ const getWorkspaces = () => client.query('SELECT * FROM workspaces').then(data =
 const getEmails = () => client.query('SELECT email FROM users')
   .then(data => data.rows);
 
+const getUsers = () => client.query('SELECT id, username FROM users')
+  .then(data => data.rows);
+
 // create necessary tables if environment flag INITIALIZEDB is set to true
 
 //if (process.env.INITIALIZEDB) {
   initializeDB()
-    .then()
+    .then(() => console.log('Connected'))
     .catch(err => console.error('error creating database tables, ', err.stack));
 //}
 
@@ -107,10 +155,14 @@ module.exports = {
   initializeDB,
   postMessage,
   getMessages,
+  getDMessages,
   createUser,
   getUser,
   createWorkspace,
   getWorkspaces,
   getEmails,
   getPasswordHint,
+  getUsers,
+  postDUser,
+  postDMessage,
 };

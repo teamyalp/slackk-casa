@@ -1,3 +1,5 @@
+  -- DROP TABLE IF EXISTS messages;
+  
   CREATE TABLE IF NOT EXISTS $1 (
 	"id" serial NOT NULL,
 	"text" varchar(1024) NOT NULL,

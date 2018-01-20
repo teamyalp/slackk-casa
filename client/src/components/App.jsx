@@ -1,7 +1,12 @@
 import React from 'react';
+<<<<<<< 28d47ff199f728cf84e7439d1aeae9d63a6ec1d6
 import { connect, sendMessage } from '../socketHelpers';
 import { Input } from 'reactstrap';
 import profanity from 'profanity-censor'
+=======
+import { connect, sendMessage, sendDMessage } from '../socketHelpers';
+>>>>>>> (feat) step 3 of direct msg
+import { InputGroup,  InputGroupAddon, Input } from 'reactstrap';
 import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import Body from './Body.jsx';
@@ -35,12 +40,22 @@ export default class App extends React.Component {
       lasteMessage: '',
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
+      currentUsername: this.props.location.state.username,
+      currentToUser: '',
+      //key = username; value = clientWS ID
+      clientWS: { 4: 2 },
+      // currentUserId: 0
     };
+    this.changeDirectMessageUser = this.changeDirectMessageUser.bind(this);
   }
 
   componentDidMount() {
     let server = location.origin.replace(/^http/, 'ws');
-
+    // console.log(this.props);
+    // console.log(this.state);
+    // server += this.state.currentUserId;
+    // console.log('componentDidMount: ', this.state.currentUserId);
+    // console.log('componentDidMount: ', this.state.currentUsername);
     // connect to the websocket server
     connect(server, this);
     if (this.state.currentWorkSpaceId === 0) {
@@ -60,18 +75,40 @@ export default class App extends React.Component {
   // only when shift+enter pressed breaks to new line
   handleKeyPress(event) {
     // on key press enter send message and reset text box
-    if (event.charCode === 13 && !event.shiftKey) {
-      event.preventDefault();
-      sendMessage({
-        username: this.props.location.state.username,
-        text: profanity.filter(this.state.query),
-        workspaceId: this.state.currentWorkSpaceId,
-      });
-      // resets text box to blank string
-      this.setState({lastMessage: this.state.query});
-      this.setState({
-        query: '',
-      });
+    // currentWorkSpaceId: 0,
+    // currentWorkSpaceName: '',
+    if (this.state.currentWorkSpaceName.includes('-')) {
+      if (event.charCode === 13 && !event.shiftKey) {
+        event.preventDefault();
+        sendDMessage({
+          username: this.props.location.state.username,
+          text: this.state.query,
+          workspacename: this.state.currentWorkSpaceName,
+          workspaceId: this.state.currentWorkSpaceId,
+          //how to send the address? sending IDs;
+          fromUser: this.state.clientWS[this.props.location.state.username],
+          toUser: this.state.clientWS[this.state.currentToUser],
+        });
+        // resets text box to blank string
+        this.setState({
+          query: '',
+        });
+      }
+    } else {
+      console.log(this.state.currentWorkSpaceId, this.state.currentWorkSpaceName);
+      if (event.charCode === 13 && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage({
+          username: this.props.location.state.username,
+          text: profanity.filter(this.state.query),
+          workspaceId: this.state.currentWorkSpaceId,
+        });
+        // resets text box to blank string
+        this.setState({lastMessage: this.state.query});
+        this.setState({
+          query: '',
+        });
+      }  
     }
   }
 
@@ -88,6 +125,14 @@ export default class App extends React.Component {
     fetch('/workspaces')
       .then(resp => resp.json())
       .then(workSpaces => this.setState({ workSpaces }))
+      .catch(console.error);
+  }
+
+  //grabs all existing users
+  loadUsers() {
+    fetch('/users')
+      .then(resp => resp.json())
+      .then(users => this.setState({ users }))
       .catch(console.error);
   }
 
@@ -117,14 +162,21 @@ export default class App extends React.Component {
     this.setState({filteredMessages: filteredMessages});
   }
 
+  changeDirectMessageUser(toUser) {
+    this.setState({currentToUser: toUser}, () => console.log('toUser is set in state', toUser));
+  }
   //renders nav bar, body(which contains all message components other than input), and message input
   render() {
     let {
       messages, 
-      query, workSpaces, 
-      currentWorkSpaceId, 
-      currentWorkSpaceName, 
-      filteredMessages
+      filteredMessages,
+      query,
+      workSpaces,
+      currentWorkSpaceId,
+      currentWorkSpaceName,
+      users,
+      currentUsername,
+      currentUserId,
     } = this.state;
     return (
       <div className="app-container">
@@ -140,6 +192,10 @@ export default class App extends React.Component {
           loadWorkSpaces={() => this.loadWorkSpaces()}
           changeCurrentWorkSpace={(id, name) => this.changeCurrentWorkSpace(id, name)}
           currentWorkSpaceId={currentWorkSpaceId}
+          users={users}
+          username={currentUsername}
+          userId={currentUserId}
+          changeDirectMessageUser={this.changeDirectMessageUser}
         />
         <div id="input-container" className="input-container">
           <Input
