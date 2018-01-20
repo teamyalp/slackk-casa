@@ -144,13 +144,6 @@ const saveProfileImage = (username, imageUrl) =>
     .query('UPDATE profiles SET image=($2) WHERE username=($1)', [username, imageUrl])
     .then(data => data.rows[0]);
 
-// // get user profile image url
-// const getProfileImage = username => 
-//   client
-//     .query('SELECT image FROM profiles WHERE username=($1)', [username])
-//     .then(data => data.rows[0]);
-
-
 
 // creates a new workspace
 const createWorkspace = (name, dbName = `ws_${name[0]}${Date.now()}`) =>
