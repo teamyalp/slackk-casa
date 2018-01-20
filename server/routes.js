@@ -165,7 +165,6 @@ router.post('/search', async (req, res) => {
   }
 });
 
-=======
 // GET request to /users, return array of users
 /*
   Returns to client array of users objects
