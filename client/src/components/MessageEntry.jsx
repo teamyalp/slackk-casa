@@ -7,37 +7,42 @@ export default class extends React.Component {
     super(props);
     this.state = {
       toggleHover: false,
-      userProfile: {},
-      imageUrl: "/images/twitter-egg.png"
+      username: this.props.username,
+      imageUrl: ''
     };
+    // this.getImageURI = this.getImageURI.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getUserProfile();
-    // this.setState({ imageUrl: })
   }
 
   toggleHover() {
     this.setState({ toggleHover: !this.state.toggleHover });
   }
 
+  //GET request to server/db from profiles table using this.state.username
   getUserProfile() {
-    let { username } = this.props.message.username
-    //GET request to server/db from profiles table using this.state.username
-    fetch(`/profile/${username}`, {
+    // console.log('USERNAME', this.props.message.username)
+    // let { username } = this.props.message.username
+    fetch(`/profile/${this.props.message.username}`, {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
     })
-    //update this.state.userProfile to returned object
-    .then(resp => { return resp.json() })
-    .then(data => {
-      console.log('HERE', data);
-      this.setState({ userProfile: data, imageUrl: data.image })
-    })
-    .catch(console.error);
+      .then(resp => { return resp.json() })
+      .then(data => {
+        console.log(data.image)
+        this.setState({ 
+          imageUrl: data.image || '/../images / twitter - egg.png'
+        })
+      })
+      .catch(console.error);
   }
 
   render() {
+    console.log('RENDER IMAGE', this.state.imageUrl);
+
+
     const { message, directMessage,  } = this.props;
     //for the color changing avatars
     let color = () => {
@@ -92,8 +97,9 @@ export default class extends React.Component {
         left: '70px',
         marginTop: '-5px'
       },
-      egg: {
+      image: {
         backgroundColor: color(),
+        width: '60px',
         float: 'left',
         marginRight: '7px',
       },
@@ -111,11 +117,11 @@ export default class extends React.Component {
         messageElement = <Container style={styles.body}>
           <Media left href="#">
             <img
-              className="egg img-responsive"
+              className="image img-responsive"
               href="#"
               src={this.state.imageUrl}
               alt="profile-pic"
-              style={styles.egg}
+              style={styles.image}
             />
           </Media>
           <span style={styles.username}>
@@ -125,22 +131,23 @@ export default class extends React.Component {
           <div style={styles.message}><img src={message.text} /></div>
         </Container>
       } else {
-      messageElement = <Container style={styles.body}>
-        <Media left href="#">
-          <img
-            className="egg img-responsive"
-            href="#"
-            src={this.state.imageUrl}
-            alt="profile-pic"
-            style={styles.egg}
-          />
-        </Media>
-        <span style={styles.username} onClick={directMessage}>
-          {message.username}
-          <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
-        </span>
-        <div style={styles.message}>{message.text}</div>
-      </Container>
+        console.log('RIGHT BEFORE', this.state.imageUrl)
+        messageElement = <Container style={styles.body}>
+          <Media left href="#">
+            <img
+              className="image img-responsive"
+              href="#"
+              src={this.state.imageUrl}
+              alt="profile-pic"
+              style={styles.image}
+            />
+          </Media>
+          <span style={styles.username}>
+            {message.username}
+            <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
+          </span>
+          <div style={styles.message}>{message.text}</div>
+        </Container>
       }
     }
 
