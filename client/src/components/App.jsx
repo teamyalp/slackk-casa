@@ -33,7 +33,7 @@ export default class App extends React.Component {
       users: [],
       workSpaces: [],
       query: '',
-      lasteMessage: '',
+      lastMessage: '',
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
       currentUsername: this.props.location.state.username,
@@ -97,8 +97,6 @@ export default class App extends React.Component {
             workspacename: this.state.currentWorkSpaceName,
             workspaceId: this.state.currentWorkSpaceId,
             //how to send the address? sending IDs;
-            fromUser: this.state.clientWS[this.props.location.state.username],
-            toUser: this.state.clientWS[this.state.currentToUser],
           });
         }
     } else {
@@ -248,6 +246,7 @@ export default class App extends React.Component {
           username={currentUsername}
           userId={currentUserId}
           changeDirectMessageUser={this.changeDirectMessageUser}
+          currentWorkSpaceName={currentWorkSpaceName}
         />
         <div id="input-container" className="input-container">
           <Input
