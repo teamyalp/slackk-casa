@@ -181,8 +181,9 @@ const afterConnect = () => {
         }
         if (trigger) {
           workSpaces.push({ db_name: serverResp.data.message.createdAt, id: serverResp.data.message.id, name: serverResp.data.message.workspacename });
-          app.setState({ workSpaces }, filterMsgByWorkSpaceName(serverResp.data));
+          app.setState({ workSpaces });
         }
+        filterMsgByWorkSpaceName(serverResp.data)
         break;
       }
       case 'GETUSERS':
