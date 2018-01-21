@@ -172,8 +172,17 @@ const afterConnect = () => {
       case 'NEWDMESSAGE': {
         console.log('this reached NEWDMESSAGE', serverResp.data);
         let workSpaces = app.state.workSpaces;
-        workSpaces.push({ db_name: serverResp.data.message.createdAt, id: serverResp.data.message.id, name: serverResp.data.message.workspacename });
-        app.setState({ workSpaces }, filterMsgByWorkSpaceName(serverResp.data));
+        //defaults at true
+        let trigger = true;
+        for (let i = 0; i < workSpaces.length; i += 1) {
+          if (workSpaces[i].name === serverResp.data.message.workspacename) {
+            trigger = false;
+          }
+        }
+        if (trigger) {
+          workSpaces.push({ db_name: serverResp.data.message.createdAt, id: serverResp.data.message.id, name: serverResp.data.message.workspacename });
+          app.setState({ workSpaces }, filterMsgByWorkSpaceName(serverResp.data));
+        }
         break;
       }
       case 'GETUSERS':

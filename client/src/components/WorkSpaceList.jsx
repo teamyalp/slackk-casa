@@ -45,7 +45,7 @@ export default class WorkSpaceList extends Component {
   }
   //renders everything to do with workspaces, including creation
   render() {
-    let { changeCurrentWorkSpace, currentWorkSpaceId, workSpaces, username } = this.props;
+    let { changeCurrentWorkSpace, currentWorkSpaceId, workSpaces, username, currentWorkSpaceName } = this.props;
     let { createFail, createStatus, workSpaceQuery } = this.state;
     return (
       <div className="workSpaces">
@@ -53,10 +53,10 @@ export default class WorkSpaceList extends Component {
           <Col>
             <h4 className="workSpace-header"> Workspaces </h4>{' '}
           </Col>
-            <CreateWorkSpace
-              getWorkSpaceQuery={this.getWorkSpaceQuery}
-              createWorkSpace={this.createWorkSpace}
-            />
+          <CreateWorkSpace
+            getWorkSpaceQuery={this.getWorkSpaceQuery}
+            createWorkSpace={this.createWorkSpace}
+          />
         </Row>
         {workSpaces.map((workSpace) => {
           if (workSpace.name.includes('-')) {
@@ -80,7 +80,7 @@ export default class WorkSpaceList extends Component {
             />
             );
           }
-      })}
+        })}
         <br />
         {createFail ? <Alert color="danger"> Failed to create workspace </Alert> : undefined}
       </div>

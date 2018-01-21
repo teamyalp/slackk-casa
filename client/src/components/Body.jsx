@@ -46,6 +46,7 @@ export default class Body extends React.Component {
       currentWorkSpaceId,
       users,
       username,
+      currentWorkSpaceName,
     } = this.props;
     // console.log('Body.jsx-50: ', messages);
     return (
@@ -58,6 +59,7 @@ export default class Body extends React.Component {
               changeCurrentWorkSpace={changeCurrentWorkSpace}
               currentWorkSpaceId={currentWorkSpaceId}
               username={username}
+              currentWorkSpaceName={currentWorkSpaceName}
             />
             <MemberList
               workSpaces={workSpaces}
