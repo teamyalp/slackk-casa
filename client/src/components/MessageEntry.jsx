@@ -52,8 +52,6 @@ export default class extends React.Component {
   // }
 
   render () {
-    console.log('AFTER COMPONENT WILL MOUNT:', this.props.user)
-
     const { message, directMessage,  } = this.props;
     //for the color changing avatars
     let color = () => {
@@ -112,7 +110,6 @@ export default class extends React.Component {
 
     var messageElement;
     if (this.props.sameUser) {
-      console.log('SAME USER', this.state.imageUrl)
       if (message.text.substr(0, 4) === 'http') {
         messageElement = <img src={message.text} />
       } else {
@@ -153,7 +150,6 @@ export default class extends React.Component {
         )
       }
     }
-
     return (
       <div className="message-entry-container">
         {messageElement}

@@ -12,7 +12,6 @@ export default class MiniProfilePopover extends React.Component {
   }
 
   componentWillMount() {
-    // this.getUserProfile();
     fetch(`/profile/${this.props.username}`, {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
@@ -33,21 +32,7 @@ export default class MiniProfilePopover extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     const styles = {
-      // container: {
-      //   width: '500px'
-      // },
-      // // popover: {
-      // //   width: '500px'
-      // // },
-      // popoverImg: {
-      //   float: 'left'
-      // },
-      // popoverInfo: {
-      //   float: 'right',
-      //   width: '200px'
-      // },
       username: {
         fontSize: '24',
         fontWeight: 'bold',
@@ -58,10 +43,10 @@ export default class MiniProfilePopover extends React.Component {
         width: '250px'
       }, 
       status: {
-        fontStyle: 'italic',
         color: '#444',
       },
       bio: {
+        fontStyle: 'italic'
       },
       close: {
         float: 'right',
@@ -81,9 +66,8 @@ export default class MiniProfilePopover extends React.Component {
               <img src={this.state.userProfile.image} style={styles.image} ></img>
             </div>
             <div style={styles.popoverInfo}>
-              Status:
-              <div style={styles.status}>{this.state.userProfile.status}</div>
-              Bio:
+              <span style={styles.status}> Status: {this.state.userProfile.status}</span>
+              <div>Bio:</div>
               <div style={styles.bio}>{this.state.userProfile.bio}</div>
             </div>
           </PopoverBody>

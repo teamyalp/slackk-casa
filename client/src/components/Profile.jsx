@@ -41,7 +41,6 @@ export default class Profile extends React.Component {
 
   render() {
     let { username, userProfile, activeTab } = this.state;
-    console.log('USER', userProfile)
     const styles = {
       brand: {
         margin: '0 0 0 10px',
