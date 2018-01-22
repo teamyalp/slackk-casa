@@ -10,13 +10,24 @@ export default class extends React.Component {
       toggleHover: false,
       username: this.props.username,
       userProfile: {},
-      imageUrl: ''
+      imageUrl: '/../images/twitter-egg.png'
     };
-    // this.getImageURI = this.getImageURI.bind(this);
   }
 
   componentWillMount() {
-    this.getUserProfile();
+    // this.getUserProfile();
+    fetch(`/profile/${this.props.message.username}`, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
+    .then(resp => { return resp.json() })
+    .then(data => {
+      this.setState({
+        userProfile: data,
+        imageUrl: data.image || '/../images/twitter-egg.png',
+      })
+    })
+    .catch(console.error);
   }
 
   toggleHover() {
@@ -24,25 +35,25 @@ export default class extends React.Component {
   }
 
   //GET request to server/db from profiles table using this.state.username
-  getUserProfile() {
-    // console.log('USERNAME', this.props.message.username)
-    // let { username } = this.props.message.username
-    fetch(`/profile/${this.props.message.username}`, {
-      method: 'GET',
-      headers: { 'content-type': 'application/json' },
-    })
-    .then(resp => { return resp.json() })
-    .then(data => {
-      console.log(data.image)
-      this.setState({ 
-        userProfile: data,
-        imageUrl: data.image || '/../images / twitter - egg.png',
-      })
-      .catch(console.error);
-    })
-  }
+  // getUserProfile() {
+  //   fetch(`/profile/${this.props.message.username}`, {
+  //     method: 'GET',
+  //     headers: { 'content-type': 'application/json' },
+  //   })
+  //   .then(resp => { return resp.json() })
+  //   .then(data => {
+  //     console.log(data)
+  //     this.setState({ 
+  //       userProfile: data,
+  //       imageUrl: data.image || '/../images / twitter - egg.png',
+  //     })
+  //   })
+  //   .catch(console.error);
+  // }
 
   render () {
+    console.log('AFTER COMPONENT WILL MOUNT:', this.props.user)
+
     const { message, directMessage,  } = this.props;
     //for the color changing avatars
     let color = () => {
@@ -74,12 +85,6 @@ export default class extends React.Component {
         fontSize: '10px',
         color: '#bdbdbd',
         marginLeft: '10px',
-      },
-      username: {
-        fontSize: '24',
-        fontWeight: 'bold',
-        display: 'block',
-        paddingBottom: '5px',
       },
       message: {
         fontSize: '0.9em',
@@ -117,45 +122,40 @@ export default class extends React.Component {
       if (message.text.substr(0, 4) === 'http') {
         messageElement = (
           <Container style={styles.body}>
-            <Media left href="#">
+            <Media left>
               <img
                 className="image img-responsive"
-                href="#"
-                src={`"${this.state.imageUrl}"`}
+                src={this.state.imageUrl} 
                 alt="profile-pic"
                 style={styles.image}
               />
             </Media>
-            <span style={styles.username}>
-              {message.username}
-              <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
-            </span>
-            <div style={styles.message}><img src={message.text} /></div>
-          </Container>);
-      } else {
-        messageElement = <Container style={styles.body}>
-          <Media left href="#">
-            <img
-              className="image img-responsive"
-              href="#"
-              src=''
-              alt="profile-pic"
-              style={styles.image}
-            />
-          </Media>
-          <span style={styles.username}>
-            {message.username}
+            <MiniProfilePopup user={this.state.userProfile} username={message.username}/>
             <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
-          </span>
-          <div style={styles.message}>{message.text}</div>
-        </Container>
+            <div style={styles.message}><img src={message.text} /></div>
+          </Container>
+          )
+      } else {
+        messageElement = (
+          <Container style={styles.body}>
+            <Media left>
+              <img
+                className="image img-responsive"
+                src={this.state.imageUrl}
+                alt="profile-pic"
+                style={styles.image}
+              />
+            </Media>
+            <MiniProfilePopup user={this.state.userProfile} username={message.username}/>
+            <span style={styles.timeStamp}>{new Date(message.createdAt).toLocaleTimeString()}</span>
+            <div style={styles.message}>{message.text}</div>
+          </Container>
+        )
       }
     }
 
     return (
-
       <div className="message-entry-container">
-        <MiniProfilePopup user={this.state.userProfile} />
         {messageElement}
       </div>
     );
