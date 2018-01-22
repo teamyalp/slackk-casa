@@ -9,8 +9,7 @@ const auth = require('./auth');
 const passport = require('./passport');
 const email = require('./email');
 
-
-// const config = require('../config.js');
+const config = require('../config.js');
 
 /*
   Express routes

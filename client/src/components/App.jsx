@@ -33,7 +33,7 @@ export default class App extends React.Component {
       users: [],
       workSpaces: [],
       query: '',
-      lasteMessage: '',
+      lastMessage: '',
       currentWorkSpaceId: 0,
       currentWorkSpaceName: '',
       currentUsername: this.props.location.state.username,
@@ -66,32 +66,40 @@ export default class App extends React.Component {
     this.setState({
       query: event.target.value,
     });
-    console.log(this.state.query)
   }
 
   // sends message on enter key pressed and clears form
   // only when shift+enter pressed breaks to new line
   handleKeyPress(event) {
     // on key press enter send message and reset text box
-    if (this.state.currentWorkSpaceName.includes('-')) {
-          console.log('enter')
-      if (event.charCode === 13 && !event.shiftKey) {
-        event.preventDefault();
-        sendDMessage({
-          username: this.props.location.state.username,
-          text: this.state.query,
-          workspacename: this.state.currentWorkSpaceName,
-          workspaceId: this.state.currentWorkSpaceId,
-          //how to send the address? sending IDs;
-        });
-        // resets text box to blank string
-        this.setState({
-          query: '',
-        });
+    if (event.charCode === 13 && !event.shiftKey) {
+      event.preventDefault();
+      if (!this.state.query.length) {
+        return;
       }
+      if (this.state.currentWorkSpaceName.includes('-')) {
+        if (this.state.query.split('')[0] === '/' || this.state.query.split('')[0] === ':') {
+          this.renderText(renderedText => {
+            sendDMessage({
+              username: this.props.location.state.username,
+              text: renderedText,
+              workspacename: this.state.currentWorkSpaceName,
+              workspaceId: this.state.currentWorkSpaceId,
+              //how to send the address? sending IDs;
+              fromUser: this.state.clientWS[this.props.location.state.username],
+              toUser: this.state.clientWS[this.state.currentToUser],
+            });
+          })
+        } else {
+          sendDMessage({
+            username: this.props.location.state.username,
+            text: profanity.filter(this.state.query),
+            workspacename: this.state.currentWorkSpaceName,
+            workspaceId: this.state.currentWorkSpaceId,
+            //how to send the address? sending IDs;
+          });
+        }
     } else {
-      if (event.charCode === 13 && !event.shiftKey) {
-        event.preventDefault();
         if (this.state.query.split('')[0] === '/' || this.state.query.split('')[0] === ':') {
           this.renderText(renderedText => {
             sendMessage({
@@ -107,18 +115,16 @@ export default class App extends React.Component {
             workspaceId: this.state.currentWorkSpaceId,
           });
         }
-        // resets text box to blank string
-        this.setState({lastMessage: this.state.query});
-        this.setState({
-          query: '',
-        });
       }
-    } 
+      this.setState({lastMessage: this.state.query});
+      this.setState({
+        query: '',
+      });
+    }
   }
 
   getLastMessage(event) {
   if (event.keyCode === 38) {
-    console.log('lastMessage')
       event.preventDefault();
       document.getElementById('messageInput').value = this.state.lastMessage;
       this.setState({query: this.state.lastMessage});
@@ -127,6 +133,7 @@ export default class App extends React.Component {
 
   renderText(cb) {
     let command = this.state.query.substr(1);
+    let param = this.state.query.split(' ')[1];
     let commandObj = {
       angry: '( ͡° ʖ̯ ͡°)',
       shrug: '¯\\_(ツ)_/¯',
@@ -135,22 +142,27 @@ export default class App extends React.Component {
       glasses: '(̿▀̿ ̿Ĺ̯̿̿▀̿ ̿)̄',
       flipoff: '凸( ͡° ͜ʖ ͡°)',
       cat: 'ʢ◉ᴥ◉ʡ',
-      happy: '^‿^'
+      happy: '^‿^',
+      llama: 'http://i0.kym-cdn.com/photos/images/newsfeed/000/089/512/bunchie-santa.gif?1293044284'
     }
     if (commandObj[command]) {
       cb(commandObj[command])
-    } else if (command === 'giphy') {
-      this.getGiphy(url => {
+    } else if (command.startsWith('giphy')) {
+      this.getGiphy(param, (url) => {
         cb(url);
       })
+    } else if(command.startsWith('http')) {
+      cb(commandObj.llama)
+
     } else {
       cb(this.state.query)
     }
   }
 
-  getGiphy(cb) {
-    axios.get('http://api.giphy.com/v1/gifs/random?api_key=4SmUSyBG0eQCgx9Juz77LHHRkc1a2mYe&tag=ass')
+  getGiphy(param, cb) {
+    axios.get(`http://api.giphy.com/v1/gifs/random?api_key=4SmUSyBG0eQCgx9Juz77LHHRkc1a2mYe&tag=${param}`)
       .then(function (response) {
+        console.log(response.data.data.image_original_url)
         cb(response.data.data.image_original_url)
       })
       .catch(function (error) {
@@ -216,14 +228,12 @@ export default class App extends React.Component {
       currentUsername,
       currentUserId,
     } = this.state;
-    console.log('App.jsx-220 WS: ', this.state.clientWS);
     return (
       <div className="app-container">
         <NavBar 
           filteredMessages={filteredMessages}
           currentWorkSpaceName={currentWorkSpaceName} 
           searchClick={this.searchClick.bind(this)}
-          user={this.props.location.state}
         />
         <Body
           messages={messages}
@@ -236,6 +246,7 @@ export default class App extends React.Component {
           username={currentUsername}
           userId={currentUserId}
           changeDirectMessageUser={this.changeDirectMessageUser}
+          currentWorkSpaceName={currentWorkSpaceName}
         />
         <div id="input-container" className="input-container">
           <Input

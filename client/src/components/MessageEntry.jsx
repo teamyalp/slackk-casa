@@ -111,7 +111,7 @@ export default class extends React.Component {
     var messageElement;
     if (this.props.sameUser) {
       if (message.text.substr(0, 4) === 'http') {
-        messageElement = <img src={message.text} />
+        messageElement = <img className="imageMessage" src={message.text} />
       } else {
         messageElement = <span style={styles.sameUserMessage}>{message.text}</span>
       }
