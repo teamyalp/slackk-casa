@@ -8,6 +8,10 @@
 * Austin Shin
 * Chase Lee
 * Shawn Ranck
+* Christopher Chen
+* Connor Chen
+* Kayleigh Foley
+* Peter Luu
 
 ## Table of Contents
 
