@@ -41,7 +41,6 @@ export default class Profile extends React.Component {
 
   render() {
     let { username, userProfile, activeTab } = this.state;
-    console.log('USER', userProfile)
     const styles = {
       brand: {
         margin: '0 0 0 10px',
@@ -57,15 +56,9 @@ export default class Profile extends React.Component {
           <Col xs={{size: 8, offset: 3}}>
             <Navbar expand="md">
               <Button color="secondary" className="exit" style={styles.exit}>
-                
                 <Link 
-                  to={{
-                    pathname: '/messages',
-                    state: { username: this.state.username }
-                  }}
-                  style={{ color: '#fff' }} 
-                >X</Link>
-                {/* <Link to="/messages" style={{ color: '#777' }}>X</Link> */}
+                  to={{ pathname: '/messages', state: { username: this.state.username } }}
+                  style={{ color: '#fff' }}>X</Link>
               </Button>
               <NavbarBrand className="brand" style={styles.brand}>Settings</NavbarBrand>
             </Navbar>

@@ -33,6 +33,14 @@ export default class NavBar extends React.Component {
     });
   }
   render() {
+    const styles = {
+      link: {
+        textDecoration: 'none',
+      },
+      dropdown: {
+        padding: '5px 0 0 32px'
+      }
+    };
     return (
       <Navbar color="faded" light expand="md">
         <NavbarBrand>
@@ -54,9 +62,9 @@ export default class NavBar extends React.Component {
                 Options
               </DropdownToggle>
               <DropdownMenu>
-{/*                <Link to={`/profile/${this.props.user.username}`} >
-                  <DropdownItem>Settings</DropdownItem>
-                </Link>*/}
+                <Link to={`/profile/${this.props.user.username}`} style={styles.link}>
+                  <DropdownItem style={styles.dropdown}>Settings</DropdownItem>
+                </Link>
                 <NavLink href="/login">
                   <DropdownItem>Sign Out</DropdownItem>
                 </NavLink>
